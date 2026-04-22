@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/menu/menu_bottom_nav.xml — BottomNavigationView menu -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_inicio"
+        android:icon="@drawable/ic_home"
+        android:title="Inicio"/>
+    <item
+        android:id="@+id/nav_temas"
+        android:icon="@drawable/ic_book"
+        android:title="Temas"/>
+    <item
+        android:id="@+id/nav_salas"
+        android:icon="@drawable/ic_stadium"
+        android:title="Salas"/>
+    <item
+        android:id="@+id/nav_stats"
+        android:icon="@drawable/ic_bar_chart"
+        android:title="Stats"/>
+    <item
+        android:id="@+id/nav_config"
+        android:icon="@drawable/ic_settings"
+        android:title="Config"/>
+</menu>

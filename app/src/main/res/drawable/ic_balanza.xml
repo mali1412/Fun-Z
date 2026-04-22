@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/ic_balanza.xml — Vector SVG: Balanza de platillos -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="100dp"
+    android:viewportWidth="240"
+    android:viewportHeight="100">
+
+    <!-- Poste vertical -->
+    <path android:fillColor="#9CA3AF"
+        android:pathData="M119,12 L121,12 L121,55 L119,55 Z"/>
+
+    <!-- Barra horizontal -->
+    <path android:fillColor="#9CA3AF"
+        android:pathData="M54,54 L186,54 L186,56 L54,56 Z"/>
+
+    <!-- Cadena izquierda -->
+    <path android:fillColor="#9CA3AF"
+        android:pathData="M55,54 L55,76 L57,76 L57,54 Z"/>
+
+    <!-- Cadena derecha -->
+    <path android:fillColor="#9CA3AF"
+        android:pathData="M183,54 L183,76 L185,76 L185,54 Z"/>
+
+    <!-- Plato izquierdo - borde -->
+    <path android:fillColor="#C7D2FE"
+        android:pathData="M26,76 L86,76 Q88,76 88,78 L88,100 Q88,102 86,102 L26,102 Q24,102 24,100 L24,78 Q24,76 26,76 Z"/>
+
+    <!-- Plato izquierdo - fondo -->
+    <path android:fillColor="#EEF2FF"
+        android:pathData="M27,77 L85,77 Q86,77 86,78 L86,100 Q86,101 85,101 L27,101 Q26,101 26,100 L26,78 Q26,77 27,77 Z"/>
+
+    <!-- Plato derecho - borde -->
+    <path android:fillColor="#C7D2FE"
+        android:pathData="M154,76 L214,76 Q216,76 216,78 L216,100 Q216,102 214,102 L154,102 Q152,102 152,100 L152,78 Q152,76 154,76 Z"/>
+
+    <!-- Plato derecho - fondo -->
+    <path android:fillColor="#EEF2FF"
+        android:pathData="M155,77 L213,77 Q214,77 214,78 L214,100 Q214,101 213,101 L155,101 Q154,101 154,100 L154,78 Q154,77 155,77 Z"/>
+
+    <!-- Pivote central -->
+    <path android:fillColor="#9CA3AF"
+        android:pathData="M117,8 Q120,5 123,8 Q126,11 123,14 Q120,17 117,14 Q114,11 117,8 Z"/>
+</vector>
