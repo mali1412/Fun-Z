@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- activity_fin_ejercicios.xml — Pantalla: Fin de Módulo -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="?attr/backgroundColor">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingStart="16dp" android:background="?attr/colorSurface" android:elevation="2dp">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Módulo completado 🎓" android:textSize="15sp" android:textStyle="bold"
+            android:textColor="?attr/textColorPrimary"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:orientation="vertical" android:gravity="center" android:padding="24dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="🎓" android:textSize="56sp" android:layout_gravity="center"
+            android:layout_marginBottom="14dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="¡Módulo 1 finalizado!" android:textSize="18sp" android:textStyle="bold"
+            android:textColor="?attr/textColorPrimary" android:layout_gravity="center"
+            android:layout_marginBottom="18dp"/>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="14dp">
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                android:layout_height="80dp" android:layout_weight="1" app:cardCornerRadius="12dp"
+                app:cardElevation="0dp" android:layout_marginEnd="8dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center">
+                    <TextView android:id="@+id/tv_fin_ok" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="0" android:textSize="26sp"
+                        android:textStyle="bold" android:textColor="@color/color_primary"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Correctos" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView android:layout_width="0dp"
+                android:layout_height="80dp" android:layout_weight="1" app:cardCornerRadius="12dp"
+                app:cardElevation="0dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:orientation="vertical" android:gravity="center">
+                    <TextView android:id="@+id/tv_fin_fail" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:text="0" android:textSize="26sp"
+                        android:textStyle="bold" android:textColor="@color/error"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Incorrectos" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <com.google.android.material.chip.Chip android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/tv_fin_pts"
+            android:text="+0 puntos" android:textSize="14sp" android:textStyle="bold"
+            app:chipBackgroundColor="@color/warn_chip_bg" android:textColor="#92400E"
+            android:layout_gravity="center" android:layout_marginBottom="8dp"/>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Temas: Balanza · Clásico · Algebra Tiles"
+            android:textSize="12sp" android:textColor="?attr/textColorSecondary"
+            android:layout_gravity="center" android:layout_marginBottom="24dp"/>
+
+        <com.google.android.material.button.MaterialButton android:id="@+id/btn_go_temas"
+            android:layout_width="match_parent" android:layout_height="48dp"
+            android:text="Ir a Temas" android:textSize="14sp"
+            android:backgroundTint="@color/color_primary" app:cornerRadius="12dp"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_ejercicio_balanza.xml — Pantalla D1: Ejercicio 1/3 Balanza
+    Topbar: ← Temas | Ejercicio 1/3 | ⏱ 2:00 | 💡 | ≡
+    ImageView de balanza, labels LHS/RHS, botones de operación, TextInputEditText de respuesta.
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColor">
+
+    <!-- TOOLBAR SUPERIOR -->
+    <LinearLayout
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="&#8592; Temas"
+            android:textSize="11sp"
+            android:textColor="@color/color_primary"
+            app:cornerRadius="8dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ejercicio 1/3"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="?attr/textColorPrimary"
+            android:gravity="center"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="2:00"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            app:chipBackgroundColor="@color/warn_chip_bg"
+            android:textColor="@color/warn_chip_text"
+            android:layout_marginEnd="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hint"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="&#128161;"
+            android:textSize="13sp"
+            android:padding="0dp"
+            app:cornerRadius="8dp"
+            android:layout_marginEnd="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hamburger"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:text="&#8801;"
+            android:textSize="16sp"
+            android:padding="0dp"
+            app:cornerRadius="8dp"/>
+    </LinearLayout>
+
+    <!-- DRAWER MENU -->
+    <LinearLayout
+        android:id="@+id/drawer_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:background="?attr/colorSurface"
+        android:padding="8dp"
+        android:elevation="8dp"
+        android:visibility="gone">
+
+        <Button android:id="@+id/drawer_inicio" android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#127968; Inicio"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_temas"  android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#128218; Temas"   android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_salas"  android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#127999; Salas"   android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_stats"  android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#128202; Stats"   android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_config" android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#9881;&#65039; Config"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+    </LinearLayout>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:padding="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Method Badge -->
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&#9878; Balanza · Ej. 1/3"
+                android:textSize="10sp"
+                app:chipBackgroundColor="@color/color_primary_alpha"
+                android:textColor="@color/color_primary_dark"
+                android:layout_marginBottom="10dp"/>
+
+            <!-- Ecuación -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="12dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:gravity="center" android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Resuelve:" android:textSize="11sp" android:textColor="?attr/textColorSecondary"
+                        android:layout_marginBottom="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="x + 5 = 10"
+                        android:textSize="26sp" android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:textColor="?attr/textColorPrimary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- SVG Balanza -->
+            <ImageView
+                android:id="@+id/iv_balanza"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_balanza"
+                android:contentDescription="Balanza"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Labels LHS / RHS -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center"
+                android:layout_marginBottom="10dp">
+                <TextView android:id="@+id/tv_lhs" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="x+5" android:textSize="14sp"
+                    android:fontFamily="monospace" android:textColor="@color/color_primary"
+                    android:gravity="center" android:background="@drawable/bg_chip_outlined"
+                    android:padding="8dp" android:layout_marginEnd="4dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="=" android:textSize="18sp" android:textColor="?attr/textColorSecondary"
+                    android:layout_marginHorizontal="6dp"/>
+                <TextView android:id="@+id/tv_rhs" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="10" android:textSize="14sp"
+                    android:fontFamily="monospace" android:textColor="@color/color_primary"
+                    android:gravity="center" android:background="@drawable/bg_chip_outlined"
+                    android:padding="8dp" android:layout_marginStart="4dp"/>
+            </LinearLayout>
+
+            <!-- Status -->
+            <TextView android:id="@+id/tv_balance_status" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:text="Aplica &#8722;5 a ambos lados para aislar x"
+                android:textSize="11sp" android:textColor="?attr/textColorSecondary"
+                android:background="@drawable/bg_status" android:padding="8dp"
+                android:layout_marginBottom="10dp" android:gravity="center"/>
+
+            <!-- Operaciones -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Aplica la misma operaci&#243;n a ambos lados:"
+                android:textSize="11sp" android:textColor="?attr/textColorSecondary"
+                android:layout_marginBottom="6dp"/>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center" android:layout_marginBottom="12dp">
+                <Button android:id="@+id/btn_op_minus5" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="&#8722;5" android:textSize="14sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+                <Button android:id="@+id/btn_op_plus5"  android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="+5" android:textSize="14sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+                <Button android:id="@+id/btn_op_times2" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="&#215;2" android:textSize="14sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+                <Button android:id="@+id/btn_op_div2"   android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="&#247;2" android:textSize="14sp"
+                    style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+            </LinearLayout>
+
+            <!-- Respuesta -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="x = " android:textSize="15sp" android:fontFamily="monospace"
+                    android:textColor="?attr/textColorPrimary" android:layout_marginEnd="8dp"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusBottomEnd="10dp" app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp" app:boxCornerRadiusTopStart="10dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_answer"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:inputType="number" android:hint="?"
+                        android:textSize="18sp" android:fontFamily="monospace" android:gravity="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_verify"
+                    android:layout_width="wrap_content" android:layout_height="40dp"
+                    android:text="Verificar" android:textSize="12sp"
+                    app:cornerRadius="10dp"
+                    android:backgroundTint="@color/color_primary"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

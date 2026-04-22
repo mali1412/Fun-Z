@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_temas.xml — Pantalla B: Sección de Temas
+    BottomNavigationView en la parte superior, lista de módulos con progreso.
+    Patrón List Inlay: card del módulo 1 despliega sub-botones al tocar.
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/backgroundColor">
+
+    <!-- BOTTOM NAV EN LA PARTE SUPERIOR -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="?attr/colorSurface"
+        app:menu="@menu/menu_bottom_nav"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/nav_item_color"
+        app:itemIconTint="@color/nav_item_color"
+        android:elevation="4dp"/>
+
+    <!-- TITLE BAR -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="?attr/colorSurface"
+        android:elevation="2dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Módulos"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/textColorPrimary"/>
+    </LinearLayout>
+
+    <!-- LISTA DE MÓDULOS -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- MÓDULO 1 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_mod1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="?attr/colorOutline"
+                android:layout_marginBottom="6dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Módulo 1: Introducción"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:textColor="?attr/textColorPrimary"/>
+
+                            <TextView
+                                android:id="@+id/tv_mod1_sub"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="x+a=b · 3 métodos"
+                                android:textSize="11sp"
+                                android:textColor="?attr/textColorSecondary"
+                                android:layout_marginTop="2dp"/>
+
+                            <ProgressBar
+                                android:id="@+id/pb_mod1"
+                                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="4dp"
+                                android:progress="0"
+                                android:progressDrawable="@drawable/progress_bar_purple"
+                                android:layout_marginTop="6dp"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/tv_mod1_badge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0%"
+                            android:textSize="10sp"
+                            app:chipBackgroundColor="@color/color_primary_alpha"
+                            android:textColor="@color/color_primary_dark"
+                            android:layout_marginStart="8dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- SUB-BOTONES MÓDULO 1 (List Inlay) -->
+            <LinearLayout
+                android:id="@+id/ll_mod1_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_info"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="📖 Info"
+                    android:textSize="11sp"
+                    app:cornerRadius="8dp"
+                    android:layout_marginEnd="6dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_ejemplos"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="💡 Ejemplos"
+                    android:textSize="11sp"
+                    app:cornerRadius="8dp"
+                    android:layout_marginEnd="6dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_ejercicios"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="✏️ Ejercicios"
+                    android:textSize="11sp"
+                    android:backgroundTint="@color/color_primary"
+                    app:cornerRadius="8dp"/>
+            </LinearLayout>
+
+            <!-- MÓDULO 2 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_mod2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="?attr/colorOutline"
+                android:layout_marginBottom="6dp"
+                android:alpha="0.45">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="12dp">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Módulo 2: Coeficientes" android:textSize="13sp"
+                            android:textStyle="bold" android:textColor="?attr/textColorPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="ax+b=c · Balanza" android:textSize="11sp"
+                            android:textColor="?attr/textColorSecondary" android:layout_marginTop="2dp"/>
+                        <ProgressBar style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent" android:layout_height="4dp"
+                            android:progress="0" android:progressDrawable="@drawable/progress_bar_purple"
+                            android:layout_marginTop="6dp"/>
+                    </LinearLayout>
+
+                    <TextView android:id="@+id/tv_mod2_lock"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🔒" android:textSize="16sp" android:layout_marginStart="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- MÓDULO 3 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0.5dp"
+                app:strokeColor="?attr/colorOutline"
+                android:layout_marginBottom="10dp"
+                android:alpha="0.45">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical" android:padding="12dp">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="Módulo 3: Paréntesis" android:textSize="13sp"
+                            android:textStyle="bold" android:textColor="?attr/textColorPrimary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:text="a(x+b)=c(x+d)" android:textSize="11sp"
+                            android:textColor="?attr/textColorSecondary" android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🔒" android:textSize="16sp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- NOTA DE DESBLOQUEO -->
+            <TextView
+                android:id="@+id/tv_mod1_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="💡 Completa el Módulo 1 para desbloquear"
+                android:textSize="11sp"
+                android:textColor="#92400E"
+                android:background="@drawable/bg_warn_note"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/tv_mod1_done_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✅ Módulo 1 completado. ¡Módulo 2 desbloqueado!"
+                android:textSize="11sp"
+                android:textColor="#065F46"
+                android:background="@drawable/bg_success_note"
+                android:padding="10dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

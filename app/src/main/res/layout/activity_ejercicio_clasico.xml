@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    activity_ejercicio_clasico.xml — Pantalla D2: Ejercicio 2/3 (Método Clásico Baldor)
+    Ecuación: 3x + 5 = 20
+    Muestra el desarrollo algebraico paso a paso con Chips de Material Design.
+    Topbar: ← Temas | Ejercicio 2/3 | ⏱ | 💡 | ≡
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/backgroundColor">
+
+    <!-- TOPBAR -->
+    <LinearLayout
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_back"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="← Temas"
+            android:textSize="11sp"
+            android:textColor="@color/color_primary"
+            app:cornerRadius="8dp"/>
+
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="Ejercicio 2/3" android:textSize="13sp"
+            android:textStyle="bold" android:textColor="?attr/textColorPrimary" android:gravity="center"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content" android:layout_height="32dp"
+            android:text="2:00" android:textSize="11sp" android:fontFamily="monospace"
+            app:chipBackgroundColor="@color/warn_chip_bg" android:textColor="@color/warn_chip_text"
+            android:layout_marginEnd="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hint"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="36dp" android:layout_height="36dp"
+            android:text="💡" android:textSize="13sp" android:padding="0dp"
+            app:cornerRadius="8dp" android:layout_marginEnd="4dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_hamburger"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="36dp" android:layout_height="36dp"
+            android:text="≡" android:textSize="16sp" android:padding="0dp"
+            app:cornerRadius="8dp"/>
+    </LinearLayout>
+
+    <!-- DRAWER -->
+    <LinearLayout android:id="@+id/drawer_menu" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal"
+        android:layout_marginTop="50dp" android:background="?attr/colorSurface"
+        android:padding="8dp" android:elevation="8dp" android:visibility="gone">
+        <Button android:id="@+id/drawer_inicio" android:layout_width="wrap_content" android:layout_height="34dp" android:text="🏠 Inicio" android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_temas"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="📚 Temas"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_salas"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="🏟 Salas"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_stats"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="📊 Stats"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_config" android:layout_width="wrap_content" android:layout_height="34dp" android:text="⚙️ Config" android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+    </LinearLayout>
+
+    <!-- SCROLL CONTENT -->
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:layout_marginTop="50dp" android:padding="14dp">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="📐 Clásico (Baldor) · Ej. 2/3" android:textSize="10sp"
+                app:chipBackgroundColor="@color/color_primary_alpha"
+                android:textColor="@color/color_primary_dark" android:layout_marginBottom="10dp"/>
+
+            <!-- Ecuación principal -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp" app:cardElevation="0dp" android:layout_marginBottom="14dp">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="vertical" android:gravity="center" android:padding="16dp">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Resuelve:" android:textSize="11sp"
+                        android:textColor="?attr/textColorSecondary" android:layout_marginBottom="6dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="3x + 5 = 20" android:textSize="24sp" android:textStyle="bold"
+                        android:fontFamily="monospace" android:textColor="?attr/textColorPrimary"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Paso 1 -->
+            <LinearLayout android:id="@+id/step_active"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="@drawable/bg_step_active"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:paddingTop="10dp" android:paddingBottom="10dp"
+                android:layout_marginBottom="6dp">
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="3x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
+                    android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="3dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="+5" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace"
+                    android:textSize="13sp" android:layout_marginEnd="6dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="20" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp"/>
+            </LinearLayout>
+
+            <!-- Paso 2: 3x = 20 - 5 -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="?attr/colorSurfaceVariant"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:paddingTop="8dp" android:paddingBottom="8dp"
+                android:layout_marginBottom="6dp">
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="3x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
+                    android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="6dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="20" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace"
+                    android:textSize="13sp" android:layout_marginEnd="3dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="−" android:textSize="14sp" android:textColor="?attr/textColorPrimary" android:layout_marginEnd="3dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="5" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="← restar 5" android:textSize="9sp" android:textColor="?attr/textColorSecondary"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+
+            <!-- Paso 3: 3x = 15 -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="?attr/colorSurfaceVariant"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:paddingTop="8dp" android:paddingBottom="8dp"
+                android:layout_marginBottom="6dp">
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="3x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
+                    android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="6dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="15" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp"/>
+            </LinearLayout>
+
+            <!-- Paso 4: x = 15 ÷ 3 -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="?attr/colorSurfaceVariant"
+                android:paddingStart="12dp" android:paddingEnd="12dp"
+                android:paddingTop="8dp" android:paddingBottom="8dp"
+                android:layout_marginBottom="14dp">
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
+                    android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="6dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="15" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace"
+                    android:textSize="13sp" android:layout_marginEnd="3dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="÷" android:textSize="14sp" android:textColor="?attr/textColorPrimary" android:layout_marginEnd="3dp"/>
+                <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="3" app:chipBackgroundColor="?attr/colorSurfaceVariant"
+                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="← ÷ entre 3" android:textSize="9sp" android:textColor="?attr/textColorSecondary"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+
+            <!-- CAMPO DE RESPUESTA -->
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="x =" android:textSize="16sp" android:fontFamily="monospace"
+                    android:textColor="?attr/textColorPrimary" android:layout_marginEnd="10dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusBottomEnd="10dp" app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp" app:boxCornerRadiusTopStart="10dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_answer"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:inputType="number" android:hint="?"
+                        android:textSize="18sp" android:fontFamily="monospace" android:gravity="center"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_verify"
+                    android:layout_width="wrap_content" android:layout_height="40dp"
+                    android:text="Verificar" android:textSize="12sp"
+                    android:backgroundTint="@color/color_primary"
+                    app:cornerRadius="10dp" android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
