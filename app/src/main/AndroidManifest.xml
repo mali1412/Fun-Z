@@ -1,15 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- AndroidManifest.xml -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.unam.funz">
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FUNZ" />
+        android:theme="@style/Theme.FunZ"
+        android:name=".FunZApp">
 
+        <!-- Pantalla A: Inicio (MAIN) -->
+        <activity android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Pantalla B: Temas -->
+        <activity android:name=".TemasActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla C: Info / Ejemplos -->
+        <activity android:name=".InfoEjemplosActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla D1: Ejercicio Balanza -->
+        <activity android:name=".EjercicioBalanzaActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla D2: Ejercicio Clásico -->
+        <activity android:name=".EjercicioClasicoActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla D3: Ejercicio Algebra Tiles -->
+        <activity android:name=".EjercicioTilesActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Fin ejercicios -->
+        <activity android:name=".FinEjerciciosActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla E: Salas -->
+        <activity android:name=".SalasActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla M: Estadísticas -->
+        <activity android:name=".EstadisticasActivity"
+            android:screenOrientation="portrait"/>
+
+        <!-- Pantalla N: Configuración -->
+        <activity android:name=".ConfiguracionActivity"
+            android:screenOrientation="portrait"/>
+
+    </application>
 </manifest>

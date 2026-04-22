@@ -1,3 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/strings.xml -->
 <resources>
-    <string name="app_name">FUNZ</string>
+    <string name="app_name">FunZ</string>
+
+    <!-- Home -->
+    <string name="welcome_format">&#161;Hola, %1$s!</string>
+    <string name="streak_format">&#128293; Racha: %1$d d&#237;as</string>
+    <string name="resume_default">M&#243;dulo 1 · Ej. 1/3</string>
+    <string name="btn_resume">&#9654; Reanudar</string>
+
+    <!-- Acceso rápido -->
+    <string name="qa_temas">Temas</string>
+    <string name="qa_salas">Salas</string>
+    <string name="qa_stats">Estad&#237;sticas</string>
+    <string name="qa_config">Configuraci&#243;n</string>
+
+    <!-- Ejercicios -->
+    <string name="exercise_title_1">Ejercicio 1/3</string>
+    <string name="exercise_title_2">Ejercicio 2/3</string>
+    <string name="exercise_title_3">Ejercicio 3/3</string>
+    <string name="btn_verify">Verificar</string>
+    <string name="btn_hint">&#128161;</string>
+    <string name="btn_hamburger">&#8801;</string>
+
+    <!-- Ecuaciones -->
+    <string name="eq_balanza">x + 5 = 10</string>
+    <string name="eq_clasico">3x + 5 = 20</string>
+    <string name="eq_tiles">x + 2 = 12</string>
+
+    <!-- Resultados -->
+    <string name="result_correct">&#127881; &#161;Correcto!</string>
+    <string name="result_incorrect">&#129300; Incorrecto</string>
+    <string name="result_timeout">&#9200; &#161;Tiempo agotado!</string>
+    <string name="result_pts_format">&#161;Bien hecho! +%1$d puntos.</string>
+    <string name="result_hint_msg">Usaste una pista. &#161;Intenta sin pista para +50 extra!</string>
+    <string name="result_incorrect_msg">Revisa la sección de Información antes de reintentar.</string>
+
+    <!-- Salas -->
+    <string name="salas_coming_soon">&#128640; La sección de Salas estará disponible en la próxima versión de FunZ.
+&#161;Sigue practicando para estar listo!</string>
+
+    <!-- Configuración -->
+    <string name="config_save">Guardar cambios</string>
+    <string name="config_saved">&#10003; Cambios guardados</string>
+    <string name="theme_light">&#9728;&#65039; Claro</string>
+    <string name="theme_dark">&#127769; Oscuro</string>
+
+    <!-- Módulos -->
+    <string name="mod1_name">M&#243;dulo 1: Introducci&#243;n</string>
+    <string name="mod1_sub">x+a=b · 3 m&#233;todos</string>
+    <string name="mod2_name">M&#243;dulo 2: Coeficientes</string>
+    <string name="mod2_sub">ax+b=c · Balanza</string>
+    <string name="mod3_name">M&#243;dulo 3: Par&#233;ntesis</string>
+    <string name="mod3_sub">a(x+b)=c(x+d)</string>
 </resources>
