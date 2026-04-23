@@ -16,7 +16,7 @@
         android:background="?attr/colorSurface" android:elevation="2dp">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="Estadísticas" android:textSize="16sp" android:textStyle="bold"
-            android:textColor="?attr/textColorPrimary"/>
+            android:textColor="@color/text_primary"/>
     </LinearLayout>
 
     <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
@@ -37,7 +37,7 @@
                             android:layout_height="wrap_content" android:text="1040" android:textSize="22sp"
                             android:textStyle="bold" android:textColor="@color/color_primary"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Puntos" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                            android:text="Puntos" android:textSize="11sp" android:textColor="@color/text_secondary"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -50,7 +50,7 @@
                             android:layout_height="wrap_content" android:text="0%" android:textSize="22sp"
                             android:textStyle="bold" android:textColor="@color/color_primary"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Progreso M1" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                            android:text="Progreso M1" android:textSize="11sp" android:textColor="@color/text_secondary"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -63,7 +63,7 @@
                             android:layout_height="wrap_content" android:text="7" android:textSize="22sp"
                             android:textStyle="bold" android:textColor="@color/color_primary"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Racha (días)" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                            android:text="Racha (días)" android:textSize="11sp" android:textColor="@color/text_secondary"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -76,7 +76,7 @@
                             android:layout_height="wrap_content" android:text="0" android:textSize="22sp"
                             android:textStyle="bold" android:textColor="@color/color_primary"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="Resueltos" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                            android:text="Resueltos" android:textSize="11sp" android:textColor="@color/text_secondary"/>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </GridLayout>
@@ -90,14 +90,14 @@
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="PROGRESO POR MÓDULO" android:textSize="10sp" android:textStyle="bold"
-                        android:textColor="?attr/textColorSecondary" android:letterSpacing="0.08"
+                        android:textColor="@color/text_secondary" android:letterSpacing="0.08"
                         android:layout_marginBottom="10dp"/>
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1" android:text="Módulo 1: Introducción"
-                            android:textSize="12sp" android:textColor="?attr/textColorPrimary"/>
+                            android:textSize="12sp" android:textColor="@color/text_primary"/>
                         <TextView android:id="@+id/tv_mod1_pct" android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:text="0%" android:textSize="12sp"
                             android:textColor="@color/color_primary" android:textStyle="bold"/>
@@ -112,10 +112,10 @@
                         android:orientation="horizontal" android:gravity="center_vertical" android:layout_marginBottom="4dp">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1" android:text="Módulo 2: Coeficientes"
-                            android:textSize="12sp" android:textColor="?attr/textColorSecondary"/>
+                            android:textSize="12sp" android:textColor="@color/text_secondary"/>
                         <TextView android:id="@+id/tv_mod2_status" android:layout_width="wrap_content"
                             android:layout_height="wrap_content" android:text="Bloqueado"
-                            android:textSize="12sp" android:textColor="?attr/textColorSecondary"/>
+                            android:textSize="12sp" android:textColor="@color/text_secondary"/>
                     </LinearLayout>
                     <ProgressBar style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="match_parent" android:layout_height="7dp"
@@ -126,7 +126,7 @@
             <!-- Medallas -->
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="MEDALLAS (2/5)" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="?attr/textColorSecondary" android:letterSpacing="0.08"
+                android:textColor="@color/text_secondary" android:letterSpacing="0.08"
                 android:layout_marginBottom="10dp"/>
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                         android:textSize="20sp" android:gravity="center"
                         android:background="@drawable/bg_medal_earned"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="1ª ec." android:textSize="10sp" android:textColor="?attr/textColorSecondary"
+                        android:text="1ª ec." android:textSize="10sp" android:textColor="@color/text_secondary"
                         android:gravity="center" android:layout_marginTop="3dp"/>
                 </LinearLayout>
 
@@ -148,7 +148,7 @@
                         android:textSize="20sp" android:gravity="center"
                         android:background="@drawable/bg_medal_earned"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Racha" android:textSize="10sp" android:textColor="?attr/textColorSecondary"
+                        android:text="Racha" android:textSize="10sp" android:textColor="@color/text_secondary"
                         android:gravity="center" android:layout_marginTop="3dp"/>
                 </LinearLayout>
 
@@ -158,7 +158,7 @@
                         android:textSize="20sp" android:gravity="center"
                         android:background="@drawable/bg_medal_locked"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Módulo 1" android:textSize="10sp" android:textColor="?attr/textColorSecondary"
+                        android:text="Módulo 1" android:textSize="10sp" android:textColor="@color/text_secondary"
                         android:gravity="center" android:layout_marginTop="3dp"/>
                 </LinearLayout>
 
@@ -168,7 +168,7 @@
                         android:textSize="20sp" android:gravity="center"
                         android:background="@drawable/bg_medal_locked"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Victoria" android:textSize="10sp" android:textColor="?attr/textColorSecondary"
+                        android:text="Victoria" android:textSize="10sp" android:textColor="@color/text_secondary"
                         android:gravity="center" android:layout_marginTop="3dp"/>
                 </LinearLayout>
 
@@ -178,7 +178,7 @@
                         android:textSize="20sp" android:gravity="center"
                         android:background="@drawable/bg_medal_locked"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Maestro" android:textSize="10sp" android:textColor="?attr/textColorSecondary"
+                        android:text="Maestro" android:textSize="10sp" android:textColor="@color/text_secondary"
                         android:gravity="center" android:layout_marginTop="3dp"/>
                 </LinearLayout>
             </LinearLayout>

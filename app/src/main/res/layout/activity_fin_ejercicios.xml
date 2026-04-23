@@ -10,7 +10,7 @@
         android:paddingStart="16dp" android:background="?attr/colorSurface" android:elevation="2dp">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="Módulo completado 🎓" android:textSize="15sp" android:textStyle="bold"
-            android:textColor="?attr/textColorPrimary"/>
+            android:textColor="@color/text_primary"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
@@ -22,7 +22,7 @@
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="¡Módulo 1 finalizado!" android:textSize="18sp" android:textStyle="bold"
-            android:textColor="?attr/textColorPrimary" android:layout_gravity="center"
+            android:textColor="@color/text_primary" android:layout_gravity="center"
             android:layout_marginBottom="18dp"/>
 
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                         android:layout_height="wrap_content" android:text="0" android:textSize="26sp"
                         android:textStyle="bold" android:textColor="@color/color_primary"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Correctos" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                        android:text="Correctos" android:textSize="11sp" android:textColor="@color/text_secondary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -50,7 +50,7 @@
                         android:layout_height="wrap_content" android:text="0" android:textSize="26sp"
                         android:textStyle="bold" android:textColor="@color/error"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Incorrectos" android:textSize="11sp" android:textColor="?attr/textColorSecondary"/>
+                        android:text="Incorrectos" android:textSize="11sp" android:textColor="@color/text_secondary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -63,7 +63,7 @@
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="Temas: Balanza · Clásico · Algebra Tiles"
-            android:textSize="12sp" android:textColor="?attr/textColorSecondary"
+            android:textSize="12sp" android:textColor="@color/text_secondary"
             android:layout_gravity="center" android:layout_marginBottom="24dp"/>
 
         <com.google.android.material.button.MaterialButton android:id="@+id/btn_go_temas"

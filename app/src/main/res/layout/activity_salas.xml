@@ -16,7 +16,7 @@
         android:background="?attr/colorSurface" android:elevation="2dp">
         <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
             android:text="Salas de Juego" android:textSize="16sp" android:textStyle="bold"
-            android:textColor="?attr/textColorPrimary"/>
+            android:textColor="@color/text_primary"/>
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
@@ -33,7 +33,7 @@
 
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="La sección de Salas (Colaborativo y Competitivo) estará disponible en la próxima versión de FunZ.\n\n¡Sigue practicando los módulos para estar listo!"
-            android:textSize="13sp" android:textColor="?attr/textColorSecondary"
+            android:textSize="13sp" android:textColor="@color/text_secondary"
             android:gravity="center" android:lineSpacingExtra="4dp"/>
     </LinearLayout>
 </LinearLayout>

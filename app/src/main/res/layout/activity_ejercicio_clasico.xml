@@ -36,7 +36,7 @@
 
         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
             android:layout_weight="1" android:text="Ejercicio 2/3" android:textSize="13sp"
-            android:textStyle="bold" android:textColor="?attr/textColorPrimary" android:gravity="center"/>
+            android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="center"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/tv_timer"
@@ -93,10 +93,10 @@
                     android:orientation="vertical" android:gravity="center" android:padding="16dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Resuelve:" android:textSize="11sp"
-                        android:textColor="?attr/textColorSecondary" android:layout_marginBottom="6dp"/>
+                        android:textColor="@color/text_secondary" android:layout_marginBottom="6dp"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="3x + 5 = 20" android:textSize="24sp" android:textStyle="bold"
-                        android:fontFamily="monospace" android:textColor="?attr/textColorPrimary"/>
+                        android:fontFamily="monospace" android:textColor="@color/text_primary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -113,13 +113,13 @@
                     android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="3dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="+5" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace"
+                    android:textColor="@color/text_primary" android:fontFamily="monospace"
                     android:textSize="13sp" android:layout_marginEnd="6dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                    android:text="= " android:textSize="14sp" android:textColor="@color/text_secondary" android:layout_marginEnd="6dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="20" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp"/>
+                    android:textColor="@color/text_primary" android:fontFamily="monospace" android:textSize="13sp"/>
             </LinearLayout>
 
             <!-- Paso 2: 3x = 20 - 5 -->
@@ -133,18 +133,18 @@
                     android:text="3x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
                     android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="6dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                    android:text="= " android:textSize="14sp" android:textColor="@color/text_secondary" android:layout_marginEnd="6dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="20" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace"
+                    android:textColor="@color/text_primary" android:fontFamily="monospace"
                     android:textSize="13sp" android:layout_marginEnd="3dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="−" android:textSize="14sp" android:textColor="?attr/textColorPrimary" android:layout_marginEnd="3dp"/>
+                    android:text="−" android:textSize="14sp" android:textColor="@color/text_primary" android:layout_marginEnd="3dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="5" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
+                    android:textColor="@color/text_primary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="← restar 5" android:textSize="9sp" android:textColor="?attr/textColorSecondary"
+                    android:text="← restar 5" android:textSize="9sp" android:textColor="@color/text_secondary"
                     android:fontFamily="monospace"/>
             </LinearLayout>
 
@@ -159,10 +159,10 @@
                     android:text="3x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
                     android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="6dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                    android:text="= " android:textSize="14sp" android:textColor="@color/text_secondary" android:layout_marginEnd="6dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="15" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp"/>
+                    android:textColor="@color/text_primary" android:fontFamily="monospace" android:textSize="13sp"/>
             </LinearLayout>
 
             <!-- Paso 4: x = 15 ÷ 3 -->
@@ -176,18 +176,18 @@
                     android:text="x" app:chipBackgroundColor="@color/color_primary" android:textColor="#FFFFFF"
                     android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="6dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="= " android:textSize="14sp" android:textColor="?attr/textColorSecondary" android:layout_marginEnd="6dp"/>
+                    android:text="= " android:textSize="14sp" android:textColor="@color/text_secondary" android:layout_marginEnd="6dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="15" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace"
+                    android:textColor="@color/text_primary" android:fontFamily="monospace"
                     android:textSize="13sp" android:layout_marginEnd="3dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="÷" android:textSize="14sp" android:textColor="?attr/textColorPrimary" android:layout_marginEnd="3dp"/>
+                    android:text="÷" android:textSize="14sp" android:textColor="@color/text_primary" android:layout_marginEnd="3dp"/>
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="3" app:chipBackgroundColor="?attr/colorSurfaceVariant"
-                    android:textColor="?attr/textColorPrimary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
+                    android:textColor="@color/text_primary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="← ÷ entre 3" android:textSize="9sp" android:textColor="?attr/textColorSecondary"
+                    android:text="← ÷ entre 3" android:textSize="9sp" android:textColor="@color/text_secondary"
                     android:fontFamily="monospace"/>
             </LinearLayout>
 
@@ -197,7 +197,7 @@
 
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="x =" android:textSize="16sp" android:fontFamily="monospace"
-                    android:textColor="?attr/textColorPrimary" android:layout_marginEnd="10dp"/>
+                    android:textColor="@color/text_primary" android:layout_marginEnd="10dp"/>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"

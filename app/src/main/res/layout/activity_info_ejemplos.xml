@@ -41,7 +41,7 @@
             android:text="Módulo 1"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="?attr/textColorPrimary"
+            android:textColor="@color/text_primary"
             android:gravity="center"/>
 
         <com.google.android.material.button.MaterialButton
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:background="?attr/colorSurface"
-            app:tabTextColor="?attr/textColorSecondary"
+            app:tabTextColor="@color/text_secondary"
             app:tabSelectedTextColor="@color/color_primary"
             app:tabIndicatorColor="@color/color_primary"
             app:tabIndicatorHeight="2dp"/>
@@ -166,7 +166,7 @@
                             android:orientation="vertical" android:padding="12dp">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:text="📹 Video explicativo" android:textSize="11sp"
-                                android:textColor="?attr/textColorSecondary" android:layout_marginBottom="6dp"/>
+                                android:textColor="@color/text_secondary" android:layout_marginBottom="6dp"/>
                             <FrameLayout android:layout_width="match_parent" android:layout_height="80dp"
                                 android:background="#1A1A2E">
                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -187,12 +187,12 @@
 
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Procedimiento de resolución:" android:textSize="12sp"
-                        android:textColor="?attr/textColorSecondary" android:layout_marginBottom="10dp"/>
+                        android:textColor="@color/text_secondary" android:layout_marginBottom="10dp"/>
 
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="x + 3 = 7"
                         android:fontFamily="monospace" android:textSize="16sp"
-                        android:textColor="?attr/textColorPrimary" android:padding="10dp"
+                        android:textColor="@color/text_primary" android:padding="10dp"
                         android:background="@drawable/bg_equation_box"
                         android:gravity="center" android:layout_marginBottom="12dp"/>
 
@@ -204,7 +204,7 @@
                             android:layout_marginEnd="10dp" android:layout_marginTop="2dp"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1" android:text="Identificar el término a eliminar del lado izquierdo: +3"
-                            android:textSize="12sp" android:textColor="?attr/textColorPrimary"
+                            android:textSize="12sp" android:textColor="@color/text_primary"
                             android:lineSpacingExtra="3dp"/>
                     </LinearLayout>
 
@@ -216,7 +216,7 @@
                             android:layout_marginEnd="10dp" android:layout_marginTop="2dp"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1" android:text="Aplicar operación inversa en ambos lados: x + 3 − 3 = 7 − 3"
-                            android:textSize="12sp" android:textColor="?attr/textColorPrimary"
+                            android:textSize="12sp" android:textColor="@color/text_primary"
                             android:lineSpacingExtra="3dp"/>
                     </LinearLayout>
 
@@ -263,7 +263,7 @@
                 android:layout_weight="1"
                 android:text="1 / 2"
                 android:textSize="11sp"
-                android:textColor="?attr/textColorSecondary"
+                android:textColor="@color/text_secondary"
                 android:gravity="center"/>
 
             <com.google.android.material.button.MaterialButton

@@ -40,7 +40,7 @@
             android:text="Módulos"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="?attr/textColorPrimary"/>
+            android:textColor="@color/text_primary"/>
     </LinearLayout>
 
     <!-- LISTA DE MÓDULOS -->
@@ -92,7 +92,7 @@
                                 android:text="Módulo 1: Introducción"
                                 android:textSize="13sp"
                                 android:textStyle="bold"
-                                android:textColor="?attr/textColorPrimary"/>
+                                android:textColor="@color/text_primary"/>
 
                             <TextView
                                 android:id="@+id/tv_mod1_sub"
@@ -100,7 +100,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="x+a=b · 3 métodos"
                                 android:textSize="11sp"
-                                android:textColor="?attr/textColorSecondary"
+                                android:textColor="@color/text_secondary"
                                 android:layout_marginTop="2dp"/>
 
                             <ProgressBar
@@ -190,10 +190,10 @@
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Módulo 2: Coeficientes" android:textSize="13sp"
-                            android:textStyle="bold" android:textColor="?attr/textColorPrimary"/>
+                            android:textStyle="bold" android:textColor="@color/text_primary"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="ax+b=c · Balanza" android:textSize="11sp"
-                            android:textColor="?attr/textColorSecondary" android:layout_marginTop="2dp"/>
+                            android:textColor="@color/text_secondary" android:layout_marginTop="2dp"/>
                         <ProgressBar style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                             android:layout_width="match_parent" android:layout_height="4dp"
                             android:progress="0" android:progressDrawable="@drawable/progress_bar_purple"
@@ -223,10 +223,10 @@
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="Módulo 3: Paréntesis" android:textSize="13sp"
-                            android:textStyle="bold" android:textColor="?attr/textColorPrimary"/>
+                            android:textStyle="bold" android:textColor="@color/text_primary"/>
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:text="a(x+b)=c(x+d)" android:textSize="11sp"
-                            android:textColor="?attr/textColorSecondary" android:layout_marginTop="2dp"/>
+                            android:textColor="@color/text_secondary" android:layout_marginTop="2dp"/>
                     </LinearLayout>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="🔒" android:textSize="16sp"/>
