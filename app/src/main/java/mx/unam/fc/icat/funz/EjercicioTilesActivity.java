@@ -1,4 +1,4 @@
-package com.unam.funz;
+package mx.unam.fc.icat.funz;
 
 import android.content.ClipData;
 import android.content.Intent;
