@@ -1,97 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- activity_configuracion.xml — Pantalla N: Configuración -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="?attr/backgroundColor">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/backgroundColor"
+    tools:context=".ConfiguracionActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav" android:layout_width="match_parent" android:layout_height="56dp"
-        android:background="?attr/colorSurface" app:menu="@menu/menu_bottom_nav"
-        app:labelVisibilityMode="labeled" app:itemTextColor="@color/nav_item_color"
-        app:itemIconTint="@color/nav_item_color" android:elevation="4dp"/>
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/nav_bar_height"
+        android:background="?attr/colorSurface"
+        app:menu="@menu/menu_bottom_nav"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/nav_item_color"
+        app:itemIconTint="@color/nav_item_color"
+        android:elevation="@dimen/card_elevation" />
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
-        android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="16dp"
-        android:background="?attr/colorSurface" android:elevation="2dp">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Configuración" android:textSize="16sp" android:textStyle="bold"
-            android:textColor="@color/text_primary"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/button_height"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/margin_default"
+        android:paddingEnd="@dimen/margin_default"
+        android:background="?attr/colorSurface"
+        android:elevation="2dp"
+        tools:ignore="UnusedAttribute">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Configuración"
+            android:textSize="@dimen/text_size_body"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary" />
     </LinearLayout>
 
-    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
-        android:padding="16dp">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="@dimen/margin_default">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- NOMBRE DE USUARIO -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="NOMBRE DE USUARIO" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary" android:letterSpacing="0.08"
-                android:layout_marginBottom="7dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOMBRE DE USUARIO"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="@dimen/margin_small"
+                tools:ignore="SmallSp" />
+
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-                app:boxCornerRadiusBottomEnd="10dp" app:boxCornerRadiusTopEnd="10dp"
-                app:boxCornerRadiusBottomStart="10dp" app:boxCornerRadiusTopStart="10dp"
-                android:layout_marginBottom="20dp">
+                app:boxCornerRadiusBottomEnd="@dimen/margin_small"
+                app:boxCornerRadiusTopEnd="@dimen/margin_small"
+                app:boxCornerRadiusBottomStart="@dimen/margin_small"
+                app:boxCornerRadiusTopStart="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_large">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_username" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:textSize="15sp"
-                    android:inputType="textPersonName"/>
+                    android:id="@+id/et_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:textSize="@dimen/text_size_body"
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- TEMA -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="TEMA" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary" android:letterSpacing="0.08"
-                android:layout_marginBottom="7dp"/>
-            <RadioGroup android:id="@+id/rg_theme" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:orientation="horizontal"
-                android:layout_marginBottom="20dp">
-                <RadioButton android:id="@+id/rb_light" android:layout_width="0dp"
-                    android:layout_height="44dp" android:layout_weight="1" android:text="☀️ Claro"
-                    android:textSize="13sp" android:checked="true"
-                    android:background="@drawable/bg_radio_option" android:layout_marginEnd="6dp"/>
-                <RadioButton android:id="@+id/rb_dark" android:layout_width="0dp"
-                    android:layout_height="44dp" android:layout_weight="1" android:text="🌙 Oscuro"
-                    android:textSize="13sp"
-                    android:background="@drawable/bg_radio_option"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TEMA"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="@dimen/margin_small"
+                tools:ignore="SmallSp" />
+
+            <RadioGroup
+                android:id="@+id/rg_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/margin_large">
+
+                <RadioButton
+                    android:id="@+id/rb_light"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:text="☀️ Claro"
+                    android:textSize="@dimen/text_size_small"
+                    android:checked="true"
+                    android:background="@drawable/bg_radio_option"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:button="@null"
+                    android:gravity="center" />
+
+                <RadioButton
+                    android:id="@+id/rb_dark"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:text="🌙 Oscuro"
+                    android:textSize="@dimen/text_size_small"
+                    android:background="@drawable/bg_radio_option"
+                    android:button="@null"
+                    android:gravity="center" />
             </RadioGroup>
 
-            <!-- CRÉDITOS -->
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="CRÉDITOS" android:textSize="10sp" android:textStyle="bold"
-                android:textColor="@color/text_secondary" android:letterSpacing="0.08"
-                android:layout_marginBottom="7dp"/>
-            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
-                android:layout_height="wrap_content" app:cardCornerRadius="12dp" app:cardElevation="0dp"
-                android:layout_marginBottom="20dp">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="vertical" android:padding="13dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="FunZ v4.0 · UNAM 2026" android:textSize="13sp"
-                        android:textStyle="bold" android:textColor="@color/text_primary"
-                        android:layout_marginBottom="4dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Chávez Martínez Marco Antonio" android:textSize="12sp"
-                        android:textColor="@color/text_secondary"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Cano Tenorio Alan Kevin" android:textSize="12sp"
-                        android:textColor="@color/text_secondary"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Escobedo Irineo Malinalli" android:textSize="12sp"
-                        android:textColor="@color/text_secondary"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Innovación Android · UNAM 2026" android:textSize="11sp"
-                        android:textColor="@color/text_secondary" android:layout_marginTop="6dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:text="Guardar cambios"
+                android:textSize="@dimen/text_size_body"
+                android:backgroundTint="@color/color_primary"
+                app:cornerRadius="@dimen/margin_small"
+                android:contentDescription="Guardar ajustes de usuario y tema" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CRÉDITOS"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="@dimen/margin_small"
+                tools:ignore="SmallSp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="@dimen/margin_large"
+                app:cardBackgroundColor="@color/color_bg_tonal_card">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_card">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FunZ v4.0 · UNAM 2026"
+                        android:textSize="@dimen/text_size_body"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Chávez Martínez Marco Antonio"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Cano Tenorio Alan Kevin"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Escobedo Irineo Malinalli"
+                        android:textSize="@dimen/text_size_small"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Innovación Android · UNAM 2026"
+                        android:textSize="11sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginTop="@dimen/margin_small"
+                        tools:ignore="SmallSp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_save" android:layout_width="match_parent" android:layout_height="48dp"
-                android:text="Guardar cambios" android:textSize="14sp"
-                android:backgroundTint="@color/color_primary" app:cornerRadius="12dp"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

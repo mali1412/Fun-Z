@@ -10,6 +10,9 @@
     <color name="color_primary_light">#E1BEE7</color>
     <color name="color_primary_alpha">#1A9C27B0</color>
 
+    <color name="color_bg_tonal_card">#F2F2F2</color>
+    <color name="color_outline">#BDBDBD</color>
+
     <!-- ACCENT (cyan) -->
     <color name="accent_color">#00BCD4</color>
     <color name="accent_green">#10B981</color>

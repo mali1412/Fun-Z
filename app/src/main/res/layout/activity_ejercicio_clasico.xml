@@ -79,12 +79,6 @@
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="📐 Clásico (Baldor) · Ej. 2/3" android:textSize="10sp"
-                app:chipBackgroundColor="@color/color_primary_alpha"
-                android:textColor="@color/color_primary_dark" android:layout_marginBottom="10dp"/>
-
             <!-- Ecuación principal -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent" android:layout_height="wrap_content"

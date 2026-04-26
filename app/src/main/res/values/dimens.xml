@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_default">16dp</dimen>
+    <dimen name="margin_large">24dp</dimen>
+    <dimen name="padding_card">12dp</dimen>
+
+    <dimen name="text_size_h1">24sp</dimen>
+    <dimen name="text_size_h2">20sp</dimen>
+    <dimen name="text_size_body">16sp</dimen>
+    <dimen name="text_size_small">14sp</dimen>
+
+    <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="nav_bar_height">64dp</dimen>
+
+    <dimen name="chip_equation_min_width">40dp</dimen>
+    <dimen name="algebra_tile_size">50dp</dimen>
+    <dimen name="balanza_base_height">100dp</dimen>
+
+    <dimen name="progress_bar_height">8dp</dimen>
+    <dimen name="inlay_action_button_size">40dp</dimen>
+</resources>

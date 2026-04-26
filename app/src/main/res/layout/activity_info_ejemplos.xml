@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    activity_info_ejemplos.xml — Pantalla C: Información / Ejemplos
-    Topbar: ← Temas | Módulo 1 | ≡ (hamburguesa)
-    TabLayout: Información | Ejemplos
-    Contenido conmutable + NavFooter con botón siguiente
--->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor">
 
-    <!-- TOPBAR con hamburguesa -->
+    <!-- TOOLBAR SUPERIOR -->
     <LinearLayout
         android:id="@+id/topbar"
         android:layout_width="match_parent"
@@ -29,7 +23,7 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:text="← Temas"
+            android:text="&#8592; Temas"
             android:textSize="11sp"
             android:textColor="@color/color_primary"
             app:cornerRadius="8dp"/>
@@ -39,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Módulo 1"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:gravity="center"/>
@@ -49,13 +43,13 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:text="≡"
+            android:text="&#8801;"
             android:textSize="16sp"
             android:padding="0dp"
             app:cornerRadius="8dp"/>
     </LinearLayout>
 
-    <!-- DRAWER MENÚ HAMBURGUESA -->
+    <!-- DRAWER MENU (Igual que en ejercicios) -->
     <LinearLayout
         android:id="@+id/drawer_menu"
         android:layout_width="match_parent"
@@ -67,11 +61,11 @@
         android:elevation="8dp"
         android:visibility="gone">
 
-        <Button android:id="@+id/drawer_inicio" android:layout_width="wrap_content" android:layout_height="34dp" android:text="🏠 Inicio" android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_temas"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="📚 Temas"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_salas"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="🏟 Salas"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_stats"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="📊 Stats"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_config" android:layout_width="wrap_content" android:layout_height="34dp" android:text="⚙️ Config" android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_inicio" android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#127968; Inicio"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_temas"  android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#128218; Temas"   android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_salas"  android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#127999; Salas"   android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_stats"  android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#128202; Stats"   android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+        <Button android:id="@+id/drawer_config" android:layout_width="wrap_content" android:layout_height="36dp" android:text="&#9881;&#65039; Config"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
     </LinearLayout>
 
     <!-- CONTENIDO PRINCIPAL -->
@@ -81,30 +75,27 @@
         android:orientation="vertical"
         android:layout_marginTop="50dp">
 
-        <!-- TABS -->
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="48dp"
             android:background="?attr/colorSurface"
             app:tabTextColor="@color/text_secondary"
             app:tabSelectedTextColor="@color/color_primary"
             app:tabIndicatorColor="@color/color_primary"
             app:tabIndicatorHeight="2dp"/>
 
-        <!-- SCROLL AREA -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="14dp">
+            android:padding="@dimen/padding_card">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- CONTENIDO INFORMACIÓN -->
                 <LinearLayout
                     android:id="@+id/content_info"
                     android:layout_width="match_parent"
@@ -114,21 +105,21 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="@color/color_primary_alpha"
                         app:strokeColor="@color/color_primary_light"
-                        app:strokeWidth="0.5dp"
-                        android:layout_marginBottom="10dp">
+                        app:strokeWidth="1dp"
+                        android:layout_marginBottom="@dimen/margin_default">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="13dp">
+                            android:orientation="vertical" android:padding="@dimen/padding_card">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="¿Qué es una ecuación?" android:textSize="13sp"
+                                android:text="¿Qué es una ecuación?" android:textSize="@dimen/text_size_body"
                                 android:textStyle="bold" android:textColor="@color/color_primary_dark"
-                                android:layout_marginBottom="5dp"/>
+                                android:layout_marginBottom="@dimen/margin_small"/>
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:text="Una igualdad matemática con una o más incógnitas. El objetivo es encontrar el valor de x que hace verdadera la igualdad."
-                                android:textSize="12sp" android:textColor="@color/color_primary_dark"
+                                android:textSize="@dimen/text_size_small" android:textColor="@color/color_primary_dark"
                                 android:lineSpacingExtra="4dp"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -136,48 +127,46 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="@color/color_primary_alpha"
                         app:strokeColor="@color/color_primary_light"
-                        app:strokeWidth="0.5dp"
-                        android:layout_marginBottom="10dp">
+                        app:strokeWidth="1dp"
+                        android:layout_marginBottom="@dimen/margin_default">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="13dp">
+                            android:orientation="vertical" android:padding="@dimen/padding_card">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Forma simple: x + a = b" android:textSize="13sp"
+                                android:text="Forma simple: x + a = b" android:textSize="@dimen/text_size_body"
                                 android:textStyle="bold" android:textColor="@color/color_primary_dark"
-                                android:layout_marginBottom="5dp"/>
+                                android:layout_marginBottom="@dimen/margin_small"/>
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:text="Solo se necesita sumar o restar en ambos lados para despejar x. El principio clave: lo que haces a un lado, debes hacerlo al otro."
-                                android:textSize="12sp" android:textColor="@color/color_primary_dark"
+                                android:textSize="@dimen/text_size_small" android:textColor="@color/color_primary_dark"
                                 android:lineSpacingExtra="4dp"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Video placeholder -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="10dp"
+                        app:cardCornerRadius="@dimen/margin_small"
                         app:cardElevation="0dp"
-                        android:layout_marginBottom="10dp">
+                        android:layout_marginBottom="@dimen/margin_default">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="12dp">
+                            android:orientation="vertical" android:padding="@dimen/margin_small">
                             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="📹 Video explicativo" android:textSize="11sp"
-                                android:textColor="@color/text_secondary" android:layout_marginBottom="6dp"/>
-                            <FrameLayout android:layout_width="match_parent" android:layout_height="80dp"
+                                android:text="📹 Video explicativo" android:textSize="@dimen/text_size_small"
+                                android:textColor="@color/text_secondary" android:layout_marginBottom="@dimen/margin_small"/>
+                            <FrameLayout android:layout_width="match_parent" android:layout_height="120dp"
                                 android:background="#1A1A2E">
                                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:layout_gravity="center" android:text="▶" android:textSize="26sp"
+                                    android:layout_gravity="center" android:text="▶" android:textSize="32sp"
                                     android:textColor="#FFFFFF"/>
                             </FrameLayout>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
-                <!-- CONTENIDO EJEMPLOS -->
                 <LinearLayout
                     android:id="@+id/content_ejemplos"
                     android:layout_width="match_parent"
@@ -185,76 +174,70 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Procedimiento de resolución:" android:textSize="12sp"
-                        android:textColor="@color/text_secondary" android:layout_marginBottom="10dp"/>
-
                     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="x + 3 = 7"
-                        android:fontFamily="monospace" android:textSize="16sp"
-                        android:textColor="@color/text_primary" android:padding="10dp"
+                        android:fontFamily="monospace" android:textSize="@dimen/text_size_h1"
+                        android:textColor="@color/text_primary" android:padding="@dimen/margin_default"
                         android:background="@drawable/bg_equation_box"
-                        android:gravity="center" android:layout_marginBottom="12dp"/>
+                        android:gravity="center" android:layout_marginBottom="@dimen/margin_default"/>
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="horizontal" android:layout_marginBottom="8dp">
-                        <TextView android:layout_width="22dp" android:layout_height="22dp"
-                            android:text="1" android:textSize="10sp" android:textColor="#FFFFFF"
+                        android:orientation="horizontal" android:layout_marginBottom="@dimen/margin_small">
+                        <TextView android:layout_width="24dp" android:layout_height="24dp"
+                            android:text="1" android:textSize="@dimen/text_size_small" android:textColor="#FFFFFF"
                             android:gravity="center" android:background="@drawable/bg_step_circle"
-                            android:layout_marginEnd="10dp" android:layout_marginTop="2dp"/>
+                            android:layout_marginEnd="@dimen/margin_small"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1" android:text="Identificar el término a eliminar del lado izquierdo: +3"
-                            android:textSize="12sp" android:textColor="@color/text_primary"
-                            android:lineSpacingExtra="3dp"/>
+                            android:textSize="@dimen/text_size_small" android:textColor="@color/text_primary"/>
                     </LinearLayout>
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="horizontal" android:layout_marginBottom="8dp">
-                        <TextView android:layout_width="22dp" android:layout_height="22dp"
-                            android:text="2" android:textSize="10sp" android:textColor="#FFFFFF"
+                        android:orientation="horizontal" android:layout_marginBottom="@dimen/margin_small">
+                        <TextView android:layout_width="24dp" android:layout_height="24dp"
+                            android:text="2" android:textSize="@dimen/text_size_small" android:textColor="#FFFFFF"
                             android:gravity="center" android:background="@drawable/bg_step_circle"
-                            android:layout_marginEnd="10dp" android:layout_marginTop="2dp"/>
+                            android:layout_marginEnd="@dimen/margin_small"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Aplicar operación inversa en ambos lados: x + 3 − 3 = 7 − 3"
-                            android:textSize="12sp" android:textColor="@color/text_primary"
-                            android:lineSpacingExtra="3dp"/>
+                            android:layout_weight="1" android:text="Aplicar operación inversa: x + 3 − 3 = 7 − 3"
+                            android:textSize="@dimen/text_size_small" android:textColor="@color/text_primary"/>
                     </LinearLayout>
 
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="horizontal" android:layout_marginBottom="8dp">
-                        <TextView android:layout_width="22dp" android:layout_height="22dp"
-                            android:text="3" android:textSize="10sp" android:textColor="#FFFFFF"
+                        android:orientation="horizontal" android:layout_marginBottom="@dimen/margin_small">
+                        <TextView android:layout_width="24dp" android:layout_height="24dp"
+                            android:text="3" android:textSize="@dimen/text_size_small" android:textColor="#FFFFFF"
                             android:gravity="center" android:background="@drawable/bg_step_circle"
-                            android:layout_marginEnd="10dp" android:layout_marginTop="2dp"/>
+                            android:layout_marginEnd="@dimen/margin_small"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                             android:layout_weight="1" android:text="Simplificar: x = 4 ✓"
-                            android:textSize="12sp" android:textStyle="bold"
-                            android:textColor="@color/color_primary" android:lineSpacingExtra="3dp"/>
+                            android:textSize="@dimen/text_size_small" android:textStyle="bold"
+                            android:textColor="@color/color_primary"/>
                     </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
 
-        <!-- NAV FOOTER -->
+        <!-- BARRA DE NAVEGACIÓN INFERIOR -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="@dimen/nav_bar_height"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
+            android:paddingStart="@dimen/margin_default"
+            android:paddingEnd="@dimen/margin_default"
             android:background="?attr/colorSurface"
-            android:elevation="4dp">
+            android:elevation="@dimen/card_elevation">
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_volver"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="@dimen/button_height"
                 android:text="← Volver"
-                android:textSize="12sp"
-                android:onClick="onBackPressed"
-                app:cornerRadius="8dp"/>
+                android:textSize="@dimen/text_size_small"
+                app:cornerRadius="@dimen/margin_small"/>
 
             <TextView
                 android:id="@+id/tv_page_indicator"
@@ -262,18 +245,18 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="1 / 2"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_small"
                 android:textColor="@color/text_secondary"
                 android:gravity="center"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_next"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="@dimen/button_height"
                 android:text="Ejemplos →"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_small"
                 android:backgroundTint="@color/color_primary"
-                app:cornerRadius="8dp"/>
+                app:cornerRadius="@dimen/margin_small"/>
         </LinearLayout>
     </LinearLayout>
 
