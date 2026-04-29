@@ -28,22 +28,21 @@
             android:id="@+id/btn_back"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="40dp"
             android:text="← Salir"
-            android:textSize="11sp"
+            android:textSize="13sp"
             android:textColor="@color/color_primary"
             app:cornerRadius="8dp"/>
-
-        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="Ejercicio 2/3" android:textSize="13sp"
-            android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="center"/>
-
         <com.google.android.material.chip.Chip
             android:id="@+id/tv_timer"
             android:layout_width="wrap_content" android:layout_height="32dp"
-            android:text="2:00" android:textSize="11sp" android:fontFamily="monospace"
+            android:text="2:00" android:textSize="13sp" android:fontFamily="monospace"
             app:chipBackgroundColor="@color/warn_chip_bg" android:textColor="@color/warn_chip_text"
-            android:layout_marginEnd="4dp"/>
+            android:layout_marginEnd="1dp"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:text="Ejercicio 2/3" android:textSize="15sp"
+            android:textStyle="bold" android:textColor="@color/text_primary" android:gravity="center"/>
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_hint"
@@ -68,7 +67,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="50dp"
         android:background="?attr/colorSurface"
-        android:padding="8dp"
+        android:padding="@dimen/margin_small"
         android:elevation="8dp"
         android:visibility="gone"
         android:gravity="center">
@@ -77,62 +76,75 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_inicio"
             style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Inicio"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:padding="0dp"
             app:icon="@drawable/ic_home"
-            app:iconTint="@null" /> <!-- Importante: @null para ver colores originales -->
+            app:iconGravity="top"
+            app:iconTint="@null" />
 
         <!-- Temas -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_temas"
             style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Temas"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:padding="0dp"
             app:icon="@drawable/ic_book"
+            app:iconGravity="top"
             app:iconTint="@null" />
 
         <!-- Salas -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_salas"
             style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Salas"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:padding="0dp"
             app:icon="@drawable/ic_room"
+            app:iconGravity="top"
             app:iconTint="@null" />
 
         <!-- Stats -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_stats"
             style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="1"
             android:layout_margin="2dp"
             android:text="Stats"
             android:textSize="9sp"
+            android:padding="0dp"
             app:icon="@drawable/ic_bar_chart"
-            app:iconPadding="2dp"
+            app:iconGravity="top"
             app:iconTint="@null" />
 
-        <!-- Config -->
+        <!-- Config (Ajustado para visibilidad total) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_config"
             style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_margin="3dp"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="1"
+            android:layout_margin="2dp"
             android:text="Config"
-            android:textSize="10sp"
+            android:textSize="9sp"
+            android:padding="0dp"
             app:icon="@drawable/ic_settings"
-            app:iconTint="@null" />
+            app:iconGravity="top" />
 
     </LinearLayout>
 
@@ -201,9 +213,6 @@
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="5" app:chipBackgroundColor="?attr/colorSurfaceVariant"
                     android:textColor="@color/text_primary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="← restar 5" android:textSize="9sp" android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"/>
             </LinearLayout>
 
             <!-- Paso 3: 3x = 15 -->
@@ -244,9 +253,6 @@
                 <com.google.android.material.chip.Chip android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="3" app:chipBackgroundColor="?attr/colorSurfaceVariant"
                     android:textColor="@color/text_primary" android:fontFamily="monospace" android:textSize="13sp" android:layout_marginEnd="8dp"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="← ÷ entre 3" android:textSize="9sp" android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"/>
             </LinearLayout>
 
             <!-- CAMPO DE RESPUESTA -->
@@ -272,7 +278,7 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_verify"
                     android:layout_width="wrap_content" android:layout_height="40dp"
-                    android:text="Verificar" android:textSize="12sp"
+                    android:text="Verificar" android:textSize="15sp"
                     android:backgroundTint="@color/color_primary"
                     app:cornerRadius="10dp" android:layout_marginStart="8dp"/>
             </LinearLayout>
