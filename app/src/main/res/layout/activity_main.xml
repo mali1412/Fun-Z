@@ -96,11 +96,12 @@
                 android:id="@+id/card_resume"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="@dimen/card_corner_radius"
-                app:strokeColor="@color/color_primary"
-                app:strokeWidth="1.5dp"
-                app:cardElevation="@dimen/card_elevation"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/white"
                 android:layout_marginBottom="@dimen/margin_large">
+
 
                 <LinearLayout
                     android:layout_width="match_parent"

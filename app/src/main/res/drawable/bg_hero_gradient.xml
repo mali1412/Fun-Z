@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- res/drawable/bg_hero_gradient.xml — Fondo degradado morado para el hero -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:startColor="#4F46E5"
-        android:endColor="#7C3AED"
-        android:angle="135"
-        android:type="linear"/>
+        android:startColor="#c9a4e5"
+        android:endColor="#ece9f7"
+        android:angle="120"/>
 </shape>
+
