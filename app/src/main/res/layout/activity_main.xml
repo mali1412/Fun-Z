@@ -209,12 +209,11 @@
                             android:orientation="vertical"
                             android:gravity="center"
                             android:padding="@dimen/margin_small">
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_book" />
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="&#128218;"
-                                android:textSize="32sp"
-                                android:textColor="@color/color_primary"/> <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Temas"
@@ -241,12 +240,11 @@
                             android:orientation="vertical"
                             android:gravity="center"
                             android:padding="@dimen/margin_small">
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_room" />
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="&#127999;"
-                                android:textSize="32sp"
-                                android:textColor="#2196F3"/> <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Salas"
@@ -273,12 +271,11 @@
                             android:orientation="vertical"
                             android:gravity="center"
                             android:padding="@dimen/margin_small">
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_bar_chart" />
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="&#128202;"
-                                android:textSize="32sp"
-                                android:textColor="#FF9800"/> <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Estad&#237;sticas"
@@ -305,12 +302,11 @@
                             android:orientation="vertical"
                             android:gravity="center"
                             android:padding="@dimen/margin_small">
+                            <ImageView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:src="@drawable/ic_settings" />
                             <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="&#9881;&#65039;"
-                                android:textSize="32sp"
-                                android:textColor="#757575"/> <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Configuraci&#243;n"

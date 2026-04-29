@@ -11,7 +11,7 @@
         android:title="Temas"/>
     <item
         android:id="@+id/nav_salas"
-        android:icon="@drawable/ic_stadium"
+        android:icon="@drawable/ic_room"
         android:title="Salas"/>
     <item
         android:id="@+id/nav_stats"

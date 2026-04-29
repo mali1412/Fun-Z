@@ -19,7 +19,8 @@
         <com.google.android.material.button.MaterialButton android:id="@+id/btn_back"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content" android:layout_height="32dp"
-            android:text="&#8592; Temas" android:textSize="11sp"
+            android:text="← Salir"
+            android:textSize="11sp"
             android:textColor="@color/color_primary" app:cornerRadius="8dp"/>
 
         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
@@ -41,15 +42,79 @@
             android:textSize="16sp" android:padding="0dp" app:cornerRadius="8dp"/>
     </LinearLayout>
 
-    <LinearLayout android:id="@+id/drawer_menu" android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="horizontal"
-        android:layout_marginTop="50dp" android:background="?attr/colorSurface"
-        android:padding="8dp" android:elevation="8dp" android:visibility="gone">
-        <Button android:id="@+id/drawer_inicio" android:layout_width="wrap_content" android:layout_height="34dp" android:text="&#127968; Inicio" android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_temas"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="&#128218; Temas"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_salas"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="&#127999; Salas"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_stats"  android:layout_width="wrap_content" android:layout_height="34dp" android:text="&#128202; Stats"  android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
-        <Button android:id="@+id/drawer_config" android:layout_width="wrap_content" android:layout_height="34dp" android:text="&#9881;&#65039; Config" android:textSize="11sp" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_margin="3dp"/>
+    <LinearLayout
+        android:id="@+id/drawer_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="50dp"
+        android:background="?attr/colorSurface"
+        android:padding="8dp"
+        android:elevation="8dp"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <!-- Inicio -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/drawer_inicio"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="3dp"
+            android:text="Inicio"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_home"
+            app:iconTint="@null" /> <!-- Importante: @null para ver colores originales -->
+
+        <!-- Temas -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/drawer_temas"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="3dp"
+            android:text="Temas"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_book"
+            app:iconTint="@null" />
+
+        <!-- Salas -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/drawer_salas"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="3dp"
+            android:text="Salas"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_room"
+            app:iconTint="@null" />
+
+        <!-- Stats -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/drawer_stats"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="2dp"
+            android:text="Stats"
+            android:textSize="9sp"
+            app:icon="@drawable/ic_bar_chart"
+            app:iconPadding="2dp"
+            app:iconTint="@null" />
+
+        <!-- Config -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/drawer_config"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_margin="3dp"
+            android:text="Config"
+            android:textSize="10sp"
+            app:icon="@drawable/ic_settings"
+            app:iconTint="@null" />
+
     </LinearLayout>
 
     <ScrollView android:layout_width="match_parent" android:layout_height="match_parent"
