@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.ejercicios;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
+
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
+import mx.unam.fc.icat.funz.ui.temas.InfoEjemplosActivity;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 
 /**
  * EjercicioClasicoActivity — Pantalla D2: Ejercicio 2/3 (Método Clásico / Baldor)
@@ -37,7 +46,7 @@ public class EjercicioClasicoActivity extends AppCompatActivity {
     private static final int TIME_MS     = 120_000;
     private static final int CORRECT_ANS = 5;
 
-    private AppState       state;
+    private AppState state;
     private boolean        appliedDarkTheme;
     private CountDownTimer timer;
     private boolean        hintUsed = false;

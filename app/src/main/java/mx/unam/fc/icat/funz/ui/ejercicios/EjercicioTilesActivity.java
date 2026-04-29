@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.ejercicios;
 
 import android.content.ClipData;
 import android.content.Intent;
@@ -13,6 +13,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import java.util.ArrayList;
 import java.util.List;
+
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.temas.InfoEjemplosActivity;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
+import mx.unam.fc.icat.funz.data.AppState;
 
 /**
  * EjercicioTilesActivity — Pantalla D3: Ejercicio 3/3 (Algebra Tiles)
@@ -50,7 +59,7 @@ public class EjercicioTilesActivity extends AppCompatActivity {
     private static final int CORRECT_ANS = 10;
     private static final int TIME_MS     = 120_000;
 
-    private AppState       state;
+    private AppState state;
     private boolean        appliedDarkTheme;
     private CountDownTimer timer;
     private boolean        hintUsed = false;

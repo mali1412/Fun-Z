@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="?attr/backgroundColor"
-    tools:context=".FinEjerciciosActivity">
+    tools:context=".ui.ejercicios.FinEjerciciosActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.data;
 
 
 /**

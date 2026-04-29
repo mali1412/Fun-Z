@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.temas;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
+
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioBalanzaActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioClasicoActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioTilesActivity;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
 
 /**
  * TemasActivity — Pantalla B: Sección de Temas

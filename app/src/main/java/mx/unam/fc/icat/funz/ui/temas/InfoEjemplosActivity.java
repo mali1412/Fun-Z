@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.temas;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.tabs.TabLayout;
+
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioBalanzaActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioClasicoActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioTilesActivity;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
 
 /**
  * InfoEjemplosActivity — Pantalla C: Información / Ejemplos
@@ -27,7 +37,7 @@ import com.google.android.material.tabs.TabLayout;
  */
 public class InfoEjemplosActivity extends AppCompatActivity {
 
-    private AppState     state;
+    private AppState state;
     private boolean      appliedDarkTheme;
     private LinearLayout drawerMenu;
     private int          currentTab = 0;

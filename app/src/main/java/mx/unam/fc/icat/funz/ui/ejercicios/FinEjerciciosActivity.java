@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.ejercicios;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.chip.Chip;
+
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 
 /**
  * FinEjerciciosActivity — Pantalla de resumen al completar el Módulo 1.

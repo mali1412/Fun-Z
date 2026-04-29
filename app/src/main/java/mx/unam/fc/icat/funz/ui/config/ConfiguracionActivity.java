@@ -1,4 +1,4 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.config;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
+
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
+import mx.unam.fc.icat.funz.data.AppState;
 
 /**
  * ConfiguracionActivity — Pantalla N: Configuración
@@ -24,7 +31,7 @@ import com.google.android.material.textfield.TextInputEditText;
  */
 public class ConfiguracionActivity extends AppCompatActivity {
 
-    private AppState          state;
+    private AppState state;
     private boolean           appliedDarkTheme;
     private TextInputEditText etUsername;
     private RadioGroup        rgTheme;
