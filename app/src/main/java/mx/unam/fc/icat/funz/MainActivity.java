@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private AppState state;
+    private boolean  appliedDarkTheme;
 
     // ── Views ────────────────────────────────────────────────────────────────
     private TextView     tvWelcome;
@@ -39,10 +40,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         state = AppState.getInstance();
-        if (state.isDarkTheme()) {
-            setTheme(R.style.Theme_FunZ_Dark);
-        }
+        appliedDarkTheme = state.isDarkTheme();
+        if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_main);
+
+        tvWelcome= findViewById(R.id.tv_welcome);
+
+        // Obtener el nombre del usuario desde AppState
+        String nombre = AppState.getInstance().getUsername();
+        tvWelcome.setText("¡Hola, " + nombre + "!");
+
+
         bindViews();
         setupQuickAccess();
     }
@@ -50,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
         refreshUI();
     }
 

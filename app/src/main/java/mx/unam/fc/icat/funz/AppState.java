@@ -24,7 +24,7 @@ public class AppState {
     private AppState() {}
 
     // ── Datos del usuario ────────────────────────────────────────────────────
-    private String  username    = "Marco";
+    private String  username    = "Usuario";
     private int     totalPoints = 1040;
     private int     streakDays  = 7;
     private boolean darkTheme   = false;

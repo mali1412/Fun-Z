@@ -2,5 +2,5 @@
 <!-- res/drawable/bg_step_circle.xml — Círculo morado para números de pasos -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <solid android:color="#9C27B0"/>
+    <solid android:color="@color/color_primary"/>
 </shape>

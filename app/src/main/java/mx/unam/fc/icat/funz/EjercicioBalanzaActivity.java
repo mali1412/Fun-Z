@@ -47,6 +47,7 @@ public class EjercicioBalanzaActivity extends AppCompatActivity {
 
     // ── Estado ───────────────────────────────────────────────────────────────
     private AppState       state;
+    private boolean        appliedDarkTheme;
     private CountDownTimer timer;
     private boolean        hintUsed    = false;
     private boolean        timerActive = false;
@@ -79,6 +80,12 @@ public class EjercicioBalanzaActivity extends AppCompatActivity {
         setupHamburger();
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
+    }
     // ════════════════════════════════════════════════════════════════════════
     //  Binding
     // ════════════════════════════════════════════════════════════════════════
@@ -210,9 +217,9 @@ public class EjercicioBalanzaActivity extends AppCompatActivity {
         View view = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, null);
         ((TextView) view.findViewById(R.id.tv_hint_content)).setText(
                 "Paso 1: Resta 5 a ambos lados de la balanza.\n" +
-                "  x + 5 − 5 = 10 − 5\n\n" +
-                "Paso 2: Simplifica.\n" +
-                "  x = 5 ✓");
+                        "  x + 5 − 5 = 10 − 5\n\n" +
+                        "Paso 2: Simplifica.\n" +
+                        "  x = 5 ✓");
         view.findViewById(R.id.btn_close_hint).setOnClickListener(v -> sheet.dismiss());
         sheet.setContentView(view);
         sheet.show();
@@ -246,19 +253,19 @@ public class EjercicioBalanzaActivity extends AppCompatActivity {
                 msg += "\n\nUsaste una pista. ¡Intenta sin pista para ganar +50 puntos extra!";
             }
             builder.setTitle("🎉 ¡Correcto!")
-                   .setMessage(msg)
-                   .setPositiveButton("Ej. 2/3 →", (d, w) -> goToNext())
-                   .setCancelable(false);
+                    .setMessage(msg)
+                    .setPositiveButton("Ej. 2/3 →", (d, w) -> goToNext())
+                    .setCancelable(false);
             if (hintUsed) {
                 builder.setNeutralButton("Sin pista (+50)", (d, w) -> retryWithoutHint());
             }
         } else {
             builder.setTitle("🤔 Incorrecto")
-                   .setMessage("Revisa la sección de Información para reforzar el tema.")
-                   .setPositiveButton("📖 Información", (d, w) -> goToInfo())
-                   .setNegativeButton("Reintentar", (d, w) -> { resetBalanza(); startTimer(); })
-                   .setNeutralButton("Salir", (d, w) -> finish())
-                   .setCancelable(false);
+                    .setMessage("Revisa la sección de Información para reforzar el tema.")
+                    .setPositiveButton("📖 Información", (d, w) -> goToInfo())
+                    .setNegativeButton("Reintentar", (d, w) -> { resetBalanza(); startTimer(); })
+                    .setNeutralButton("Salir", (d, w) -> finish())
+                    .setCancelable(false);
         }
         builder.show();
     }

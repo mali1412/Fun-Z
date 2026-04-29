@@ -42,4 +42,19 @@
 
     <color name="textColorPrimary">@color/text_primary</color>
     <color name="textColorSecondary">@color/text_secondary</color>
+
+    <!-- DARK-MODE SURFACES para drawables -->
+    <color name="surface_card_light">#FFFFFF</color>
+    <color name="surface_card_dark_themed">#374151</color>
+    <color name="radio_selected_bg_light">#EEF2FF</color>
+    <color name="radio_unselected_bg_light">#FAFAFA</color>
+    <color name="radio_border_light">#E5E7EB</color>
+    <color name="status_bg_light">#F9FAFB</color>
+    <color name="status_border_light">#E5E7EB</color>
+    <color name="medal_locked_bg">#F5F5F5</color>
+    <color name="medal_locked_border">#BDBDBD</color>
+    <color name="chip_outlined_bg">#EEF2FF</color>
+    <color name="chip_outlined_border">#C7D2FE</color>
+    <color name="progress_track">#E0E0E0</color>
+    <color name="equation_box_bg_light">#F3F4F6</color>
 </resources>

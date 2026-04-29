@@ -42,7 +42,7 @@
                     android:id="@+id/tv_welcome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="&#161;Hola, Marco!"
+                    android:text="&#161;Hola, Usuario "
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/text_size_h2"
                     android:textStyle="bold"/>

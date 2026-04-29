@@ -11,10 +11,24 @@ import com.google.android.material.tabs.TabLayout;
 
 /**
  * InfoEjemplosActivity — Pantalla C: Información / Ejemplos
+ *
+ * Dos pestañas en TabLayout:
+ *   0 = Información  (tarjetas de teoría + video)
+ *   1 = Ejemplos     (procedimiento paso a paso)
+ *
+ * NO tiene BottomNavigationView.
+ * En su lugar tiene un botón hamburguesa (≡) que despliega
+ * un drawer con los cinco destinos de navegación global.
+ *
+ * Al cambiar de pestaña se actualiza AppState:
+ *   - Pestaña 0 → state.setInfoRead(true)
+ *   - Pestaña 1 → state.setExamplesRead(true)
+ * Esto incrementa el progreso del Módulo 1 en un 20% por hito.
  */
 public class InfoEjemplosActivity extends AppCompatActivity {
 
     private AppState     state;
+    private boolean      appliedDarkTheme;
     private LinearLayout drawerMenu;
     private int          currentTab = 0;
 
@@ -22,7 +36,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         state = AppState.getInstance();
-        if (state.isDarkTheme()) setTheme(R.style.Theme_FunZ_Dark);
+        appliedDarkTheme = state.isDarkTheme();
+        if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_info_ejemplos);
 
         currentTab = getIntent().getIntExtra("tab", 0);
@@ -32,35 +47,34 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         setupHamburger();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  Binding
+    // ════════════════════════════════════════════════════════════════════════
+
     private void bindViews() {
         drawerMenu = findViewById(R.id.drawer_menu);
-        if (drawerMenu != null) {
-            drawerMenu.setVisibility(View.GONE);
-        }
+        drawerMenu.setVisibility(View.GONE);
 
-        View btnBack = findViewById(R.id.btn_back);
-        if (btnBack != null) {
-            btnBack.setOnClickListener(v -> finish());
-        }
-
-        View btnVolver = findViewById(R.id.btn_volver);
-        if (btnVolver != null) {
-            btnVolver.setOnClickListener(v -> finish());
-        }
+        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
     }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  Tabs
+    // ════════════════════════════════════════════════════════════════════════
 
     private void setupTabs() {
         TabLayout tabs    = findViewById(R.id.tabs);
         Button    btnNext = findViewById(R.id.btn_next);
 
-        if (tabs == null || btnNext == null) return;
-
         tabs.addTab(tabs.newTab().setText("Información"));
         tabs.addTab(tabs.newTab().setText("Ejemplos"));
-        
-        if (currentTab < tabs.getTabCount()) {
-            tabs.selectTab(tabs.getTabAt(currentTab));
-        }
+        tabs.selectTab(tabs.getTabAt(currentTab));
 
         updateNextButton(btnNext);
         showTabContent(currentTab);
@@ -82,6 +96,7 @@ public class InfoEjemplosActivity extends AppCompatActivity {
             if (currentTab == 0) {
                 tabs.selectTab(tabs.getTabAt(1));
             } else {
+                // Avanzar a ejercicios desde el paso guardado
                 state.setExamplesRead(true);
                 state.resetSession();
                 goToExercise();
@@ -105,8 +120,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     private void showTabContent(int tab) {
         View infoContent     = findViewById(R.id.content_info);
         View ejemplosContent = findViewById(R.id.content_ejemplos);
-        if (infoContent != null) infoContent.setVisibility(tab == 0 ? View.VISIBLE : View.GONE);
-        if (ejemplosContent != null) ejemplosContent.setVisibility(tab == 1 ? View.VISIBLE : View.GONE);
+        infoContent.setVisibility(tab == 0 ? View.VISIBLE : View.GONE);
+        ejemplosContent.setVisibility(tab == 1 ? View.VISIBLE : View.GONE);
     }
 
     private void goToExercise() {
@@ -120,14 +135,16 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         finish();
     }
 
+    // ════════════════════════════════════════════════════════════════════════
+    //  Hamburguesa
+    // ════════════════════════════════════════════════════════════════════════
+
     private void setupHamburger() {
         View btnHam = findViewById(R.id.btn_hamburger);
-        if (btnHam != null && drawerMenu != null) {
-            btnHam.setOnClickListener(v -> {
-                drawerMenu.setVisibility(
-                        drawerMenu.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-            });
-        }
+        btnHam.setOnClickListener(v -> {
+            drawerMenu.setVisibility(
+                    drawerMenu.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        });
 
         setupDrawerItem(R.id.drawer_inicio,  MainActivity.class);
         setupDrawerItem(R.id.drawer_temas,   TemasActivity.class);
@@ -138,7 +155,7 @@ public class InfoEjemplosActivity extends AppCompatActivity {
 
     private void setupDrawerItem(int viewId, Class<?> target) {
         View item = findViewById(viewId);
-        if (item != null && drawerMenu != null) {
+        if (item != null) {
             item.setOnClickListener(v -> {
                 drawerMenu.setVisibility(View.GONE);
                 startActivity(new Intent(this, target));

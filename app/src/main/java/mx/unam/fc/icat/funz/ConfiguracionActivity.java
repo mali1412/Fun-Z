@@ -6,16 +6,26 @@ import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
 /**
  * ConfiguracionActivity — Pantalla N: Configuración
+ *
+ * Permite al usuario:
+ *   1. Editar su nombre de usuario (se actualiza en la pantalla Home).
+ *   2. Cambiar el tema entre claro y oscuro.
+ *      Al guardar, se llama recreate() para que el nuevo tema
+ *      se aplique inmediatamente en esta Activity.
+ *      Las demás Activities leen AppState.isDarkTheme() en su onCreate().
+ *
+ * El botón "Guardar cambios" persiste los valores en AppState y
+ * muestra un Toast de confirmación.
  */
 public class ConfiguracionActivity extends AppCompatActivity {
 
     private AppState          state;
+    private boolean           appliedDarkTheme;
     private TextInputEditText etUsername;
     private RadioGroup        rgTheme;
 
@@ -23,14 +33,8 @@ public class ConfiguracionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         state = AppState.getInstance();
-        
-        // Aplicar el tema actual antes de setContentView
-        if (state.isDarkTheme()) {
-            setTheme(R.style.Theme_FunZ_Dark);
-        } else {
-            setTheme(R.style.Theme_FunZ);
-        }
-        
+        appliedDarkTheme = state.isDarkTheme();
+        if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_configuracion);
 
         etUsername = findViewById(R.id.et_username);
@@ -46,7 +50,12 @@ public class ConfiguracionActivity extends AppCompatActivity {
         setupNavigation();
     }
 
+    // ════════════════════════════════════════════════════════════════════════
+    //  Guardar configuración
+    // ════════════════════════════════════════════════════════════════════════
+
     private void saveConfig() {
+        // Nombre de usuario
         String newName = etUsername.getText() != null
                 ? etUsername.getText().toString().trim()
                 : "";
@@ -54,20 +63,23 @@ public class ConfiguracionActivity extends AppCompatActivity {
             state.setUsername(newName);
         }
 
+        // Tema
         boolean dark = (rgTheme.getCheckedRadioButtonId() == R.id.rb_dark);
         boolean themeChanged = (dark != state.isDarkTheme());
-        
+        state.setDarkTheme(dark);
+
+        Toast.makeText(this, "✓ Cambios guardados", Toast.LENGTH_SHORT).show();
+
+        // Si el tema cambió, recrear la Activity para aplicarlo de inmediato
         if (themeChanged) {
-            state.setDarkTheme(dark);
-            // Aplicar el modo noche globalmente usando AppCompatDelegate
-            AppCompatDelegate.setDefaultNightMode(
-                    dark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
-            );
-            Toast.makeText(this, "Tema actualizado", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "✓ Cambios guardados", Toast.LENGTH_SHORT).show();
+            appliedDarkTheme = dark;
+            recreate();
         }
     }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  Navegación global
+    // ════════════════════════════════════════════════════════════════════════
 
     private void setupNavigation() {
         BottomNavigationView nav = findViewById(R.id.bottom_nav);

@@ -16,7 +16,17 @@
         <item name="android:statusBarColor">@color/color_primary</item>
         <item name="android:navigationBarColor">@color/surface_light</item>
 
+        <item name="colorTextPrimary">@color/text_primary</item>
+        <item name="colorTextSecondary">@color/text_secondary</item>
+        <item name="colorBgTonalCard">@color/color_bg_tonal_card</item>
+        <item name="colorNavItem">@color/text_secondary</item>
+        <item name="colorWarnChipBg">@color/warn_chip_bg</item>
+        <item name="colorWarnChipText">@color/warn_chip_text</item>
+        <item name="colorPrimaryAlpha">@color/color_primary_alpha</item>
+
     </style>
+
+
 
     <!-- Tema oscuro -->
     <style name="Theme.FunZ.Dark" parent="Theme.Material3.Dark.NoActionBar">
@@ -31,7 +41,11 @@
         <item name="android:statusBarColor">@color/color_primary_dark</item>
         <item name="android:navigationBarColor">@color/surface_dark</item>
 
-    </style>
 
+        <item name="colorTextPrimary">#F9FAFB</item>
+        <item name="colorTextSecondary">#9CA3AF</item>
+        <item name="colorBgTonalCard">@color/card_dark</item>
+        <item name="colorNavItem">#F9FAFB</item>
+        <item name="colorWarnChipBg">#451A03</item> <item name="colorWarnChipText">#FDE68A</item> <item name="colorPrimaryAlpha">#33E1BEE7</item> </style>
 
 </resources>

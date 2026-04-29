@@ -23,11 +23,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class EstadisticasActivity extends AppCompatActivity {
 
+    private AppState state;
+    private boolean  appliedDarkTheme;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppState state = AppState.getInstance();
-        if (state.isDarkTheme()) setTheme(R.style.Theme_FunZ_Dark);
+        state = AppState.getInstance();
+        appliedDarkTheme = state.isDarkTheme();
+        if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_estadisticas);
         setupNavigation();
     }
@@ -35,6 +39,7 @@ public class EstadisticasActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
         refreshStats();
     }
 
@@ -43,7 +48,7 @@ public class EstadisticasActivity extends AppCompatActivity {
     // ════════════════════════════════════════════════════════════════════════
 
     private void refreshStats() {
-        AppState s = AppState.getInstance();
+        AppState s = state;
 
         // Tarjetas de estadísticas principales
         ((TextView) findViewById(R.id.tv_stat_pts))

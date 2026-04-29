@@ -51,6 +51,7 @@ public class EjercicioTilesActivity extends AppCompatActivity {
     private static final int TIME_MS     = 120_000;
 
     private AppState       state;
+    private boolean        appliedDarkTheme;
     private CountDownTimer timer;
     private boolean        hintUsed = false;
 
@@ -83,6 +84,12 @@ public class EjercicioTilesActivity extends AppCompatActivity {
         setupHamburger();
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
+    }
     // ════════════════════════════════════════════════════════════════════════
     //  Binding
     // ════════════════════════════════════════════════════════════════════════
@@ -327,11 +334,11 @@ public class EjercicioTilesActivity extends AppCompatActivity {
         View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, null);
         ((TextView) v.findViewById(R.id.tv_hint_content)).setText(
                 "Paso 1: Haz clic (o arrastra) los tiles +1 del lado izquierdo.\n" +
-                "  Cada clic cancela un par cero: elimina un +1 del izquierdo\n" +
-                "  y un +1 del derecho al mismo tiempo.\n\n" +
-                "Paso 2: Cuando solo quede x en el lado izquierdo,\n" +
-                "  el conteo del lado derecho es el valor de x.\n\n" +
-                "  Aquí: x = 10 ✓");
+                        "  Cada clic cancela un par cero: elimina un +1 del izquierdo\n" +
+                        "  y un +1 del derecho al mismo tiempo.\n\n" +
+                        "Paso 2: Cuando solo quede x en el lado izquierdo,\n" +
+                        "  el conteo del lado derecho es el valor de x.\n\n" +
+                        "  Aquí: x = 10 ✓");
         v.findViewById(R.id.btn_close_hint).setOnClickListener(b -> sheet.dismiss());
         sheet.setContentView(v);
         sheet.show();
@@ -361,20 +368,20 @@ public class EjercicioTilesActivity extends AppCompatActivity {
         if (correct) {
             int pts = hintUsed ? 50 : 100;
             String msg = "¡Bien hecho!\n+" + pts + " puntos\n\n" +
-                         "Módulo 1 completado ✅";
+                    "Módulo 1 completado ✅";
             if (hintUsed) msg += "\n\nUsaste pista. ¡Reinténtalo sin pista para +50 extra!";
             b.setTitle("🎉 ¡Correcto!")
-             .setMessage(msg)
-             .setPositiveButton("Ver resultados", (d, w) -> goToFinish())
-             .setCancelable(false);
+                    .setMessage(msg)
+                    .setPositiveButton("Ver resultados", (d, w) -> goToFinish())
+                    .setCancelable(false);
             if (hintUsed) b.setNeutralButton("Sin pista (+50)", (d, w) -> retryWithoutHint());
         } else {
             b.setTitle("🤔 Incorrecto")
-             .setMessage("Revisa la sección de Información.")
-             .setPositiveButton("📖 Información", (d, w) -> goToInfo())
-             .setNegativeButton("Reintentar", (d, w) -> { initTiles(); renderTiles(); startTimer(); })
-             .setNeutralButton("Salir", (d, w) -> finish())
-             .setCancelable(false);
+                    .setMessage("Revisa la sección de Información.")
+                    .setPositiveButton("📖 Información", (d, w) -> goToInfo())
+                    .setNegativeButton("Reintentar", (d, w) -> { initTiles(); renderTiles(); startTimer(); })
+                    .setNeutralButton("Salir", (d, w) -> finish())
+                    .setCancelable(false);
         }
         b.show();
     }

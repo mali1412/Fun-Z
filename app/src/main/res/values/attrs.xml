@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorTextPrimary" format="color" />
+    <attr name="colorTextSecondary" format="color" />
+
+    <attr name="colorBgTonalCard" format="color" />
+    <attr name="colorNavItem" format="color" />
+
+    <attr name="colorWarnChipBg" format="color" />
+    <attr name="colorWarnChipText" format="color" />
+
+    <attr name="colorPrimaryAlpha" format="color" />
+</resources>
