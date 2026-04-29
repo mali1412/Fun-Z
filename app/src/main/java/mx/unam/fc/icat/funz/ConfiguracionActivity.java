@@ -68,8 +68,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
         boolean themeChanged = (dark != state.isDarkTheme());
         state.setDarkTheme(dark);
 
-        Toast.makeText(this, "✓ Cambios guardados", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this, getString(R.string.config_saved), Toast.LENGTH_SHORT).show();
         // Si el tema cambió, recrear la Activity para aplicarlo de inmediato
         if (themeChanged) {
             appliedDarkTheme = dark;

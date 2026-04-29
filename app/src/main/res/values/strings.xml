@@ -53,4 +53,45 @@
     <string name="mod2_sub">ax+b=c · Balanza</string>
     <string name="mod3_name">M&#243;dulo 3: Par&#233;ntesis</string>
     <string name="mod3_sub">a(x+b)=c(x+d)</string>
+
+    <!-- Ejercicios -->
+    <string name="btn_ejemplos">Ejemplos &#8594;</string>
+    <string name="btn_ejercicios">Ejercicios &#8594;</string>
+    <string name="page_indicator_format">%1$d / 2</string>
+
+    <!-- Ejercicios -->
+    <string name="hint_clasico">Paso 1: Transponer +5 al otro lado con signo contrario.
+        3x = 20 − 5 = 15
+        Paso 2: Dividir ambos lados entre el coeficiente 3.
+        x = 15 ÷ 3 = 5 ✓</string>
+
+    <!-- Resultados -->
+    <string name="enter_answer">Ingresa tu respuesta</string>
+
+    <!-- Topbar -->
+    <string name="salir">&#8592; Salir</string>
+    <string name="timer_default">2:00</string>
+
+    <!-- Drawer/menu -->
+    <string name="stats">Stats</string>
+    <string name="config">Config</string>
+    <string name="inicio">Inicio</string>
+    <string name="temas">Temas</string>
+    <string name="salas">Salas</string>
+
+    <!-- Ejercicios e instrucciones -->
+    <string name="algebra_tiles_title">&#128306; Algebra Tiles · Ej. 3/3</string>
+    <string name="resuelve">Resuelve:</string>
+    <string name="instruccion_move">Haz clic o arrastra un tile para moverlo al lado contrario y cancelarlo:</string>
+    <string name="izquierdo">IZQUIERDO</string>
+    <string name="simbolo_igual">=</string>
+    <string name="derecho">DERECHO</string>
+    <string name="status_instruccion">Haz clic en un +1 del lado izquierdo para moverlo al lado derecho.</string>
+    <string name="variable_resultado">x =</string>
+    <string name="hint_respuesta"> o </string>
+    <string name="btn_verificar">Verificar</string>
+
+
+
+
 </resources>

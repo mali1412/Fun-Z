@@ -110,10 +110,10 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     }
 
     private void updateNextButton(Button btn) {
-        btn.setText(currentTab == 0 ? "Ejemplos →" : "Ejercicios →");
+        btn.setText(getString(currentTab == 0 ? R.string.btn_ejemplos : R.string.btn_ejercicios));
         TextView tvIndicator = findViewById(R.id.tv_page_indicator);
         if (tvIndicator != null) {
-            tvIndicator.setText((currentTab + 1) + " / 2");
+            tvIndicator.setText(getString(R.string.page_indicator_format, (currentTab + 1)));
         }
     }
 

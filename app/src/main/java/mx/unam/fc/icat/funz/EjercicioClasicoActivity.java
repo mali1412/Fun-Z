@@ -121,11 +121,7 @@ public class EjercicioClasicoActivity extends AppCompatActivity {
 
         BottomSheetDialog sheet = new BottomSheetDialog(this);
         View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, null);
-        ((TextView) v.findViewById(R.id.tv_hint_content)).setText(
-                "Paso 1: Transponer +5 al otro lado con signo contrario.\n" +
-                        "  3x = 20 − 5 = 15\n\n" +
-                        "Paso 2: Dividir ambos lados entre el coeficiente 3.\n" +
-                        "  x = 15 ÷ 3 = 5 ✓");
+        ((TextView) v.findViewById(R.id.tv_hint_content)).setText(getString(R.string.hint_clasico));
         v.findViewById(R.id.btn_close_hint).setOnClickListener(b -> sheet.dismiss());
         sheet.setContentView(v);
         sheet.show();
@@ -138,7 +134,7 @@ public class EjercicioClasicoActivity extends AppCompatActivity {
     private void verify() {
         String input = etAnswer.getText().toString().trim();
         if (input.isEmpty()) {
-            Toast.makeText(this, "Ingresa tu respuesta", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.enter_answer), Toast.LENGTH_SHORT).show();
             return;
         }
         cancelTimer();
