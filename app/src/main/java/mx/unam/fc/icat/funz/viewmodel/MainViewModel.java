@@ -1,29 +1,26 @@
 package mx.unam.fc.icat.funz.viewmodel;
 
+import android.app.Application;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.Transformations;
+
+import java.util.Collections;
+import java.util.List;
 
 import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 
 /**
- * MainViewModel — ViewModel para la pantalla A (Inicio).
- *
- * Expone como LiveData todos los campos que la pantalla Home necesita
- * mostrar: saludo, racha, badge/método/ecuación de la card Continuar
- * y el progreso del Módulo 1.
- *
- * La Activity llama a refreshUiState() en onResume para que el ViewModel
- * consulte AppState y actualice los LiveData; la Activity solo hace setText.
- *
- * También provee la lógica de "¿a qué pantalla navegar?" al pulsar
- * Continuar, eliminando el switch-case de la Activity.
+ * MainViewModel — ViewModel para la pantalla de Inicio.
  */
-public class MainViewModel extends ViewModel {
+public class MainViewModel extends AndroidViewModel {
 
-    private final AppState state = AppState.getInstance();
-
-    // ── LiveData ──────────────────────────────────────────────────────────────
+    private final AppState           state = AppState.getInstance();
+    private final ExerciseRepository repo;
 
     private final MutableLiveData<String>  _welcomeText    = new MutableLiveData<>();
     public  final LiveData<String>          welcomeText     = _welcomeText;
@@ -34,59 +31,80 @@ public class MainViewModel extends ViewModel {
     private final MutableLiveData<String>  _resumeBadge    = new MutableLiveData<>();
     public  final LiveData<String>          resumeBadge     = _resumeBadge;
 
-    private final MutableLiveData<String>  _resumeMethod   = new MutableLiveData<>();
-    public  final LiveData<String>          resumeMethod    = _resumeMethod;
+    private final MutableLiveData<Integer> _resumeProgress = new MutableLiveData<>(0);
+    public  final LiveData<Integer>         resumeProgress  = _resumeProgress;
 
-    private final MutableLiveData<String>  _resumeEquation = new MutableLiveData<>();
-    public  final LiveData<String>          resumeEquation  = _resumeEquation;
+    public final LiveData<List<Module>> allModules;
+    public final LiveData<List<Module>> recentModules;
+    
+    /** Título del módulo que se está reanudando. */
+    public final LiveData<String>       resumeTitle;
 
-    private final MutableLiveData<Integer> _mod1Progress   = new MutableLiveData<>(0);
-    public  final LiveData<Integer>         mod1Progress    = _mod1Progress;
+    public MainViewModel(@NonNull Application app) {
+        super(app);
+        repo = new ExerciseRepository(app);
+        allModules = repo.getAllModules();
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Refresco del estado de UI
-    // ════════════════════════════════════════════════════════════════════════
+        // Obtener el nombre del módulo activo de la lista completa
+        resumeTitle = Transformations.map(allModules, modules -> {
+            int activeId = state.getActiveModuleId();
+            if (modules != null) {
+                for (Module m : modules) {
+                    if (m.id == activeId) return m.name;
+                }
+            }
+            return "Comenzar aprendizaje";
+        });
 
-    /**
-     * Sincroniza todos los LiveData con el estado actual de AppState.
-     * La Activity llama a este método en onResume.
-     */
+        // Lógica para obtener los últimos 3 módulos activos/desbloqueados
+        recentModules = Transformations.map(allModules, modules -> {
+            if (modules == null || modules.isEmpty()) return Collections.emptyList();
+            
+            int activeId = state.getActiveModuleId();
+            int endIdx = 0;
+            for (int i = 0; i < modules.size(); i++) {
+                if (modules.get(i).id == activeId) {
+                    endIdx = i;
+                    break;
+                }
+            }
+
+            int start = Math.max(0, endIdx - 2);
+            int end   = Math.min(modules.size(), start + 3);
+            if (end - start < 3 && modules.size() >= 3) {
+                start = Math.max(0, modules.size() - 3);
+                end = modules.size();
+            }
+            return modules.subList(start, end);
+        });
+    }
+
     public void refreshUiState() {
         _welcomeText.setValue("¡Hola, " + state.getUsername() + "!");
         _streakText.setValue("🔥 Racha: " + state.getStreakDays() + " días");
+        
+        int activeModId = state.getActiveModuleId();
         _resumeBadge.setValue(state.getResumeBadge());
-        _resumeMethod.setValue(state.getResumeMethod());
-        _resumeEquation.setValue(state.getResumeEquation());
-        _mod1Progress.setValue(state.getMod1Progress());
+        _resumeProgress.setValue(state.getModuleProgress(activeModId));
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Lógica de navegación
-    // ════════════════════════════════════════════════════════════════════════
+    public int getModuleProgress(int moduleId) {
+        return state.getModuleProgress(moduleId);
+    }
 
-    /**
-     * Indica qué pantalla de ejercicio debe abrirse al pulsar "Continuar".
-     * Devuelve el destino como un valor del enum Destino para que la Activity
-     * construya el Intent sin necesidad de interpretar lógica de negocio.
-     */
-    public Destino getResumeDestino() {
-        if (state.isMod1Complete()) return Destino.TEMAS;
+    public int[] getResumeTarget() {
+        int mod  = state.getActiveModuleId();
+        int step = state.getCurrentStep(mod);
         state.resetSession();
-        switch (state.getCurrentExStep()) {
-            case 2:  return Destino.EJERCICIO_CLASICO;
-            case 3:  return Destino.EJERCICIO_TILES;
-            default: return Destino.EJERCICIO_BALANZA;
-        }
+        return new int[]{ mod, step };
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Enum de destinos de navegación
-    // ════════════════════════════════════════════════════════════════════════
+    public int[] getModuleTarget(int moduleId) {
+        int step = state.getCurrentStep(moduleId);
+        return new int[]{ moduleId, step };
+    }
 
-    public enum Destino {
-        EJERCICIO_BALANZA,
-        EJERCICIO_CLASICO,
-        EJERCICIO_TILES,
-        TEMAS
+    public boolean isActiveModuleComplete() {
+        return state.isModuleComplete(state.getActiveModuleId());
     }
 }

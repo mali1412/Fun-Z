@@ -15,17 +15,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioClasicoActivity;
 import mx.unam.fc.icat.funz.viewmodel.EjercicioBalanzaViewModel;
 import mx.unam.fc.icat.funz.data.AppState;
-import mx.unam.fc.icat.funz.R;
 import mx.unam.fc.icat.funz.ui.main.MainActivity;
 import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 import mx.unam.fc.icat.funz.ui.temas.InfoEjemplosActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
-
-
+import mx.unam.fc.icat.funz.R;
 
 /**
  * EjercicioBalanzaActivity — Pantalla D1: Ejercicio 1/3 (Método de la Balanza).

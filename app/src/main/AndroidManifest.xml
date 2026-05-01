@@ -30,16 +30,13 @@
         <activity android:name=".ui.temas.InfoEjemplosActivity"
             android:screenOrientation="portrait"/>
 
-        <!-- Pantalla D1: Ejercicio Balanza -->
-        <activity android:name=".ui.ejercicios.EjercicioBalanzaActivity"
-            android:screenOrientation="portrait"/>
-
-        <!-- Pantalla D2: Ejercicio Clásico -->
-        <activity android:name=".ui.ejercicios.EjercicioClasicoActivity"
-            android:screenOrientation="portrait"/>
-
-        <!-- Pantalla D3: Ejercicio Algebra Tiles -->
-        <activity android:name=".ui.ejercicios.EjercicioTilesActivity"
+        <!-- ═══════════════════════════════════════════════════════════════════
+                    Pantalla D: Ejercicio GENÉRICO.
+                    Reemplaza EjercicioBalanzaActivity + ClasicoActivity + TilesActivity.
+                    Recibe extras: module_id (int) + step_order (int).
+                    El tipo de panel se determina desde la DB por Exercise.type.
+                    ═══════════════════════════════════════════════════════════════════ -->
+        <activity android:name=".ui.ejercicios.ExerciseActivity"
             android:screenOrientation="portrait"/>
 
         <!-- Fin ejercicios -->

@@ -1,169 +1,156 @@
 package mx.unam.fc.icat.funz.data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 
 /**
- * AppState — Singleton para gestionar el estado global de FunZ.
- *
- * Mantiene en memoria: username, puntos, racha, progreso de módulos,
- * paso actual del flujo de ejercicios y flags de pista usada.
- *
- * En producción se persistiría con SharedPreferences dentro de aFunZApp.
+ * AppState — Singleton que gestiona el estado global del usuario.
  */
 public class AppState {
 
-    // ── Singleton ────────────────────────────────────────────────────────────
+    private static final String PREFS = "funz_prefs";
     private static AppState instance;
 
+    private SharedPreferences prefs;
+
     public static AppState getInstance() {
-        if (instance == null) {
-            instance = new AppState();
-        }
+        if (instance == null) instance = new AppState();
         return instance;
+    }
+
+    public void init(Context ctx) {
+        prefs = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
     }
 
     private AppState() {}
 
-    // ── Datos del usuario ────────────────────────────────────────────────────
-    private String  username    = "Usuario";
-    private int     totalPoints = 1040;
-    private int     streakDays  = 7;
-    private boolean darkTheme   = false;
-
-    // ── Progreso Módulo 1 ────────────────────────────────────────────────────
-    // currentExStep: 1 = Balanza, 2 = Clásico, 3 = Tiles
-    private int     currentExStep = 1;
-    private boolean infoRead      = false;
-    private boolean examplesRead  = false;
-    private boolean ex1Done       = false;
-    private boolean ex2Done       = false;
-    private boolean ex3Done       = false;
-    private boolean mod1Complete  = false;
-    private boolean mod2Unlocked  = false;
-
-    // ── Sesión actual de ejercicios ──────────────────────────────────────────
-    private int     sessionOk   = 0;
-    private int     sessionFail = 0;
-    private int     sessionPts  = 0;
-    private boolean hintUsedBal = false;
-    private boolean hintUsedCla = false;
-    private boolean hintUsedTil = false;
-
     // ════════════════════════════════════════════════════════════════════════
-    //  Getters / Setters
+    //  Usuario
     // ════════════════════════════════════════════════════════════════════════
 
-    public String  getUsername()              { return username; }
-    public void    setUsername(String u)      { username = u; }
+    public String  getUsername()           { return str("username", "Usuario"); }
+    public void    setUsername(String v)   { put("username", v); }
 
-    public int     getTotalPoints()           { return totalPoints; }
-    public void    addPoints(int pts)         { totalPoints += pts; }
+    public int     getTotalPoints()        { return i("total_points", 0); }
+    public void    addPoints(int pts)      { put("total_points", getTotalPoints() + pts); }
 
-    public int     getStreakDays()            { return streakDays; }
+    public int     getStreakDays()         { return i("streak_days", 1); }
 
-    public boolean isDarkTheme()              { return darkTheme; }
-    public void    setDarkTheme(boolean d)    { darkTheme = d; }
-
-    public int     getCurrentExStep()         { return currentExStep; }
-
-    public boolean isInfoRead()               { return infoRead; }
-    public void    setInfoRead(boolean v)     { infoRead = v; }
-
-    public boolean isExamplesRead()           { return examplesRead; }
-    public void    setExamplesRead(boolean v) { examplesRead = v; }
-
-    public boolean isEx1Done()                { return ex1Done; }
-    public boolean isEx2Done()                { return ex2Done; }
-    public boolean isEx3Done()                { return ex3Done; }
-
-    public boolean isMod1Complete()           { return mod1Complete; }
-    public boolean isMod2Unlocked()           { return mod2Unlocked; }
-
-    public boolean isHintUsedBal()            { return hintUsedBal; }
-    public void    setHintUsedBal(boolean v)  { hintUsedBal = v; }
-
-    public boolean isHintUsedCla()            { return hintUsedCla; }
-    public void    setHintUsedCla(boolean v)  { hintUsedCla = v; }
-
-    public boolean isHintUsedTil()            { return hintUsedTil; }
-    public void    setHintUsedTil(boolean v)  { hintUsedTil = v; }
-
-    public int getSessionOk()                 { return sessionOk; }
-    public int getSessionFail()               { return sessionFail; }
-    public int getSessionPts()                { return sessionPts; }
+    public boolean isDarkTheme()           { return b("dark_theme", false); }
+    public void    setDarkTheme(boolean v) { put("dark_theme", v); }
 
     // ════════════════════════════════════════════════════════════════════════
-    //  Lógica de negocio
+    //  Progreso genérico por módulo
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Registra el resultado de un ejercicio.
-     * @param step     1 = Balanza, 2 = Clásico, 3 = Tiles
-     * @param correct  true si respondió correctamente
-     * @param hintUsed true si usó la pista en este intento
-     */
-    public void markExerciseDone(int step, boolean correct, boolean hintUsed) {
+    public int  getCurrentStep(int moduleId)             { return i("mod_" + moduleId + "_step", 1); }
+    private void setCurrentStep(int moduleId, int step)  { put("mod_" + moduleId + "_step", step); }
+
+    public boolean isInfoRead(int moduleId)              { return b("mod_" + moduleId + "_info", false); }
+    public void    setInfoRead(int moduleId, boolean v)  { put("mod_" + moduleId + "_info", v); }
+
+    public boolean isExamplesRead(int moduleId)              { return b("mod_" + moduleId + "_ex", false); }
+    public void    setExamplesRead(int moduleId, boolean v)  { put("mod_" + moduleId + "_ex", v); }
+
+    public boolean isStepDone(int moduleId, int step)        { return b("mod_" + moduleId + "_s" + step, false); }
+    private void   setStepDone(int moduleId, int step)       { put("mod_" + moduleId + "_s" + step, true); }
+
+    public boolean isModuleComplete(int moduleId)            { return b("mod_" + moduleId + "_done", false); }
+    private void   setModuleComplete(int moduleId)           { put("mod_" + moduleId + "_done", true); }
+
+    public int  getModuleExerciseCount(int moduleId)             { return i("mod_" + moduleId + "_count", 3); }
+    public void setModuleExerciseCount(int moduleId, int count)  { put("mod_" + moduleId + "_count", count); }
+
+    public int getModuleProgress(int moduleId) {
+        if (isModuleComplete(moduleId)) return 100;
+        int total = getModuleExerciseCount(moduleId);
+        int score = 0;
+        if (isInfoRead(moduleId))     score += 20;
+        if (isExamplesRead(moduleId)) score += 20;
+        int exPct = total > 0 ? 60 / total : 0;
+        for (int s = 1; s <= total; s++) {
+            if (isStepDone(moduleId, s)) score += exPct;
+        }
+        return Math.min(score, 99);
+    }
+
+    public boolean isModuleUnlocked(int moduleId) {
+        if (moduleId <= 1) return true;
+        return !b("mod_" + moduleId + "_locked", true);
+    }
+
+    // Shorthands para Estadísticas y Main
+    public int     getMod1Progress() { return getModuleProgress(1); }
+    public boolean isEx1Done()       { return isModuleComplete(1); }
+    public boolean isEx2Done()       { return isModuleComplete(2); }
+    public boolean isEx3Done()       { return isModuleComplete(3); }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  Sesión de ejercicios
+    // ════════════════════════════════════════════════════════════════════════
+
+    private int sessionOk = 0, sessionFail = 0, sessionPts = 0;
+
+    public int getSessionOk()   { return sessionOk; }
+    public int getSessionFail() { return sessionFail; }
+    public int getSessionPts()  { return sessionPts; }
+
+    public void resetSession() { sessionOk = 0; sessionFail = 0; sessionPts = 0; }
+
+    public void markExerciseDone(int moduleId, int step, int totalSteps,
+                                 boolean correct, boolean hintUsed, int points) {
         if (correct) {
-            int pts = hintUsed ? 50 : 100;
-            addPoints(pts);
+            addPoints(points);
             sessionOk++;
-            sessionPts += pts;
-            switch (step) {
-                case 1: ex1Done = true; currentExStep = 2; break;
-                case 2: ex2Done = true; currentExStep = 3; break;
-                case 3:
-                    ex3Done      = true;
-                    mod1Complete = true;
-                    mod2Unlocked = true;
-                    currentExStep = 1;
-                    break;
+            sessionPts += points;
+            setStepDone(moduleId, step);
+            if (step < totalSteps) {
+                setCurrentStep(moduleId, step + 1);
+            } else {
+                setModuleComplete(moduleId);
+                setCurrentStep(moduleId, 1);
+                // Desbloqueo lógico para el siguiente módulo
+                put("mod_" + (moduleId + 1) + "_locked", false);
+                // Al completar el módulo, el siguiente se vuelve el activo automáticamente
+                setActiveModuleId(moduleId + 1);
             }
         } else {
             sessionFail++;
         }
     }
 
-    /**
-     * Porcentaje de progreso del Módulo 1 (0 – 100).
-     * Cada hito (info, ejemplos, ej1, ej2, ej3) aporta 20 %.
-     */
-    public int getMod1Progress() {
-        if (mod1Complete) return 100;
-        int steps = 0;
-        if (infoRead)     steps++;
-        if (examplesRead) steps++;
-        if (ex1Done)      steps++;
-        if (ex2Done)      steps++;
-        if (ex3Done)      steps++;
-        return steps * 20;
+    public void markExerciseDone(int moduleId, boolean correct, boolean hintUsed) {
+        int step = getCurrentStep(moduleId);
+        int total = getModuleExerciseCount(moduleId);
+        int points = correct ? (hintUsed ? 5 : 10) : 0;
+        markExerciseDone(moduleId, step, total, correct, hintUsed, points);
     }
 
-    /** Reinicia contadores de la sesión actual sin borrar el paso guardado. */
-    public void resetSession() {
-        sessionOk   = 0;
-        sessionFail = 0;
-        sessionPts  = 0;
-    }
+    // Pistas (Hints)
+    public void setHintUsedBal(boolean v) { put("hint_bal", v); }
+    public void setHintUsedCla(boolean v) { put("hint_cla", v); }
+    public void setHintUsedTil(boolean v) { put("hint_til", v); }
 
-    // ── Helpers para la card "Continuar" en Home ─────────────────────────────
+    // ════════════════════════════════════════════════════════════════════════
+    //  Helpers
+    // ════════════════════════════════════════════════════════════════════════
 
+    public int getActiveModuleId() { return i("active_module", 1); }
+    public void setActiveModuleId(int id) { put("active_module", id); }
+
+    public boolean isMod2Unlocked()  { return isModuleUnlocked(2); }
+    
     public String getResumeBadge() {
-        if (mod1Complete) return "Módulo 1 ✅ Completado";
-        return "Módulo 1 · Ej. " + currentExStep + "/3";
+        int mod = getActiveModuleId();
+        if (isModuleComplete(mod)) return "Módulo " + mod + " ✅ Completado";
+        return "Módulo " + mod + " · Ej. " + getCurrentStep(mod) + "/" + getModuleExerciseCount(mod);
     }
 
-    public String getResumeMethod() {
-        switch (currentExStep) {
-            case 2:  return "Clásico (Baldor)";
-            case 3:  return "Algebra Tiles";
-            default: return "Balanza";
-        }
-    }
+    private String  str(String k, String def)  { return prefs != null ? prefs.getString(k, def) : def; }
+    private int     i(String k, int def)       { return prefs != null ? prefs.getInt(k, def) : def; }
+    private boolean b(String k, boolean def)   { return prefs != null ? prefs.getBoolean(k, def) : def; }
 
-    public String getResumeEquation() {
-        switch (currentExStep) {
-            case 2:  return "3x + 5 = 20";
-            case 3:  return "x + 2 = 12";
-            default: return "x + 5 = 10";
-        }
-    }
+    private void put(String k, String v)  { if (prefs != null) prefs.edit().putString(k, v).apply(); }
+    private void put(String k, int v)     { if (prefs != null) prefs.edit().putInt(k, v).apply(); }
+    private void put(String k, boolean v) { if (prefs != null) prefs.edit().putBoolean(k, v).apply(); }
 }

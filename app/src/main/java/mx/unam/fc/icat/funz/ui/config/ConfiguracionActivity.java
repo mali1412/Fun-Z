@@ -10,13 +10,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
-import mx.unam.fc.icat.funz.R;
-import  mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 import mx.unam.fc.icat.funz.viewmodel.ConfiguracionViewModel;
-import  mx.unam.fc.icat.funz.ui.main.MainActivity;
-import  mx.unam.fc.icat.funz.ui.temas.TemasActivity;
-import  mx.unam.fc.icat.funz.ui.sala.SalasActivity;
-import  mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.data.AppState;
 
 
 /**
