@@ -1,89 +1,93 @@
 package mx.unam.fc.icat.funz.ui.stats;
 
-import mx.unam.fc.icat.funz.utils.NavigationUtils;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import mx.unam.fc.icat.funz.viewmodel.EstadisticasViewModel;
+import mx.unam.fc.icat.funz.R;
+import  mx.unam.fc.icat.funz.data.AppState;
+import  mx.unam.fc.icat.funz.ui.main.MainActivity;
+import  mx.unam.fc.icat.funz.ui.temas.TemasActivity;
+import  mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+
+
+
+/**
+ * EstadisticasActivity — Pantalla M: Estadísticas.
+ *
+ * [MVVM] Observador pasivo de EstadisticasViewModel.
+ * Recibe un único snapshot StatsUiState y distribuye cada campo
+ * a su vista correspondiente. No accede directamente a AppState.
+ */
 public class EstadisticasActivity extends AppCompatActivity {
 
-    private StatsViewModel viewModel;
-    private ActivityEstadisticasBinding binding; // Recomendado usar ViewBinding
-    private boolean appliedDarkTheme;
+    private EstadisticasViewModel vm;
+    private boolean               appliedDarkTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Inicializar ViewModel
-        viewModel = new ViewModelProvider(this).get(StatsViewModel.class);
-
-        // Configurar tema inicial
         appliedDarkTheme = AppState.getInstance().isDarkTheme();
-        if (appliedDarkTheme)
-            setTheme(R.style.Theme_FunZ_Dark);
-
+        if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_estadisticas);
 
-        // 1. Configurar Observadores
-        setupObservers();
+        vm = new ViewModelProvider(this).get(EstadisticasViewModel.class);
 
-        // 2. Configurar Navegación (Lógica de UI pura)
-        // setupNavigation();
-        NavigationUtils.setupBottomNavigation(this, findViewById(R.id.bottom_nav), R.id.nav_stats);
-    }
-
-    private void setupObservers() {
-        viewModel.getStatsState().observe(this, state -> {
-            // Actúa como observador pasivo: solo asigna valores
-            ((TextView) findViewById(R.id.tv_stat_pts)).setText(String.valueOf(state.points));
-            ((TextView) findViewById(R.id.tv_stat_prog)).setText(state.progress + "%");
-            ((TextView) findViewById(R.id.tv_stat_streak)).setText(String.valueOf(state.streak));
-            ((TextView) findViewById(R.id.tv_stat_resolved)).setText(String.valueOf(state.resolved));
-
-            ((ProgressBar) findViewById(R.id.pb_mod1_stat)).setProgress(state.progress);
-            ((TextView) findViewById(R.id.tv_mod1_pct)).setText(state.progress + "%");
-            ((TextView) findViewById(R.id.tv_mod2_status)).setText(state.mod2Status);
-
-            // Verificación de cambio de tema para recrear si es necesario
-            if (state.isDarkTheme != appliedDarkTheme) {
-                recreate();
-            }
-        });
+        observeViewModel();
+        setupNavigation();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Le pedimos al ViewModel que refresque los datos
-        viewModel.loadStats();
+        if (AppState.getInstance().isDarkTheme() != appliedDarkTheme) { recreate(); return; }
+        vm.refreshStats(); // solicita al ViewModel que actualice los LiveData
     }
 
-    /*
-     * Configurar navegación
-     * private void setupNavigation() {
-     * BottomNavigationView nav = findViewById(R.id.bottom_nav);
-     * nav.setSelectedItemId(R.id.nav_stats);
-     * nav.setOnItemSelectedListener(item -> {
-     * int id = item.getItemId();
-     * if (id == R.id.nav_stats)
-     * return true;
-     * 
-     * Intent intent = null;
-     * if (id == R.id.nav_inicio)
-     * intent = new Intent(this, MainActivity.class);
-     * else if (id == R.id.nav_temas)
-     * intent = new Intent(this, TemasActivity.class);
-     * else if (id == R.id.nav_salas)
-     * intent = new Intent(this, SalasActivity.class);
-     * else if (id == R.id.nav_config)
-     * intent = new Intent(this, ConfiguracionActivity.class);
-     * 
-     * if (intent != null) {
-     * startActivity(intent);
-     * if (id == R.id.nav_inicio)
-     * finish();
-     * return true;
-     * }
-     * return false;
-     * });
-     * }
-     */
+    // ════════════════════════════════════════════════════════════════════════
+    //  Observadores — un solo objeto StatsUiState maneja toda la pantalla
+    // ════════════════════════════════════════════════════════════════════════
+
+    private void observeViewModel() {
+        vm.uiState.observe(this, s -> {
+            ((TextView)  findViewById(R.id.tv_stat_pts))
+                    .setText(String.valueOf(s.totalPoints));
+            ((TextView)  findViewById(R.id.tv_stat_prog))
+                    .setText(s.mod1Progress + "%");
+            ((TextView)  findViewById(R.id.tv_stat_streak))
+                    .setText(String.valueOf(s.streakDays));
+            ((TextView)  findViewById(R.id.tv_stat_resolved))
+                    .setText(String.valueOf(s.exercisesResolved));
+            ((ProgressBar) findViewById(R.id.pb_mod1_stat))
+                    .setProgress(s.mod1Progress);
+            ((TextView)  findViewById(R.id.tv_mod1_pct))
+                    .setText(s.mod1Progress + "%");
+            ((TextView)  findViewById(R.id.tv_mod2_status))
+                    .setText(s.mod2Unlocked ? "0%" : "Bloqueado");
+        });
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  Navegación global
+    // ════════════════════════════════════════════════════════════════════════
+
+    private void setupNavigation() {
+        BottomNavigationView nav = findViewById(R.id.bottom_nav);
+        nav.setSelectedItemId(R.id.nav_stats);
+        nav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if      (id == R.id.nav_inicio) { startActivity(new Intent(this, MainActivity.class));       finish(); return true; }
+            else if (id == R.id.nav_temas)  { startActivity(new Intent(this, TemasActivity.class));      return true; }
+            else if (id == R.id.nav_salas)  { startActivity(new Intent(this, SalasActivity.class));      return true; }
+            else if (id == R.id.nav_stats)  { return true; }
+            else if (id == R.id.nav_config) { startActivity(new Intent(this, ConfiguracionActivity.class)); return true; }
+            return false;
+        });
+    }
 }

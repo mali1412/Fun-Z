@@ -7,7 +7,7 @@ package mx.unam.fc.icat.funz.data;
  * Mantiene en memoria: username, puntos, racha, progreso de módulos,
  * paso actual del flujo de ejercicios y flags de pista usada.
  *
- * En producción se persistiría con SharedPreferences dentro de FunZApp.
+ * En producción se persistiría con SharedPreferences dentro de aFunZApp.
  */
 public class AppState {
 

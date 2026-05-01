@@ -6,70 +6,60 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 
-import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioBalanzaActivity;
-import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioClasicoActivity;
-import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.viewmodel.MainViewModel;
+import mx.unam.fc.icat.funz.data.AppState;
 import mx.unam.fc.icat.funz.R;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
-import mx.unam.fc.icat.funz.data.AppState;
-import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioBalanzaActivity;
 import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioTilesActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioClasicoActivity;
+
+
 
 /**
- * MainActivity — Pantalla A: Inicio
+ * MainActivity — Pantalla A: Inicio.
  *
- * Muestra:
- *   - Saludo dinámico con username leído de AppState.
- *   - Medallas y racha de días.
- *   - Card "Continuar" que refleja el paso actual del módulo.
- *   - Cuadrícula 2×2 de Acceso Rápido (Temas, Salas, Stats, Config).
- *
- * Esta pantalla NO tiene BottomNavigationView.
- * La navegación global solo existe en Temas, Salas, Stats y Config.
+ * [MVVM] Observador pasivo de MainViewModel.
+ * Muestra el estado de bienvenida, racha y progreso del módulo.
+ * La decisión de qué pantalla abrir al pulsar "Continuar" la toma el ViewModel.
  */
-
 public class MainActivity extends AppCompatActivity {
 
+    private MainViewModel vm;
+    private boolean       appliedDarkTheme;
 
-    private AppState state;
-    private boolean  appliedDarkTheme;
-
-    // ── Views ────────────────────────────────────────────────────────────────
-    private TextView     tvWelcome;
-    private TextView     tvStreak;
+    // ── Views ─────────────────────────────────────────────────────────────────
+    private TextView     tvWelcome, tvStreak, tvResumeMethod, tvResumeEq;
     private Chip         chipResumeBadge;
-    private TextView     tvResumeMethod;
-    private TextView     tvResumeEq;
     private ProgressBar  pbResume;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        state = AppState.getInstance();
+        AppState state = AppState.getInstance();
         appliedDarkTheme = state.isDarkTheme();
         if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_main);
 
-        tvWelcome= findViewById(R.id.tv_welcome);
-
-        // Obtener el nombre del usuario desde AppState
-        String nombre = AppState.getInstance().getUsername();
-        tvWelcome.setText("¡Hola, " + nombre + "!");
-
+        vm = new ViewModelProvider(this).get(MainViewModel.class);
 
         bindViews();
+        observeViewModel();
         setupQuickAccess();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
-        refreshUI();
+        if (AppState.getInstance().isDarkTheme() != appliedDarkTheme) { recreate(); return; }
+        vm.refreshUiState(); // actualiza los LiveData desde AppState
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -92,61 +82,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    //  Actualización de UI
+    //  Observadores
     // ════════════════════════════════════════════════════════════════════════
 
-    private void refreshUI() {
-        tvWelcome.setText("¡Hola, " + state.getUsername() + "!");
-        tvStreak.setText("🔥 Racha: " + state.getStreakDays() + " días");
-
-        chipResumeBadge.setText(state.getResumeBadge());
-        tvResumeMethod.setText(state.getResumeMethod());
-        tvResumeEq.setText(state.getResumeEquation());
-        pbResume.setProgress(state.getMod1Progress());
+    private void observeViewModel() {
+        vm.welcomeText   .observe(this, tvWelcome::setText);
+        vm.streakText    .observe(this, tvStreak::setText);
+        vm.resumeBadge   .observe(this, chipResumeBadge::setText);
+        vm.resumeMethod  .observe(this, tvResumeMethod::setText);
+        vm.resumeEquation.observe(this, tvResumeEq::setText);
+        vm.mod1Progress  .observe(this, pbResume::setProgress);
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    //  Navegación de acceso rápido (grid 2×2)
+    //  Acceso rápido (grid 2×2)
     // ════════════════════════════════════════════════════════════════════════
 
     private void setupQuickAccess() {
-        findViewById(R.id.qa_temas).setOnClickListener(v ->
-                startActivity(new Intent(this, TemasActivity.class)));
-
-        findViewById(R.id.qa_salas).setOnClickListener(v ->
-                startActivity(new Intent(this, SalasActivity.class)));
-
-        findViewById(R.id.qa_stats).setOnClickListener(v ->
-                startActivity(new Intent(this, EstadisticasActivity.class)));
-
-        findViewById(R.id.qa_config).setOnClickListener(v ->
-                startActivity(new Intent(this, ConfiguracionActivity.class)));
+        findViewById(R.id.qa_temas) .setOnClickListener(v -> startActivity(new Intent(this, TemasActivity.class)));
+        findViewById(R.id.qa_salas) .setOnClickListener(v -> startActivity(new Intent(this, SalasActivity.class)));
+        findViewById(R.id.qa_stats) .setOnClickListener(v -> startActivity(new Intent(this, EstadisticasActivity.class)));
+        findViewById(R.id.qa_config).setOnClickListener(v -> startActivity(new Intent(this, ConfiguracionActivity.class)));
     }
 
     // ════════════════════════════════════════════════════════════════════════
-    //  Reanudación de ejercicio
+    //  Reanudación del ejercicio — el ViewModel decide el destino
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Navega al ejercicio pendiente según AppState.currentExStep.
-     * Si el módulo ya está completo, va a Temas.
-     */
     private void resumeExercise() {
-        if (state.isMod1Complete()) {
-            startActivity(new Intent(this, TemasActivity.class));
-            return;
-        }
-        state.resetSession();
+        MainViewModel.Destino destino = vm.getResumeDestino();
         Intent intent;
-        switch (state.getCurrentExStep()) {
-            case 2:
-                intent = new Intent(this, EjercicioClasicoActivity.class);
-                break;
-            case 3:
-                intent = new Intent(this, EjercicioTilesActivity.class);
-                break;
-            default:
-                intent = new Intent(this, EjercicioBalanzaActivity.class);
+        switch (destino) {
+            case EJERCICIO_CLASICO: intent = new Intent(this, EjercicioClasicoActivity.class); break;
+            case EJERCICIO_TILES:   intent = new Intent(this, EjercicioTilesActivity.class);   break;
+            case TEMAS:             intent = new Intent(this, TemasActivity.class);             break;
+            default:                intent = new Intent(this, EjercicioBalanzaActivity.class); break;
         }
         startActivity(intent);
     }

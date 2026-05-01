@@ -9,15 +9,19 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.tabs.TabLayout;
 
+import mx.unam.fc.icat.funz.viewmodel.EstadisticasViewModel;
+import mx.unam.fc.icat.funz.R;
+import  mx.unam.fc.icat.funz.data.AppState;
+import  mx.unam.fc.icat.funz.ui.main.MainActivity;
+import  mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioBalanzaActivity;
+import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioTilesActivity;
 import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioClasicoActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
-import mx.unam.fc.icat.funz.R;
-import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
-import mx.unam.fc.icat.funz.data.AppState;
-import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
-import mx.unam.fc.icat.funz.ui.ejercicios.EjercicioTilesActivity;
-import mx.unam.fc.icat.funz.ui.main.MainActivity;
+
+
+
 
 /**
  * InfoEjemplosActivity — Pantalla C: Información / Ejemplos
@@ -37,7 +41,7 @@ import mx.unam.fc.icat.funz.ui.main.MainActivity;
  */
 public class InfoEjemplosActivity extends AppCompatActivity {
 
-    private AppState state;
+    private AppState     state;
     private boolean      appliedDarkTheme;
     private LinearLayout drawerMenu;
     private int          currentTab = 0;
@@ -71,7 +75,7 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         drawerMenu = findViewById(R.id.drawer_menu);
         drawerMenu.setVisibility(View.GONE);
 
-        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
+        findViewById(R.id.btn_volver).setOnClickListener(v -> finish());
     }
 
     // ════════════════════════════════════════════════════════════════════════
