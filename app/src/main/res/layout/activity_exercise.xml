@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    activity_exercise.xml — Activity genérica para cualquier tipo de ejercicio.
-
-    Estructura:
-    ┌─ Toolbar (← Salir | Título dinámico | ⏱ Timer | 💡 | ≡) ─┐
-    ├─ Drawer menu (hamburguesa)                                  │
-    ├─ FrameLayout panel_container ← inflado dinámico por tipo    │
-    │    view_exercise_balanza.xml | _clasico.xml | _tiles.xml    │
-    ├─ Fila de respuesta: "x =" [EditText] [Verificar]            │
-    └─ LoadingView (ProgressBar centrada)                         │
--->
+<!-- activity_exercise.xml — Activity genérica refactorizada -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/backgroundColor">
@@ -34,7 +25,7 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:text="← Salir"
+            android:text="@string/btn_exit_text"
             android:textSize="11sp"
             android:textColor="@color/color_primary"
             app:cornerRadius="8dp"/>
@@ -44,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Ejercicio"
+            android:text="@string/qa_temas"
             android:textSize="13sp"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
@@ -54,7 +45,7 @@
             android:id="@+id/tv_timer"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:text="2:00"
+            android:text="@string/timer_default"
             android:textSize="11sp"
             android:fontFamily="monospace"
             app:chipBackgroundColor="@color/warn_chip_bg"
@@ -66,7 +57,7 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:text="&#128161;"
+            android:text="@string/btn_hint"
             android:textSize="13sp"
             android:padding="0dp"
             app:cornerRadius="8dp"
@@ -77,13 +68,13 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:text="&#8801;"
+            android:text="@string/btn_hamburger"
             android:textSize="16sp"
             android:padding="0dp"
             app:cornerRadius="8dp"/>
     </LinearLayout>
 
-    <!-- DRAWER -->
+    <!-- DRAWER (Menú desplegable) -->
     <LinearLayout
         android:id="@+id/drawer_menu"
         android:layout_width="match_parent"
@@ -94,14 +85,15 @@
         android:padding="@dimen/margin_small"
         android:elevation="8dp"
         android:visibility="gone"
-        android:gravity="center">
+        android:gravity="center"
+        android:baselineAligned="false">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_inicio"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp" android:layout_height="@dimen/button_height"
             android:layout_weight="1" android:layout_margin="2dp"
-            android:text="Inicio" android:textSize="9sp" android:padding="0dp"
+            android:text="@string/nav_inicio_short" android:textSize="9sp" android:padding="0dp"
             app:icon="@drawable/ic_home" app:iconGravity="top" app:iconTint="@null"/>
 
         <com.google.android.material.button.MaterialButton
@@ -109,7 +101,7 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp" android:layout_height="@dimen/button_height"
             android:layout_weight="1" android:layout_margin="2dp"
-            android:text="Temas" android:textSize="9sp" android:padding="0dp"
+            android:text="@string/nav_temas_short" android:textSize="9sp" android:padding="0dp"
             app:icon="@drawable/ic_book" app:iconGravity="top" app:iconTint="@null"/>
 
         <com.google.android.material.button.MaterialButton
@@ -117,7 +109,7 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp" android:layout_height="@dimen/button_height"
             android:layout_weight="1" android:layout_margin="2dp"
-            android:text="Salas" android:textSize="9sp" android:padding="0dp"
+            android:text="@string/nav_salas_short" android:textSize="9sp" android:padding="0dp"
             app:icon="@drawable/ic_room" app:iconGravity="top" app:iconTint="@null"/>
 
         <com.google.android.material.button.MaterialButton
@@ -125,7 +117,7 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp" android:layout_height="@dimen/button_height"
             android:layout_weight="1" android:layout_margin="2dp"
-            android:text="Stats" android:textSize="9sp" android:padding="0dp"
+            android:text="@string/nav_stats_short" android:textSize="9sp" android:padding="0dp"
             app:icon="@drawable/ic_bar_chart" app:iconGravity="top" app:iconTint="@null"/>
 
         <com.google.android.material.button.MaterialButton
@@ -133,7 +125,7 @@
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp" android:layout_height="@dimen/button_height"
             android:layout_weight="1" android:layout_margin="2dp"
-            android:text="Config" android:textSize="9sp" android:padding="0dp"
+            android:text="@string/nav_config_short" android:textSize="9sp" android:padding="0dp"
             app:icon="@drawable/ic_settings" app:iconGravity="top"/>
     </LinearLayout>
 
@@ -145,14 +137,13 @@
         android:orientation="vertical"
         android:padding="14dp">
 
-        <!-- FrameLayout que recibe el panel dinámico -->
         <FrameLayout
             android:id="@+id/panel_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-        <!-- Fila de respuesta: común a todos los tipos -->
+        <!-- Fila de respuesta común -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -163,7 +154,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="x = "
+                android:text="@string/x_equals"
                 android:textSize="15sp"
                 android:fontFamily="monospace"
                 android:textColor="@color/text_primary"
@@ -182,7 +173,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal|numberSigned"
-                    android:hint="?"
+                    android:hint="@string/answer_hint"
                     android:textSize="18sp"
                     android:fontFamily="monospace"
                     android:gravity="center"/>
@@ -192,7 +183,7 @@
                 android:id="@+id/btn_verify"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:text="Verificar"
+                android:text="@string/btn_verify"
                 android:textSize="12sp"
                 app:cornerRadius="10dp"
                 android:backgroundTint="@color/color_primary"

@@ -2,38 +2,75 @@
 <!-- activity_salas.xml — Pantalla E: Salas (próxima versión) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="?attr/backgroundColor">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/backgroundColor">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:background="?attr/colorSurface" app:menu="@menu/menu_bottom_nav"
-        app:labelVisibilityMode="labeled" app:itemTextColor="@color/nav_item_color"
-        app:itemIconTint="@color/nav_item_color" android:elevation="4dp"/>
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSurface"
+        app:menu="@menu/menu_bottom_nav"
+        app:labelVisibilityMode="labeled"
+        app:itemTextColor="@color/nav_item_color"
+        app:itemIconTint="@color/nav_item_color"
+        android:elevation="4dp"/>
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
-        android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="16dp"
-        android:background="?attr/colorSurface" android:elevation="2dp">
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Salas de Juego" android:textSize="16sp" android:textStyle="bold"
+    <!-- Título de la pantalla -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:background="?attr/colorSurface"
+        android:elevation="2dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_salas"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:textColor="@color/text_primary"/>
     </LinearLayout>
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
-        android:orientation="vertical" android:gravity="center" android:padding="32dp">
+    <!-- Contenido Central -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="🚀" android:textSize="56sp" android:layout_gravity="center"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ic_rocket"
+            android:textSize="56sp"
+            android:layout_gravity="center"
             android:layout_marginBottom="16dp"/>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="¡Próximamente!"
-            android:textSize="20sp" android:textStyle="bold" android:textColor="@color/color_primary"
-            android:layout_gravity="center" android:layout_marginBottom="12dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/coming_soon"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/color_primary"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"/>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="La sección de Salas (Colaborativo y Competitivo) estará disponible en la próxima versión de FunZ.\n\n¡Sigue practicando los módulos para estar listo!"
-            android:textSize="13sp" android:textColor="@color/text_secondary"
-            android:gravity="center" android:lineSpacingExtra="4dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/salas_coming_soon_desc"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"/>
     </LinearLayout>
 </LinearLayout>

@@ -32,7 +32,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Estadísticas"
+            android:text="@string/title_stats"
             android:textSize="@dimen/text_size_body"
             android:textStyle="bold"
             android:textColor="@color/text_primary" />
@@ -57,6 +57,7 @@
                 android:useDefaultMargins="false"
                 android:layout_marginBottom="@dimen/margin_default">
 
+                <!-- Card Puntos -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="90dp"
@@ -74,19 +75,20 @@
                             android:id="@+id/tv_stat_pts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
+                            android:text="@string/zero"
                             android:textSize="@dimen/text_size_h1"
                             android:textStyle="bold"
                             android:textColor="@color/color_primary" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Puntos"
+                            android:text="@string/stat_points"
                             android:textSize="@dimen/text_size_small"
                             android:textColor="@color/text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Card Progreso -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="90dp"
@@ -104,19 +106,20 @@
                             android:id="@+id/tv_stat_prog"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0%"
+                            android:text="@string/zero_pct"
                             android:textSize="@dimen/text_size_h1"
                             android:textStyle="bold"
                             android:textColor="@color/color_primary" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Progreso Total"
+                            android:text="@string/stat_total_progress"
                             android:textSize="@dimen/text_size_small"
                             android:textColor="@color/text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Card Racha -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="90dp"
@@ -134,19 +137,20 @@
                             android:id="@+id/tv_stat_streak"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
+                            android:text="@string/zero"
                             android:textSize="@dimen/text_size_h1"
                             android:textStyle="bold"
                             android:textColor="@color/color_primary" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Racha (días)"
+                            android:text="@string/stat_streak"
                             android:textSize="@dimen/text_size_small"
                             android:textColor="@color/text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Card Resueltos -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="90dp"
@@ -164,20 +168,21 @@
                             android:id="@+id/tv_stat_resolved"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
+                            android:text="@string/zero"
                             android:textSize="@dimen/text_size_h1"
                             android:textStyle="bold"
                             android:textColor="@color/color_primary" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Resueltos"
+                            android:text="@string/stat_resolved"
                             android:textSize="@dimen/text_size_small"
                             android:textColor="@color/text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </GridLayout>
 
+            <!-- Contenedor Dinámico de Módulos -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -192,11 +197,12 @@
                     android:padding="@dimen/padding_card" />
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Encabezado de Medallas -->
             <TextView
                 android:id="@+id/tv_medals_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MEDALLAS (0/5)"
+                android:text="@string/label_medals_format"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
@@ -204,6 +210,7 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 tools:ignore="SmallSp" />
 
+            <!-- Galería de Medallas -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,14 +227,14 @@
                         android:id="@+id/tv_medal_1"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:text="🥉"
+                        android:text="@string/medal_bronze"
                         android:textSize="24sp"
                         android:gravity="center"
                         android:background="@drawable/bg_medal_locked" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1ª ec."
+                        android:text="@string/medal_name_1"
                         android:textSize="10sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp"
@@ -244,14 +251,14 @@
                         android:id="@+id/tv_medal_streak"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:text="🔥"
+                        android:text="@string/medal_fire"
                         android:textSize="24sp"
                         android:gravity="center"
                         android:background="@drawable/bg_medal_locked" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Racha"
+                        android:text="@string/medal_name_streak"
                         android:textSize="10sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp"
@@ -269,14 +276,14 @@
                         android:id="@+id/tv_medal_mod"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:text="🥈"
+                        android:text="@string/medal_silver"
                         android:textSize="24sp"
                         android:gravity="center"
                         android:background="@drawable/bg_medal_locked" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Módulos"
+                        android:text="@string/medal_name_modules"
                         android:textSize="10sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="4dp"

@@ -32,7 +32,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Configuración"
+            android:text="@string/title_config"
             android:textSize="@dimen/text_size_body"
             android:textStyle="bold"
             android:textColor="@color/text_primary" />
@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NOMBRE DE USUARIO"
+                android:text="@string/label_username"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
@@ -81,7 +81,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TEMA"
+                android:text="@string/label_theme"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
@@ -101,7 +101,7 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_weight="1"
-                    android:text="☀️ Claro"
+                    android:text="@string/theme_light"
                     android:textSize="@dimen/text_size_small"
                     android:checked="true"
                     android:background="@drawable/bg_radio_option"
@@ -114,7 +114,7 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/button_height"
                     android:layout_weight="1"
-                    android:text="🌙 Oscuro"
+                    android:text="@string/theme_dark"
                     android:textSize="@dimen/text_size_small"
                     android:background="@drawable/bg_radio_option"
                     android:button="@null"
@@ -125,17 +125,17 @@
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/button_height"
-                android:text="Guardar cambios"
+                android:text="@string/config_save"
                 android:textSize="@dimen/text_size_body"
                 android:backgroundTint="@color/color_primary"
                 app:cornerRadius="@dimen/margin_small"
-                android:contentDescription="Guardar ajustes de usuario y tema" />
+                android:contentDescription="@string/config_save" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="CRÉDITOS"
+                android:text="@string/label_credits"
                 android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
@@ -160,7 +160,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="FunZ v4.0 · UNAM 2026"
+                        android:text="@string/app_version_info"
                         android:textSize="@dimen/text_size_body"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
@@ -169,28 +169,28 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chávez Martínez Marco Antonio"
+                        android:text="@string/dev_name_1"
                         android:textSize="@dimen/text_size_small"
                         android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cano Tenorio Alan Kevin"
+                        android:text="@string/dev_name_2"
                         android:textSize="@dimen/text_size_small"
                         android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Escobedo Irineo Malinalli"
+                        android:text="@string/dev_name_3"
                         android:textSize="@dimen/text_size_small"
                         android:textColor="@color/text_secondary" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Innovación Android · UNAM 2026"
+                        android:text="@string/team_info"
                         android:textSize="11sp"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="@dimen/margin_small"
