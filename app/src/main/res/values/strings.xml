@@ -12,7 +12,7 @@
     <string name="label_continue">CONTINUAR</string>
     <string name="label_quick_access">ACCESO R&#193;PIDO</string>
 
-    <!-- Acceso rápido -->
+    <!-- Acceso rápido-->
     <string name="qa_temas">Temas</string>
     <string name="qa_salas">Salas</string>
     <string name="qa_stats">Estad&#237;sticas</string>
