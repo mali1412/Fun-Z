@@ -75,7 +75,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/button_height"
                     android:textSize="@dimen/text_size_body"
-                    android:inputType="textPersonName" />
+                    android:inputType="textPersonName"
+                    android:hint="@string/label_hint"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
