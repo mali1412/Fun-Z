@@ -64,14 +64,16 @@ public class AppState {
     public int getModuleProgress(int moduleId) {
         if (isModuleComplete(moduleId)) return 100;
         int total = getModuleExerciseCount(moduleId);
-        int score = 0;
-        if (isInfoRead(moduleId))     score += 20;
-        if (isExamplesRead(moduleId)) score += 20;
-        int exPct = total > 0 ? 60 / total : 0;
+        if (total <= 0) return 0;
+
+        int done = 0;
         for (int s = 1; s <= total; s++) {
-            if (isStepDone(moduleId, s)) score += exPct;
+            if (isStepDone(moduleId, s)) done++;
         }
-        return Math.min(score, 99);
+
+        // Progreso proporcional a ejercicios completados (1/3 = 33, 2/3 = 66, etc.)
+        int pct = (done * 100) / total;
+        return Math.min(pct, 99);
     }
 
     public boolean isModuleUnlocked(int moduleId) {
