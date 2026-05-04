@@ -20,22 +20,28 @@ import mx.unam.fc.icat.funz.db.ModuleDao;
  * Abstrae el acceso a Room y garantiza que las queries síncronas
  * no ocurran en el hilo principal.
  * <p>
- * El ViewModel crea una instancia de este repositorio; nunca accede
- * directamente a los DAOS.
+ * Se instancia una sola vez desde Application y los ViewModel lo reutilizan;
+ * nunca acceden directamente a los DAO.
  */
 public class ExerciseRepository {
 
-    private final ExerciseDao      exerciseDao;
-    private final ModuleDao        moduleDao;
-    private final ExecutorService  io = Executors.newSingleThreadExecutor();
+    private final ExerciseDao exerciseDao;
+    private final ModuleDao moduleDao;
+    private final ExecutorService io;
 
-    public ExerciseRepository(Context context) {
+    public ExerciseRepository(Context context, ExecutorService ioExecutor) {
         FunZDatabase db = FunZDatabase.getInstance(context);
         exerciseDao = db.exerciseDao();
-        moduleDao   = db.moduleDao();
+        moduleDao = db.moduleDao();
+        io = ioExecutor;
 
         // Sembrar datos si la DB está vacía (idempotente)
         io.execute(() -> DbSeeder.seed(moduleDao, exerciseDao));
+    }
+
+    /** Constructor de compatibilidad para usos aislados. */
+    public ExerciseRepository(Context context) {
+        this(context, Executors.newSingleThreadExecutor());
     }
 
     // ── Módulos ───────────────────────────────────────────────────────────────
@@ -79,5 +85,13 @@ public class ExerciseRepository {
 
     public interface Callback<T> {
         void onResult(T result);
+    }
+
+    /**
+     * Cierre explícito de recursos para casos donde el repositorio sea efímero.
+     * No usar si el executor es compartido por toda la app.
+     */
+    public void shutdown() {
+        io.shutdownNow();
     }
 }

@@ -9,8 +9,9 @@ import androidx.lifecycle.MediatorLiveData;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 
 /**
@@ -21,7 +22,7 @@ import mx.unam.fc.icat.funz.repository.ExerciseRepository;
  */
 public class EstadisticasViewModel extends AndroidViewModel {
 
-    private final AppState state = AppState.getInstance();
+    private final AppStateRepository stateRepo;
     private final ExerciseRepository repo;
 
     private final MediatorLiveData<StatsUiState> _uiState = new MediatorLiveData<>();
@@ -32,7 +33,9 @@ public class EstadisticasViewModel extends AndroidViewModel {
 
     public EstadisticasViewModel(@NonNull Application app) {
         super(app);
-        repo = new ExerciseRepository(app);
+        FunZApp appScope = (FunZApp) app;
+        repo = appScope.getExerciseRepository();
+        stateRepo = appScope.getAppStateRepository();
         allModules = repo.getAllModules();
 
         // El uiState reacciona automáticamente cuando Room carga los módulos de la DB
@@ -50,17 +53,17 @@ public class EstadisticasViewModel extends AndroidViewModel {
     private void calculateStats(List<Module> modules) {
         if (modules == null || modules.isEmpty()) return;
 
-        int totalPoints = state.getTotalPoints();
-        int streakDays = state.getStreakDays();
+        int totalPoints = stateRepo.getTotalPoints();
+        int streakDays = stateRepo.getStreakDays();
         int resolved = 0;
         int sumProgress = 0;
 
         // 1. Calcular ejercicios resueltos y progreso total sobre todos los módulos
         for (Module m : modules) {
-            sumProgress += state.getModuleProgress(m.id);
-            int count = state.getModuleExerciseCount(m.id);
+            sumProgress += stateRepo.getModuleProgress(m.id);
+            int count = stateRepo.getModuleExerciseCount(m.id);
             for (int s = 1; s <= count; s++) {
-                if (state.isStepDone(m.id, s)) resolved++;
+                if (stateRepo.isStepDone(m.id, s)) resolved++;
             }
         }
         int totalProgress = sumProgress / modules.size();
@@ -103,7 +106,7 @@ public class EstadisticasViewModel extends AndroidViewModel {
     }
 
     public int getModuleProgress(int moduleId) {
-        return state.getModuleProgress(moduleId);
+        return stateRepo.getModuleProgress(moduleId);
     }
 
     /**

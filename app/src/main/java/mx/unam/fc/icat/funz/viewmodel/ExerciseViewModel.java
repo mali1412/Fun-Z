@@ -15,8 +15,9 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Exercise;
+import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
 
@@ -28,7 +29,7 @@ public class ExerciseViewModel extends AndroidViewModel {
     private static final long TIME_MS = 120_000L;
 
     private final ExerciseRepository repo;
-    private final AppState            state = AppState.getInstance();
+    private final AppStateRepository stateRepo;
     private volatile CountDownTimer   timer;
     private       boolean             initialized = false;
     private       boolean             hintUsed    = false;
@@ -97,14 +98,16 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     public ExerciseViewModel(@NonNull Application app) {
         super(app);
-        repo = new ExerciseRepository(app);
+        FunZApp appScope = (FunZApp) app;
+        repo = appScope.getExerciseRepository();
+        stateRepo = appScope.getAppStateRepository();
     }
 
     public void loadExercise(int moduleId, int stepOrder) {
         if (initialized) return;
 
         // Persistir que este es el módulo activo para la funcionalidad de "Continuar"
-        state.setActiveModuleId(moduleId);
+        stateRepo.setActiveModuleId(moduleId);
 
         _loading.setValue(true);
         repo.countExercises(moduleId, count -> totalSteps = count);
@@ -260,7 +263,7 @@ public class ExerciseViewModel extends AndroidViewModel {
                 correct = Double.parseDouble(input.trim()) == Double.parseDouble(ex.correctAnswer.trim());
             } catch (NumberFormatException ignored) {}
         }
-        state.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, correct, hintUsed,
+        stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, correct, hintUsed,
                                correct ? (hintUsed ? ex.pointsHint : ex.pointsCorrect) : 0);
         if (correct) {
             // Si es el último paso, desbloqueamos el siguiente módulo en la base de datos

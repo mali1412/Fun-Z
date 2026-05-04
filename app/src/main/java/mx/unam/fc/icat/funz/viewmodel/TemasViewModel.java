@@ -7,8 +7,9 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 
 /**
@@ -21,14 +22,16 @@ import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 public class TemasViewModel extends AndroidViewModel {
 
     private final ExerciseRepository repo;
-    private final AppState            state = AppState.getInstance();
+    private final AppStateRepository stateRepo;
 
     /** LiveData reactivo — se actualiza solo cuando cambia la DB. */
     public final LiveData<List<Module>> modules;
 
     public TemasViewModel(@NonNull Application app) {
         super(app);
-        repo    = new ExerciseRepository(app);
+        FunZApp appScope = (FunZApp) app;
+        repo    = appScope.getExerciseRepository();
+        stateRepo = appScope.getAppStateRepository();
         modules = repo.getAllModules();
     }
 
@@ -37,8 +40,8 @@ public class TemasViewModel extends AndroidViewModel {
      * guardado en AppState. Devuelve (moduleId, stepOrder).
      */
     public int[] getStartTarget(int moduleId) {
-        state.resetSession();
-        int step = state.getCurrentStep(moduleId);
+        stateRepo.resetSession();
+        int step = stateRepo.getCurrentStep(moduleId);
         return new int[]{ moduleId, step };
     }
 
@@ -47,6 +50,6 @@ public class TemasViewModel extends AndroidViewModel {
      * Delega a AppState que ya tiene los flags persistidos.
      */
     public int getModuleProgress(int moduleId) {
-        return state.getModuleProgress(moduleId);
+        return stateRepo.getModuleProgress(moduleId);
     }
 }

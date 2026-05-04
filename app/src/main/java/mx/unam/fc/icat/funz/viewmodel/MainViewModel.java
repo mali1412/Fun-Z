@@ -10,8 +10,9 @@ import androidx.lifecycle.Transformations;
 import java.util.Collections;
 import java.util.List;
 
-import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 
 /**
@@ -19,7 +20,7 @@ import mx.unam.fc.icat.funz.repository.ExerciseRepository;
  */
 public class MainViewModel extends AndroidViewModel {
 
-    private final AppState           state = AppState.getInstance();
+    private final AppStateRepository stateRepo;
     private final ExerciseRepository repo;
 
     private final MutableLiveData<String>  _welcomeText    = new MutableLiveData<>();
@@ -42,12 +43,14 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application app) {
         super(app);
-        repo = new ExerciseRepository(app);
+        FunZApp appScope = (FunZApp) app;
+        repo = appScope.getExerciseRepository();
+        stateRepo = appScope.getAppStateRepository();
         allModules = repo.getAllModules();
 
         // Obtener el nombre del módulo activo de la lista completa
         resumeTitle = Transformations.map(allModules, modules -> {
-            int activeId = state.getActiveModuleId();
+            int activeId = stateRepo.getActiveModuleId();
             if (modules != null) {
                 for (Module m : modules) {
                     if (m.id == activeId) return m.name;
@@ -60,7 +63,7 @@ public class MainViewModel extends AndroidViewModel {
         recentModules = Transformations.map(allModules, modules -> {
             if (modules == null || modules.isEmpty()) return Collections.emptyList();
             
-            int activeId = state.getActiveModuleId();
+            int activeId = stateRepo.getActiveModuleId();
             int endIdx = 0;
             for (int i = 0; i < modules.size(); i++) {
                 if (modules.get(i).id == activeId) {
@@ -80,31 +83,31 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void refreshUiState() {
-        _welcomeText.setValue("¡Hola, " + state.getUsername() + "!");
-        _streakText.setValue("🔥 Racha: " + state.getStreakDays() + " días");
-        
-        int activeModId = state.getActiveModuleId();
-        _resumeBadge.setValue(state.getResumeBadge());
-        _resumeProgress.setValue(state.getModuleProgress(activeModId));
+        _welcomeText.setValue("¡Hola, " + stateRepo.getUsername() + "!");
+        _streakText.setValue("🔥 Racha: " + stateRepo.getStreakDays() + " días");
+
+        int activeModId = stateRepo.getActiveModuleId();
+        _resumeBadge.setValue(stateRepo.getResumeBadge());
+        _resumeProgress.setValue(stateRepo.getModuleProgress(activeModId));
     }
 
     public int getModuleProgress(int moduleId) {
-        return state.getModuleProgress(moduleId);
+        return stateRepo.getModuleProgress(moduleId);
     }
 
     public int[] getResumeTarget() {
-        int mod  = state.getActiveModuleId();
-        int step = state.getCurrentStep(mod);
-        state.resetSession();
+        int mod  = stateRepo.getActiveModuleId();
+        int step = stateRepo.getCurrentStep(mod);
+        stateRepo.resetSession();
         return new int[]{ mod, step };
     }
 
     public int[] getModuleTarget(int moduleId) {
-        int step = state.getCurrentStep(moduleId);
+        int step = stateRepo.getCurrentStep(moduleId);
         return new int[]{ moduleId, step };
     }
 
     public boolean isActiveModuleComplete() {
-        return state.isModuleComplete(state.getActiveModuleId());
+        return stateRepo.isModuleComplete(stateRepo.getActiveModuleId());
     }
 }

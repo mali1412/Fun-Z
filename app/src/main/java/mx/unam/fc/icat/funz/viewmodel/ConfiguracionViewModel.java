@@ -1,10 +1,14 @@
 package mx.unam.fc.icat.funz.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.data.FunZApp;
+import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
 
 /**
@@ -17,9 +21,14 @@ import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
  *   - Emitir un evento de un solo disparo que indica si la Activity
  *     debe recrearse (porque el tema cambió) o solo mostrar un Toast.
  */
-public class ConfiguracionViewModel extends ViewModel {
+public class ConfiguracionViewModel extends AndroidViewModel {
 
-    private final AppState state = AppState.getInstance();
+    private final AppStateRepository stateRepo;
+
+    public ConfiguracionViewModel(@NonNull Application application) {
+        super(application);
+        stateRepo = ((FunZApp) application).getAppStateRepository();
+    }
 
     // ── LiveData de valores actuales (para pre-cargar la UI) ──────────────────
 
@@ -45,8 +54,8 @@ public class ConfiguracionViewModel extends ViewModel {
 
     /** Carga los valores actuales de AppState para pre-llenar la pantalla. */
     public void loadCurrentConfig() {
-        _currentUsername.setValue(state.getUsername());
-        _currentDarkTheme.setValue(state.isDarkTheme());
+        _currentUsername.setValue(stateRepo.getUsername());
+        _currentDarkTheme.setValue(stateRepo.isDarkTheme());
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -63,11 +72,11 @@ public class ConfiguracionViewModel extends ViewModel {
     public void saveConfig(String newUsername, boolean newDark) {
         // Actualizar nombre solo si no está vacío
         if (newUsername != null && !newUsername.trim().isEmpty()) {
-            state.setUsername(newUsername.trim());
+            stateRepo.setUsername(newUsername.trim());
         }
 
-        boolean themeChanged = newDark != state.isDarkTheme();
-        state.setDarkTheme(newDark);
+        boolean themeChanged = newDark != stateRepo.isDarkTheme();
+        stateRepo.setDarkTheme(newDark);
 
         _saveEvent.setValue(themeChanged ? SaveResult.THEME_CHANGED : SaveResult.SAVED);
     }
