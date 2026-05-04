@@ -25,7 +25,7 @@
             android:layout_height="@dimen/button_height_tiny"
             android:text="@string/btn_exit_text"
             android:textSize="@dimen/text_size_tiny"
-            android:textColor="@color/color_primary"
+            android:textColor="?attr/colorPrimary"
             app:cornerRadius="@dimen/margin_small"
             tools:ignore="SmallSp"/>
 
@@ -247,7 +247,7 @@
                     android:layout_height="@dimen/button_height_small"
                     android:text="@string/btn_verify"
                     android:textSize="@dimen/text_size_small"
-                    android:backgroundTint="@color/color_primary"
+                    android:backgroundTint="?attr/colorPrimary"
                     app:cornerRadius="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"/>
             </LinearLayout>

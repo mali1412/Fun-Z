@@ -26,7 +26,7 @@
             android:layout_height="@dimen/button_height_tiny"
             android:text="@string/btn_exit_text"
             android:textSize="@dimen/text_size_tiny"
-            android:textColor="@color/color_primary"
+            android:textColor="?attr/colorPrimary"
             app:cornerRadius="@dimen/margin_small"
             tools:ignore="SmallSp" />
 
@@ -47,8 +47,8 @@
             android:text="@string/timer_default"
             android:textSize="@dimen/text_size_tiny"
             android:fontFamily="monospace"
-            app:chipBackgroundColor="@color/warn_chip_bg"
-            android:textColor="@color/warn_chip_text"
+            app:chipBackgroundColor="?attr/colorWarnChipBg"
+            android:textColor="?attr/colorWarnChipText"
             android:layout_marginEnd="@dimen/margin_tiny"
             tools:ignore="SmallSp" />
 
@@ -91,8 +91,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/method_balanza"
                 android:textSize="@dimen/text_size_tiny"
-                app:chipBackgroundColor="@color/color_primary_alpha"
-                android:textColor="@color/color_primary_dark"
+                app:chipBackgroundColor="?attr/colorPrimaryAlpha"
+                android:textColor="?attr/colorPrimary"
                 android:layout_marginBottom="@dimen/margin_small"
                 tools:ignore="SmallSp" />
 
@@ -130,16 +130,16 @@
                 android:baselineAligned="false">
                 <TextView android:id="@+id/tv_lhs" android:layout_width="0dp" android:layout_height="wrap_content"
                     android:layout_weight="1" android:textSize="@dimen/text_size_small"
-                    android:fontFamily="monospace" android:textColor="@color/color_primary"
+                    android:fontFamily="monospace" android:textColor="?attr/colorPrimary"
                     android:gravity="center" android:background="@drawable/bg_chip_outlined"
                     android:padding="@dimen/margin_small" android:layout_marginEnd="@dimen/margin_tiny"
                     tools:text="x+5" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/equal_sign" android:textSize="@dimen/text_size_body" android:textColor="@color/text_secondary"
+                    android:text="@string/equal_sign" android:textSize="@dimen/text_size_body" android:textColor="?attr/colorTextSecondary"
                     android:layout_marginHorizontal="@dimen/margin_tiny"/>
                 <TextView android:id="@+id/tv_rhs" android:layout_width="0dp" android:layout_height="wrap_content"
                     android:layout_weight="1" android:textSize="@dimen/text_size_small"
-                    android:fontFamily="monospace" android:textColor="@color/color_primary"
+                    android:fontFamily="monospace" android:textColor="?attr/colorPrimary"
                     android:gravity="center" android:background="@drawable/bg_chip_outlined"
                     android:padding="@dimen/margin_small" android:layout_marginStart="@dimen/margin_tiny"
                     tools:text="10" />
@@ -191,7 +191,7 @@
                     android:layout_width="wrap_content" android:layout_height="@dimen/button_height_small"
                     android:text="@string/btn_verify" android:textSize="@dimen/text_size_small"
                     app:cornerRadius="@dimen/margin_small"
-                    android:backgroundTint="@color/color_primary"
+                    android:backgroundTint="?attr/colorPrimary"
                     android:layout_marginStart="@dimen/margin_small"
                     tools:ignore="SmallSp" />
             </LinearLayout>

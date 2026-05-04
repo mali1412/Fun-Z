@@ -26,7 +26,7 @@
             android:text="@string/title_module_completed"
             android:textSize="@dimen/text_size_small"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"/>
+            android:textColor="?attr/colorTextPrimary"/>
     </LinearLayout>
 
     <!-- Contenido Central -->
@@ -53,7 +53,7 @@
             android:text="@string/msg_module_finished"
             android:textSize="@dimen/text_size_h2"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="?attr/colorTextPrimary"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_large"/>
 
@@ -72,7 +72,7 @@
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 android:layout_marginEnd="@dimen/margin_small"
-                app:cardBackgroundColor="@color/color_bg_tonal_card">
+                app:cardBackgroundColor="?attr/colorBgTonalCard">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,13 +86,13 @@
                         android:text="@string/zero"
                         android:textSize="@dimen/text_size_h1"
                         android:textStyle="bold"
-                        android:textColor="@color/color_primary"/>
+                        android:textColor="?attr/colorPrimary"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/stat_correct"
                         android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="?attr/colorTextSecondary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -102,7 +102,7 @@
                 android:layout_weight="1"
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/color_bg_tonal_card">
+                app:cardBackgroundColor="?attr/colorBgTonalCard">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -122,7 +122,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/stat_incorrect"
                         android:textSize="@dimen/text_size_small"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="?attr/colorTextSecondary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
@@ -135,8 +135,8 @@
             android:text="+0 puntos"
             android:textSize="@dimen/text_size_body"
             android:textStyle="bold"
-            app:chipBackgroundColor="@color/warn_chip_bg"
-            android:textColor="@color/warn_chip_text"
+            app:chipBackgroundColor="?attr/colorWarnChipBg"
+            android:textColor="?attr/colorWarnChipText"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_small"
             tools:ignore="SpeakableTextPresentCheck" />
@@ -146,7 +146,7 @@
             android:layout_height="wrap_content"
             android:text="@string/summary_methods"
             android:textSize="@dimen/text_size_small"
-            android:textColor="@color/text_secondary"
+            android:textColor="?attr/colorTextSecondary"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_large"/>
 
@@ -156,7 +156,7 @@
             android:layout_height="@dimen/button_height"
             android:text="@string/btn_back_to_topics"
             android:textSize="@dimen/text_size_body"
-            android:backgroundTint="@color/color_primary"
+            android:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="@dimen/margin_small"
             android:contentDescription="@string/desc_back_to_topics"/>
     </LinearLayout>

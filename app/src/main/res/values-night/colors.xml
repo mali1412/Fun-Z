@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    res/values-night/colors.xml
+    Paleta de colores para modo oscuro
+-->
+<resources>
+    <!-- PRIMARY (morado - más claro en oscuro) -->
+    <color name="color_primary">#E1BEE7</color>
+    <color name="color_primary_dark">#7B1FA2</color>
+    <color name="color_primary_light">#E1BEE7</color>
+    <color name="color_primary_alpha">#1AE1BEE7</color>
+
+    <!-- CARD BACKGROUND (oscuro) -->
+    <color name="color_bg_tonal_card">#374151</color>
+    <color name="color_outline">#4B5563</color>
+
+    <!-- ACCENT (cyan) -->
+    <color name="accent_color">#00BCD4</color>
+    <color name="accent_green">#10B981</color>
+    <color name="accent_green_bg">#064E3B</color>
+
+    <!-- TEXT (claro en oscuro) -->
+    <color name="text_primary">#F9FAFB</color>
+    <color name="text_secondary">#9CA3AF</color>
+    <color name="divider">#4B5563</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- STATUS -->
+    <color name="error">#F87171</color>
+    <color name="error_bg">#7F1D1D</color>
+    <color name="success">#10B981</color>
+    <color name="success_bg">#064E3B</color>
+    <color name="warn_bg">#78350F</color>
+    <color name="warn_chip_bg">#78350F</color>
+    <color name="warn_chip_text">#FDE68A</color>
+
+    <!-- SURFACES (oscuro) -->
+    <color name="surface_light">#1F2937</color>
+    <color name="background_light">#111827</color>
+    <color name="surface_dark">#1F2937</color>
+    <color name="background_dark">#111827</color>
+    <color name="card_dark">#374151</color>
+
+    <color name="textColorPrimary">@color/text_primary</color>
+    <color name="textColorSecondary">@color/text_secondary</color>
+
+    <!-- DARK-MODE SURFACES para drawables -->
+    <color name="surface_card_light">#1F2937</color>
+    <color name="surface_card_dark_themed">#374151</color>
+    <color name="radio_selected_bg_light">#2D3748</color>
+    <color name="radio_unselected_bg_light">#1F2937</color>
+    <color name="radio_border_light">#4B5563</color>
+    <color name="white_color">#1F2937</color>
+    <color name="status_border_light">#4B5563</color>
+    <color name="medal_locked_bg">#374151</color>
+    <color name="medal_locked_border">#4B5563</color>
+    <color name="chip_outlined_bg">#2D3748</color>
+    <color name="chip_outlined_border">#4B5563</color>
+    <color name="progress_track">#4B5563</color>
+    <color name="equation_box_bg_light">#1F2937</color>
+    <color name="textColorSecundar">#9CA3AF</color>
+</resources>
+
+

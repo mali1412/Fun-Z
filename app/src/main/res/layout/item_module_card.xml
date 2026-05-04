@@ -78,7 +78,7 @@
         <!-- Overlay de bloqueo (alpha sobre la tarjeta) -->
         <FrameLayout android:id="@+id/view_lock_overlay"
             android:layout_width="match_parent" android:layout_height="match_parent"
-            android:background="#CCFFFFFF" android:visibility="gone">
+            android:background="?attr/colorBgTonalCard" android:alpha="0.9" android:visibility="gone">
             <TextView android:id="@+id/tv_lock_msg"
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_gravity="center"

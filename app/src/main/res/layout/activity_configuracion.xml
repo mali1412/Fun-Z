@@ -108,7 +108,8 @@
                     android:background="@drawable/bg_radio_option"
                     android:layout_marginEnd="@dimen/margin_small"
                     android:button="@null"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textColor="?attr/colorTextPrimary" />
 
                 <RadioButton
                     android:id="@+id/rb_dark"
@@ -119,7 +120,8 @@
                     android:textSize="@dimen/text_size_small"
                     android:background="@drawable/bg_radio_option"
                     android:button="@null"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textColor="?attr/colorTextPrimary" />
             </RadioGroup>
 
             <com.google.android.material.button.MaterialButton
@@ -150,7 +152,7 @@
                 app:cardCornerRadius="@dimen/card_corner_radius"
                 app:cardElevation="0dp"
                 android:layout_marginBottom="@dimen/margin_large"
-                app:cardBackgroundColor="@color/color_bg_tonal_card">
+                app:cardBackgroundColor="?attr/colorBgTonalCard">
 
                 <LinearLayout
                     android:layout_width="match_parent"

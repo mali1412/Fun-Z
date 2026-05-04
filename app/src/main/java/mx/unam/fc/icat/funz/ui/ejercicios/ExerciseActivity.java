@@ -4,11 +4,12 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.*;
 import android.widget.*;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 
@@ -185,12 +186,18 @@ public class ExerciseActivity extends AppCompatActivity {
         vm.rhsExpr.observe(this, tvRhs::setText);
         vm.statusMessage.observe(this, tvStatus::setText);
         vm.statusPositive.observe(this, pos -> {
-            if (pos == null) tvStatus.setTextColor(getColor(android.R.color.darker_gray));
-            else tvStatus.setTextColor(getColor(pos ? R.color.accent_green : R.color.warn_chip_text));
+            if (pos == null) {
+                tvStatus.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
+            } else {
+                tvStatus.setTextColor(pos
+                        ? getColor(R.color.accent_green)
+                        : resolveThemeColor(R.attr.colorWarnChipText));
+            }
         });
         vm.balanced.observe(this, balanced ->
-                ivBalanza.setColorFilter(getColor(Boolean.TRUE.equals(balanced)
-                        ? R.color.accent_green : R.color.color_primary)));
+                ivBalanza.setColorFilter(Boolean.TRUE.equals(balanced)
+                        ? getColor(R.color.accent_green)
+                        : resolveThemeColor(androidx.appcompat.R.attr.colorPrimary)));
 
         // Botones de operación generados dinámicamente desde la DB
         vm.ops.observe(this, opList -> {
@@ -222,8 +229,9 @@ public class ExerciseActivity extends AppCompatActivity {
         for (int i = 0; i < steps.size(); i++) {
             TextView tv = new TextView(this);
             tv.setText(steps.get(i));
-            tv.setTextColor(getColor(steps.get(i).startsWith("  ")
-                    ? R.color.color_primary : R.color.text_primary));
+            tv.setTextColor(steps.get(i).startsWith("  ")
+                    ? resolveThemeColor(androidx.appcompat.R.attr.colorPrimary)
+                    : resolveThemeColor(com.google.android.material.R.attr.colorOnSurface));
             tv.setTextSize(14f);
             tv.setPadding(0, 4, 0, 4);
             llSteps.addView(tv);
@@ -239,8 +247,9 @@ public class ExerciseActivity extends AppCompatActivity {
 
         vm.statusMessage.observe(this, tvSt::setText);
         vm.statusPositive.observe(this, pos ->
-                tvSt.setTextColor(getColor(Boolean.TRUE.equals(pos)
-                        ? R.color.accent_green : R.color.warn_chip_text)));
+                tvSt.setTextColor(Boolean.TRUE.equals(pos)
+                        ? getColor(R.color.accent_green)
+                        : resolveThemeColor(R.attr.colorWarnChipText)));
 
         vm.leftTilesLd.observe(this, tiles -> {
             renderTiles(tiles, llLeft, "L");
@@ -303,6 +312,12 @@ public class ExerciseActivity extends AppCompatActivity {
         return (int)(dp * getResources().getDisplayMetrics().density);
     }
 
+    private int resolveThemeColor(int attrResId) {
+        TypedValue tv = new TypedValue();
+        getTheme().resolveAttribute(attrResId, tv, true);
+        return tv.data;
+    }
+
     // ════════════════════════════════════════════════════════════════════════
     //  Pista (BottomSheet)
     // ════════════════════════════════════════════════════════════════════════
@@ -343,7 +358,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void showResultDialog(boolean correct, boolean withHint) {
         Exercise ex = vm.exercise.getValue();
-        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        MaterialAlertDialogBuilder b = new MaterialAlertDialogBuilder(this);
         if (correct) {
             int pts = ex != null ? (withHint ? ex.pointsHint : ex.pointsCorrect) : (withHint ? 50 : 100);
             String msg = "¡Bien hecho!\n+" + pts + " puntos";
@@ -369,7 +384,7 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void showTimeUpDialog() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("⏰ ¡Tiempo agotado!")
                 .setPositiveButton("Reintentar", (d, w) -> { etAnswer.setText(""); vm.retryCurrentExercise(); })
                 .setNegativeButton("Salir", (d, w) -> finish())
