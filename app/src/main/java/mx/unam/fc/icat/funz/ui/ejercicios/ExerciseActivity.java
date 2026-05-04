@@ -76,6 +76,15 @@ public class ExerciseActivity extends AppCompatActivity {
         moduleId  = getIntent().getIntExtra("module_id",  1);
         stepOrder = getIntent().getIntExtra("step_order", 1);
 
+        // Si el usuario llega aquí sin pasar por goToNext() (es decir, no es
+        // continuación directa de un ejercicio anterior en la misma sesión),
+        // se resetean los contadores de sesión para que la pantalla de fin
+        // solo muestre los ejercicios hechos de corrido en esta actividad.
+        boolean sessionContinue = getIntent().getBooleanExtra("session_continue", false);
+        if (!sessionContinue) {
+            AppState.getInstance().resetSession();
+        }
+
         vm = new ViewModelProvider(this).get(ExerciseViewModel.class);
 
         bindCommonViews();
@@ -406,8 +415,10 @@ public class ExerciseActivity extends AppCompatActivity {
             startActivity(new Intent(this, FinEjerciciosActivity.class));
         } else {
             Intent i = new Intent(this, ExerciseActivity.class);
-            i.putExtra("module_id",  moduleId);
-            i.putExtra("step_order", stepOrder + 1);
+            i.putExtra("module_id",      moduleId);
+            i.putExtra("step_order",     stepOrder + 1);
+            // Marcar como continuación directa para que NO se resetee la sesión
+            i.putExtra("session_continue", true);
             startActivity(i);
         }
         finish();
