@@ -181,11 +181,26 @@ public class EjercicioTilesActivity extends AppCompatActivity {
         tv.setLayoutParams(lp);
         tv.setPadding(dpToPx(4), dpToPx(2), dpToPx(4), dpToPx(2));
 
-        // Long press → inicia drag
+        // INICIO DEL GESTO: Long Click para "levantar" el tile
         tv.setOnLongClickListener(v -> {
+            // Guardamos la info del tile: de qué lado viene, su posición y su valor
             String clipText = side + "_" + idx + "_" + label;
             ClipData cd = ClipData.newPlainText("tile", clipText);
-            v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
+
+            // Creamos la sombra que se ve mientras arrastras
+            View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+            v.startDragAndDrop(cd, shadowBuilder, v, 0);
+
+            // Opcional: ocultar el original momentáneamente para efecto visual
+            v.setVisibility(View.INVISIBLE);
+            return true;
+        });
+
+        // Manejo del estado visual durante el arrastre (para que regrese si no se suelta en un destino)
+        tv.setOnDragListener((v, event) -> {
+            if (event.getAction() == DragEvent.ACTION_DRAG_ENDED) {
+                v.post(() -> v.setVisibility(View.VISIBLE));
+            }
             return true;
         });
 

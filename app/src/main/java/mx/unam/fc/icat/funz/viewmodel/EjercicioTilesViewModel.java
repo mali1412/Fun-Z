@@ -115,44 +115,35 @@ public class EjercicioTilesViewModel extends ViewModel {
     //  Lógica de movimiento de tiles (par cero)
     // ════════════════════════════════════════════════════════════════════════
 
-    /**
-     * Mueve un tile al lado contrario aplicando el principio de par cero.
-     *
-     * @param side  "L" (izquierdo) o "R" (derecho)
-     * @param idx   Índice del tile en su lista
-     * @param label Valor del tile ("x", "+1", "-1")
-     */
-    public void moveTile(String side, int idx, String label) {
-        if (side.equals("L")) {
-            if (idx >= leftTiles.size()) return;
-            leftTiles.remove(idx);
+    public void moveTile(String fromSide, int idx, String label) {
+        // 1. Remover del origen
+        if (fromSide.equals("L")) leftTiles.remove(idx);
+        else rightTiles.remove(idx);
 
-            int posR = rightTiles.indexOf("+1");
-            if (posR >= 0) {
-                rightTiles.remove(posR);
-                setStatus("¡Par cero! El +1 izquierdo cancela un +1 derecho.", true);
-            } else {
-                rightTiles.add("-1");
-                setStatus("Se añadió un −1 al lado derecho.", true);
-            }
-        } else {
-            if (idx >= rightTiles.size()) return;
-            rightTiles.remove(idx);
+        // 2. Regla de Transposición: Al cruzar el "=", el signo cambia
+        String invertedLabel = label.startsWith("+") ? label.replace("+", "-") :
+                label.startsWith("-") ? label.replace("-", "+") : label;
 
-            int posL = -1;
-            for (int i = 0; i < leftTiles.size(); i++) {
-                if (!leftTiles.get(i).equals("x")) { posL = i; break; }
-            }
-            if (posL >= 0) {
-                leftTiles.remove(posL);
-                setStatus("¡Par cero! Tile del derecho cancela uno del izquierdo.", true);
-            } else {
-                leftTiles.add("-1");
-                setStatus("Se añadió un −1 al lado izquierdo.", false);
-            }
-        }
+        // 3. Agregar al destino (lado contrario)
+        if (fromSide.equals("L")) rightTiles.add(invertedLabel);
+        else leftTiles.add(invertedLabel);
+
+        // 4. Lógica de CANCELACIÓN (Punto 1 del protocolo)
+        // Buscamos si el nuevo elemento tiene un opuesto en su nuevo lado
+        ejecutarCancelacionAutomatica(fromSide.equals("L") ? rightTiles : leftTiles);
+
         publishTiles();
-        checkAutoComplete();
+    }
+
+    private void ejecutarCancelacionAutomatica(List<String> list) {
+        // Si la lista tiene un "+1" y un "-1", se eliminan ambos (Par Cero)
+        if (list.contains("+1") && list.contains("-1")) {
+            list.remove("+1");
+            list.remove("-1");
+            // Notificamos a la UI que hubo una manipulación exitosa
+            _statusMessage.postValue("¡Cancelación por par cero!");
+            _statusPositive.postValue(true);
+        }
     }
 
     /**

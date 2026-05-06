@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.db.Exercise;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
 
 /**
@@ -114,32 +115,29 @@ public class EjercicioBalanzaViewModel extends ViewModel {
         _autoAnswer.setValue("");
     }
 
-    /**
-     * Aplica la operación seleccionada a ambos platos de la balanza.
-     * Solo −5 produce el resultado correcto para la ecuación x + 5 = 10.
-     *
-     * @param op Identificador de la operación: "-5", "+5", "x2" o "/2"
-     */
     public void applyOp(String op) {
-        switch (op) {
-            case "-5":
-                _lhsExpr.setValue("x");
-                _rhsExpr.setValue("5");
-                _statusMessage.setValue("✓ x+5−5 = 10−5  →  x = 5. Ingresa la respuesta.");
-                _statusPositive.setValue(true);
-                _balanced.setValue(true);
-                _autoAnswer.setValue("5");
-                break;
-            case "+5":
-                _statusMessage.setValue("Eso incrementa ambos lados pero no aísla x. Intenta −5.");
-                _statusPositive.setValue(false);
-                _balanced.setValue(false);
-                break;
-            default: // x2, /2
-                _statusMessage.setValue("Esa operación no aísla x en esta ecuación. Intenta −5.");
-                _statusPositive.setValue(false);
-                _balanced.setValue(false);
-                break;
+        // Obtenemos el ejercicio actual cargado desde Room
+        Exercise ex = _exercise.getValue();
+        if (ex == null) return;
+
+        // PUNTO 1: Interacción de equilibrio
+        if (op.equals(ex.correctOp)) {
+            // Sincronizamos el estado visual con los valores de la DB
+            _lhsExpr.setValue(ex.lhsAfterOp);
+            _rhsExpr.setValue(ex.rhsAfterOp);
+
+            // PUNTO 2: Sincronización del estado lógico
+            _balanced.setValue(true);
+            _statusMessage.setValue("✓ ¡Equilibrada! Ahora resuelve el valor de x.");
+            _statusPositive.setValue(true);
+
+            // Auto-completado para mejorar la fluidez
+            _autoAnswer.setValue(ex.correctAnswer);
+        } else {
+            // Feedback en tiempo real (Punto 3 del protocolo)
+            _balanced.setValue(false);
+            _statusMessage.setValue("Esa operación no aísla x. Intenta " + ex.correctOp);
+            _statusPositive.setValue(false);
         }
     }
 

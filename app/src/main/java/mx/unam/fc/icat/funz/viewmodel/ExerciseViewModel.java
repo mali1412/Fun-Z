@@ -17,6 +17,8 @@ import java.util.List;
 
 import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Exercise;
+import mx.unam.fc.icat.funz.model.Ecuacion;
+import mx.unam.fc.icat.funz.model.TraductorEcuacion;
 import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
@@ -152,21 +154,30 @@ public class ExerciseViewModel extends AndroidViewModel {
         _statusMessage.postValue("Mueve los tiles para aislar x");
     }
 
+    // En ExerciseViewModel.java
+
     public void applyOp(String op) {
         Exercise ex = _exercise.getValue();
         if (ex == null) return;
 
+        // PUNTO 1: Configuración de controladores (Clic en operación)
+        // Comparamos contra la operación correcta definida en la DB (DbSeeder)
         if (op.equals(ex.correctOp)) {
+            // PUNTO 2: Sincronización del estado visual con el ViewModel
             _lhsExpr.setValue(ex.lhsAfterOp);
             _rhsExpr.setValue(ex.rhsAfterOp);
-            _statusMessage.setValue("✓ Correcto. Ingresa el valor de x.");
+
+            _balanced.setValue(true); // Equilibrio visual (Punto 1)
+            _statusMessage.setValue("✓ Ecuación equilibrada. ¡Bien hecho!");
             _statusPositive.setValue(true);
-            _balanced.setValue(true);
+
+            // Sincronización: Autocompletado del valor numérico
             _autoAnswer.setValue(ex.correctAnswer);
         } else {
-            _statusMessage.setValue("Esa operación no aísla x. Intenta " + ex.correctOp + ".");
-            _statusPositive.setValue(false);
+            // Feedback en tiempo real (Punto 3)
             _balanced.setValue(false);
+            _statusMessage.setValue("Esa operación no aísla x. Intenta " + ex.correctOp);
+            _statusPositive.setValue(false);
         }
     }
 
@@ -236,6 +247,21 @@ public class ExerciseViewModel extends AndroidViewModel {
     private void publishTiles() {
         _leftTiles.postValue(new ArrayList<>(leftTiles));
         _rightTiles.postValue(new ArrayList<>(rightTiles));
+
+        // PUNTO 2 & 5: Sincronización y Auditoría Matemática
+        // Creamos una lista temporal para el traductor
+        List<String> secuenciaParaTraductor = new ArrayList<>(leftTiles);
+        secuenciaParaTraductor.add("=");
+        secuenciaParaTraductor.addAll(rightTiles);
+
+        // El algoritmo puente traduce la disposición visual a lógica
+        Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(secuenciaParaTraductor);
+
+        // Si la x quedó sola, informamos al usuario en tiempo real
+        if (ecActual.xEstaAislada()) {
+            _statusMessage.postValue("¡Excelente! x está despejada.");
+            _autoAnswer.postValue(String.valueOf(ecActual.valorRHS()));
+        }
     }
 
     public void resetTiles() {
