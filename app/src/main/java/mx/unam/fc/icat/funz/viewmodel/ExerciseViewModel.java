@@ -248,19 +248,21 @@ public class ExerciseViewModel extends AndroidViewModel {
         _leftTiles.postValue(new ArrayList<>(leftTiles));
         _rightTiles.postValue(new ArrayList<>(rightTiles));
 
-        // PUNTO 2 & 5: Sincronización y Auditoría Matemática
-        // Creamos una lista temporal para el traductor
-        List<String> secuenciaParaTraductor = new ArrayList<>(leftTiles);
-        secuenciaParaTraductor.add("=");
-        secuenciaParaTraductor.addAll(rightTiles);
+        // PUNTO 2: Sincronización del modelo lógico (TraductorEcuacion)
+        // Convertimos la disposición visual de los tiles en una jerarquía matemática
+        List<String> tokens = new ArrayList<>(leftTiles);
+        tokens.add("=");
+        tokens.addAll(rightTiles);
 
-        // El algoritmo puente traduce la disposición visual a lógica
-        Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(secuenciaParaTraductor);
+        // Auditoría (Punto 5): El algoritmo Shunting-yard procesa la secuencia
+        Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(tokens);
 
-        // Si la x quedó sola, informamos al usuario en tiempo real
+        // Si el algoritmo detecta que x está sola, informamos al usuario
         if (ecActual.xEstaAislada()) {
-            _statusMessage.postValue("¡Excelente! x está despejada.");
-            _autoAnswer.postValue(String.valueOf(ecActual.valorRHS()));
+            int valorRhs = ecActual.valorRHS();
+            _statusMessage.postValue("¡Excelente! x ha sido aislada. El valor es " + valorRhs);
+            _autoAnswer.postValue(String.valueOf(valorRhs));
+            _statusPositive.postValue(true);
         }
     }
 

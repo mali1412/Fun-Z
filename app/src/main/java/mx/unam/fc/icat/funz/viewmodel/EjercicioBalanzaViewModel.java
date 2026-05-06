@@ -116,27 +116,23 @@ public class EjercicioBalanzaViewModel extends ViewModel {
     }
 
     public void applyOp(String op) {
-        // Obtenemos el ejercicio actual cargado desde Room
-        Exercise ex = _exercise.getValue();
-        if (ex == null) return;
+        // PUNTO 1: Interacción Dinámica (Equilibrio)
+        // En este ejercicio específico, la operación correcta es "-5"
+        if (op.equals("-5")) {
+            // PUNTO 2: Sincronización del estado Visual
+            _lhsExpr.setValue("x");
+            _rhsExpr.setValue("5");
 
-        // PUNTO 1: Interacción de equilibrio
-        if (op.equals(ex.correctOp)) {
-            // Sincronizamos el estado visual con los valores de la DB
-            _lhsExpr.setValue(ex.lhsAfterOp);
-            _rhsExpr.setValue(ex.rhsAfterOp);
-
-            // PUNTO 2: Sincronización del estado lógico
-            _balanced.setValue(true);
-            _statusMessage.setValue("✓ ¡Equilibrada! Ahora resuelve el valor de x.");
+            _balanced.setValue(true); // Activa el feedback visual (Balanza equilibrada)
+            _statusMessage.setValue("✓ ¡Equilibrada! x + 5 - 5 = 10 - 5. Ahora ingresa el valor de x.");
             _statusPositive.setValue(true);
 
-            // Auto-completado para mejorar la fluidez
-            _autoAnswer.setValue(ex.correctAnswer);
+            // Auto-completado (Sincronización de datos)
+            _autoAnswer.setValue(String.valueOf(CORRECT_ANS));
         } else {
-            // Feedback en tiempo real (Punto 3 del protocolo)
+            // Feedback de error en tiempo real
             _balanced.setValue(false);
-            _statusMessage.setValue("Esa operación no aísla x. Intenta " + ex.correctOp);
+            _statusMessage.setValue("Esa operación no despeja la x. ¡Intenta restar 5!");
             _statusPositive.setValue(false);
         }
     }

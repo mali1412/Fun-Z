@@ -227,6 +227,7 @@ public class EjercicioTilesActivity extends AppCompatActivity {
         setupDropTarget(llRight, "R");
     }
 
+    // Este método ya lo tienes, pero verifica que llame al ViewModel correctamente
     private void setupDropTarget(LinearLayout container, String targetSide) {
         container.setOnDragListener((v, event) -> {
             if (event.getAction() == DragEvent.ACTION_DROP) {
@@ -234,10 +235,12 @@ public class EjercicioTilesActivity extends AppCompatActivity {
                 String[] parts = item.getText().toString().split("_");
                 if (parts.length == 3) {
                     String fromSide = parts[0];
-                    int    fromIdx  = Integer.parseInt(parts[1]);
-                    String label    = parts[2];
+                    int fromIdx = Integer.parseInt(parts[1]);
+                    String label = parts[2];
+
+                    // Si el tile se suelta en el lado OPUESTO, disparamos la lógica
                     if (!fromSide.equals(targetSide) && !label.equals("x")) {
-                        vm.moveTile(fromSide, fromIdx, label); // delegar lógica al ViewModel
+                        vm.moveTile(fromSide, fromIdx, label);
                     }
                 }
             }
