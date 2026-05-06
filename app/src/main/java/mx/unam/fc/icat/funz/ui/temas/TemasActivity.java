@@ -13,11 +13,11 @@ import com.google.android.material.chip.Chip;
 import java.util.List;
 
 import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.ejercicios.ExerciseActivity;
 import mx.unam.fc.icat.funz.viewmodel.TemasViewModel;
 import mx.unam.fc.icat.funz.data.AppState;
 import mx.unam.fc.icat.funz.ui.main.MainActivity;
-import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
 import mx.unam.fc.icat.funz.R;

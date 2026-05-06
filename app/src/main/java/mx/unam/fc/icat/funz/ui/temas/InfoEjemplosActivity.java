@@ -18,9 +18,9 @@ import java.util.concurrent.Executors;
 import mx.unam.fc.icat.funz.data.AppState;
 import mx.unam.fc.icat.funz.db.FunZDatabase;
 import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.ejercicios.ExerciseActivity;
 import mx.unam.fc.icat.funz.ui.main.MainActivity;
-import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
 import mx.unam.fc.icat.funz.R;
@@ -160,10 +160,10 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     }
 
     private void updateNextButton(Button btn) {
-        btn.setText(getString(currentTab == 0 ? R.string.btn_ejemplos : R.string.btn_ejercicios));
+        btn.setText(currentTab == 0 ? "Ejemplos →" : "Ejercicios →");
         TextView tvIndicator = findViewById(R.id.tv_page_indicator);
         if (tvIndicator != null) {
-            tvIndicator.setText(getString(R.string.page_indicator_format, (currentTab + 1)));
+            tvIndicator.setText((currentTab + 1) + " / 2");
         }
     }
 

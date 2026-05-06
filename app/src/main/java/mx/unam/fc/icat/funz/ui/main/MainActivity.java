@@ -10,10 +10,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.ejercicios.ExerciseActivity;
 import mx.unam.fc.icat.funz.viewmodel.MainViewModel;
 import mx.unam.fc.icat.funz.data.AppState;
-import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;

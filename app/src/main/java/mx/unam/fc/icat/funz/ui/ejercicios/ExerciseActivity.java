@@ -16,10 +16,10 @@ import com.google.android.material.chip.Chip;
 import java.util.List;
 
 import mx.unam.fc.icat.funz.db.Exercise;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.viewmodel.ExerciseViewModel;
 import mx.unam.fc.icat.funz.data.AppState;
 import mx.unam.fc.icat.funz.ui.main.MainActivity;
-import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 import mx.unam.fc.icat.funz.ui.temas.InfoEjemplosActivity;
