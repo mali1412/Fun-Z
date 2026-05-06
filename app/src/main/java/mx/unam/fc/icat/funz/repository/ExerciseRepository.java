@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import mx.unam.fc.icat.funz.data.AppState;
 import mx.unam.fc.icat.funz.db.DbSeeder;
 import mx.unam.fc.icat.funz.db.Exercise;
 import mx.unam.fc.icat.funz.db.ExerciseDao;
@@ -36,7 +37,15 @@ public class ExerciseRepository {
         io = ioExecutor;
 
         // Sembrar datos si la DB está vacía (idempotente)
-        io.execute(() -> DbSeeder.seed(moduleDao, exerciseDao));
+        // En ExerciseRepository.java, dentro del constructor o después de DbSeeder.seed:
+        io.execute(() -> {
+            DbSeeder.seed(db);
+            // Actualizar AppState con el conteo real de cada módulo
+            for (int i = 1; i <= 6; i++) {
+                int realCount = exerciseDao.countByModule(i);
+                AppState.getInstance().setModuleExerciseCount(i, realCount);
+            }
+        });
     }
 
     /** Constructor de compatibilidad para usos aislados. */

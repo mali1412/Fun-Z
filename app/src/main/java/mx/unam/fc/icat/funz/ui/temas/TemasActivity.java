@@ -67,10 +67,26 @@ public class TemasActivity extends AppCompatActivity {
      * Construye dinámicamente una card por cada módulo en la lista.
      * Funciona para cualquier cantidad de módulos sin cambiar código.
      */
+    // Busca el método renderModules y actualízalo así:
+
     private void renderModules(List<Module> modules) {
+        // 1. Si la lista es nula o está vacía (primer inicio),
+        // detenemos el proceso para evitar errores de puntero nulo o bucles vacíos.
+        if (modules == null || modules.isEmpty()) {
+            llModulesContainer.removeAllViews();
+            // Opcional: Podrías inflar una vista de "Cargando..." aquí
+            return;
+        }
+
+        // 2. Limpiar el contenedor antes de renderizar
         llModulesContainer.removeAllViews();
+
+        // 3. Renderizar solo si tenemos datos seguros
         for (Module mod : modules) {
-            llModulesContainer.addView(buildModuleCard(mod));
+            View moduleView = buildModuleCard(mod);
+            if (moduleView != null) {
+                llModulesContainer.addView(moduleView);
+            }
         }
     }
 

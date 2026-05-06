@@ -1,7 +1,6 @@
 package mx.unam.fc.icat.funz.model;
 
 import androidx.annotation.NonNull;
-
 import java.util.UUID;
 
 /**
@@ -37,14 +36,7 @@ public class Termino {
      * Clasificación semántica de un término dentro de la ecuación.
      */
     public enum TipoTermino {
-        /** Incógnita algebraica; puede llevar coeficiente entero (p. ej. 2x). */
-        VARIABLE,
-        /** Valor numérico entero, positivo o negativo.                          */
-        CONSTANTE,
-        /** Operador aritmético: +, −, ×, ÷.                                    */
-        OPERADOR,
-        /** Signo de igualdad "=" que separa los dos lados de la ecuación.      */
-        IGUAL
+        VARIABLE, CONSTANTE, OPERADOR, IGUAL
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -52,19 +44,16 @@ public class Termino {
     // ════════════════════════════════════════════════════════════════════════
 
     /** Identificador único inmutable; sirve como etiqueta en Drag & Drop. */
-    @NonNull
-    private final String id;
+    @NonNull private final String id;
 
     /** Clasificación semántica. */
-    @NonNull
-    private TipoTermino tipo;
+    @NonNull private TipoTermino tipo;
 
     /**
      * Símbolo de visualización tal como debe aparecer en pantalla.
      * Ejemplos: "x", "2x", "-x", "+5", "-3", "+", "=".
      */
-    @NonNull
-    private String simbolo;
+    @NonNull private String simbolo;
 
     /**
      * Coeficiente numérico para términos de tipo {@link TipoTermino#VARIABLE}.
@@ -89,22 +78,32 @@ public class Termino {
     //  Constructor privado — usa los métodos de fábrica
     // ════════════════════════════════════════════════════════════════════════
 
-    private Termino(@NonNull TipoTermino tipo,
-                    @NonNull String simbolo,
-                    int coeficiente,
-                    int valor,
-                    boolean positivo) {
-        this.id          = UUID.randomUUID().toString();
-        this.tipo        = tipo;
-        this.simbolo     = simbolo;
+    private Termino(@NonNull TipoTermino tipo, @NonNull String simbolo, int coeficiente, int valor, boolean positivo) {
+        this.id = UUID.randomUUID().toString();
+        this.tipo = tipo;
+        this.simbolo = simbolo;
         this.coeficiente = coeficiente;
-        this.valor       = valor;
-        this.positivo    = positivo;
+        this.valor = valor;
+        this.positivo = positivo;
+    }
+
+    // Constructor para reconstrucción desde DB
+    private Termino(@NonNull String id, @NonNull TipoTermino tipo, @NonNull String simbolo, int coeficiente, int valor, boolean positivo) {
+        this.id = id;
+        this.tipo = tipo;
+        this.simbolo = simbolo;
+        this.coeficiente = coeficiente;
+        this.valor = valor;
+        this.positivo = positivo;
     }
 
     // ════════════════════════════════════════════════════════════════════════
     //  Métodos de fábrica (Factory Methods)
     // ════════════════════════════════════════════════════════════════════════
+
+    public static Termino reconstruir(String id, TipoTermino tipo, String simbolo, int coeficiente, int valor, boolean positivo) {
+        return new Termino(id, tipo, simbolo, coeficiente, valor, positivo);
+    }
 
     /**
      * Crea una variable con coeficiente entero.
@@ -120,9 +119,9 @@ public class Termino {
      */
     public static Termino crearVariable(int coeficiente) {
         String simbolo;
-        if (coeficiente == 1)       simbolo = "x";
+        if (coeficiente == 1) simbolo = "x";
         else if (coeficiente == -1) simbolo = "-x";
-        else                        simbolo = coeficiente + "x";
+        else simbolo = coeficiente + "x";
         return new Termino(TipoTermino.VARIABLE, simbolo, coeficiente, 0, coeficiente >= 0);
     }
 
@@ -195,9 +194,9 @@ public class Termino {
      * @return {@code true} si forman un par cero.
      */
     public boolean cancelaCon(@NonNull Termino otro) {
-        if (this.tipo != otro.tipo)         return false;
-        if (this.positivo == otro.positivo) return false;      // mismo signo → no cancelan
-        if (esVariable())  return Math.abs(this.coeficiente) == Math.abs(otro.coeficiente);
+        if (this.tipo != otro.tipo) return false;
+        if (this.positivo == otro.positivo) return false;
+        if (esVariable()) return Math.abs(this.coeficiente) == Math.abs(otro.coeficiente);
         if (esConstante()) return Math.abs(this.valor) == Math.abs(otro.valor);
         return false;
     }
@@ -206,12 +205,12 @@ public class Termino {
     //  Getters
     // ════════════════════════════════════════════════════════════════════════
 
-    @NonNull public String       getId()          { return id; }
-    @NonNull public TipoTermino  getTipo()        { return tipo; }
-    @NonNull public String       getSimbolo()     { return simbolo; }
-                 public int      getCoeficiente() { return coeficiente; }
-                 public int      getValor()       { return valor; }
-                 public boolean  isPositivo()     { return positivo; }
+    @NonNull public String getId() { return id; }
+    @NonNull public TipoTermino getTipo() { return tipo; }
+    @NonNull public String getSimbolo() { return simbolo; }
+    public int getCoeficiente() { return coeficiente; }
+    public int getValor() { return valor; }
+    public boolean isPositivo() { return positivo; }
 
     // ════════════════════════════════════════════════════════════════════════
     //  Setters (solo para manipulaciones algebraicas controladas)
@@ -225,13 +224,12 @@ public class Termino {
      * @throws IllegalStateException si el término no es VARIABLE.
      */
     public void setCoeficiente(int nuevoCoef) {
-        if (tipo != TipoTermino.VARIABLE)
-            throw new IllegalStateException("setCoeficiente solo aplica a VARIABLE");
+        if (tipo != TipoTermino.VARIABLE) throw new IllegalStateException("Solo VARIABLE");
         this.coeficiente = nuevoCoef;
-        this.positivo    = nuevoCoef >= 0;
-        if (nuevoCoef == 1)        this.simbolo = "x";
-        else if (nuevoCoef == -1)  this.simbolo = "-x";
-        else                       this.simbolo  = nuevoCoef + "x";
+        this.positivo = nuevoCoef >= 0;
+        if (nuevoCoef == 1) this.simbolo = "x";
+        else if (nuevoCoef == -1) this.simbolo = "-x";
+        else this.simbolo = nuevoCoef + "x";
     }
 
     /**
@@ -242,21 +240,9 @@ public class Termino {
      * @throws IllegalStateException si el término no es CONSTANTE.
      */
     public void setValor(int nuevoValor) {
-        if (tipo != TipoTermino.CONSTANTE)
-            throw new IllegalStateException("setValor solo aplica a CONSTANTE");
-        this.valor    = nuevoValor;
+        if (tipo != TipoTermino.CONSTANTE) throw new IllegalStateException("Solo CONSTANTE");
+        this.valor = nuevoValor;
         this.positivo = nuevoValor >= 0;
-        this.simbolo  = nuevoValor >= 0 ? "+" + nuevoValor : String.valueOf(nuevoValor);
-    }
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  Object overrides
-    // ════════════════════════════════════════════════════════════════════════
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Termino{id=" + id.substring(0, 8) + "…, tipo=" + tipo + ", simbolo='" + simbolo + "'}";
+        this.simbolo = nuevoValor >= 0 ? "+" + nuevoValor : String.valueOf(nuevoValor);
     }
 }
-

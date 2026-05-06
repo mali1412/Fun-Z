@@ -4,15 +4,17 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 
 /**
  * FunZDatabase — base de datos Room de la aplicación.
  */
 @Database(
     entities  = { Module.class, Exercise.class },
-    version   = 2, // Incrementado por cambio en entidad Module
+    version   = 4,
     exportSchema = false
 )
+@TypeConverters({ Converters.class })
 public abstract class FunZDatabase extends RoomDatabase {
 
     public abstract ModuleDao   moduleDao();

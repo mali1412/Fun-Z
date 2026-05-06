@@ -7,6 +7,8 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+import mx.unam.fc.icat.funz.model.Ecuacion;
+
 /**
  * Exercise — entidad Room que representa UN ejercicio dentro de un módulo.
  *
@@ -46,12 +48,15 @@ public class Exercise {
 
     // ── Clasificación ─────────────────────────────────────────────────────────
     @ColumnInfo(name = "module_id")  public int    moduleId;
-    @ColumnInfo(name = "step_order") public int    stepOrder;   // 1, 2, 3 …
+    @ColumnInfo(name = "step_order") public int    stepOrder;
+
     @NonNull
-    @ColumnInfo(name = "type")       public String type;        // TYPE_* constante
+    @ColumnInfo(name = "type")       public String type;
 
     // ── Datos comunes ─────────────────────────────────────────────────────────
     /** Ecuación que se muestra en pantalla, p.ej. "x + 5 = 10" */
+    @ColumnInfo(name = "equation_obj")
+    public Ecuacion equationObj;
     @NonNull
     @ColumnInfo(name = "equation")       public String equation;
 
@@ -63,51 +68,17 @@ public class Exercise {
     @NonNull
     @ColumnInfo(name = "hint_text")      public String hintText;
 
-    /** Puntos ganados respondiendo sin pista. */
-    @ColumnInfo(name = "points_correct") public int pointsCorrect = 100;
+    public int pointsCorrect = 100;
+    public int pointsHint    = 50;
 
-    /** Puntos ganados respondiendo con pista. */
-    @ColumnInfo(name = "points_hint")    public int pointsHint    =  50;
-
-    // ── Campos BALANZA ────────────────────────────────────────────────────────
-    /** Expresión inicial del plato izquierdo, p.ej. "x+5". Null si no es BALANZA. */
-    @ColumnInfo(name = "lhs_expr")    public String lhsExpr;
-
-    /** Expresión inicial del plato derecho, p.ej. "10". Null si no es BALANZA. */
-    @ColumnInfo(name = "rhs_expr")    public String rhsExpr;
-
-    /** Operación que aísla x, p.ej. "-5". */
-    @ColumnInfo(name = "correct_op")  public String correctOp;
-
-    /** Expresión LHS tras aplicar la op correcta, p.ej. "x". */
-    @ColumnInfo(name = "lhs_after")   public String lhsAfterOp;
-
-    /** Expresión RHS tras aplicar la op correcta, p.ej. "5". */
-    @ColumnInfo(name = "rhs_after")   public String rhsAfterOp;
-
-    /**
-     * JSON array de operaciones disponibles en los botones, p.ej.
-     * ["-5","+5","x2","/2"]. Máximo 4 operaciones.
-     */
-    @ColumnInfo(name = "ops") public String ops;
-
-    // ── Campos CLASICO ────────────────────────────────────────────────────────
-    /**
-     * JSON array de strings con los pasos de la solución, p.ej.
-     * ["Transponer +5: 3x = 15", "Dividir entre 3: x = 5"].
-     */
-    @ColumnInfo(name = "solution_steps") public String solutionSteps;
-
-    // ── Campos TILES ──────────────────────────────────────────────────────────
-    /**
-     * JSON array de etiquetas para el lado izquierdo, p.ej. ["x","+1","+1"].
-     * La Activity construye las vistas de tile a partir de esta lista.
-     */
-    @ColumnInfo(name = "tiles_left")  public String tilesLeft;
-
-    /**
-     * JSON array de etiquetas para el lado derecho, p.ej.
-     * ["+1","+1",...] (12 elementos para x+2=12).
-     */
-    @ColumnInfo(name = "tiles_right") public String tilesRight;
+    // Campos específicos
+    public String lhsExpr;
+    public String rhsExpr;
+    public String correctOp;
+    public String lhsAfterOp;
+    public String rhsAfterOp;
+    public String ops;
+    public String solutionSteps;
+    public String tilesLeft;
+    public String tilesRight;
 }
