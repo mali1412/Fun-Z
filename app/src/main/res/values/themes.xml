@@ -28,7 +28,8 @@
 
 
 
-    <!-- Tema oscuro -->
+
+    <!-- Tema oscuro-->
     <style name="Theme.FunZ.Dark" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/color_primary_light</item>
         <item name="colorPrimaryDark">@color/color_primary</item>
@@ -36,16 +37,28 @@
         <item name="colorSurface">@color/surface_dark</item>
         <item name="android:colorBackground">@color/background_dark</item>
         <item name="backgroundColor">@color/background_dark</item>
-        <item name="android:textColorPrimary">#F9FAFB</item>
-        <item name="android:textColorSecondary">#9CA3AF</item>
+        <item name="android:textColorPrimary">@color/white_color</item>
+        <item name="android:textColorSecondary">@color/textColorSecundar</item>
         <item name="android:statusBarColor">@color/color_primary_dark</item>
         <item name="android:navigationBarColor">@color/surface_dark</item>
 
 
-        <item name="colorTextPrimary">#F9FAFB</item>
-        <item name="colorTextSecondary">#9CA3AF</item>
-        <item name="colorBgTonalCard">@color/card_dark</item>
-        <item name="colorNavItem">#F9FAFB</item>
-        <item name="colorWarnChipBg">#451A03</item> <item name="colorWarnChipText">#FDE68A</item> <item name="colorPrimaryAlpha">#33E1BEE7</item> </style>
+         <item name="colorTextPrimary">@color/white_color</item>
+         <item name="colorTextSecondary">@color/textColorSecundar</item>
+         <item name="colorBgTonalCard">@color/card_dark</item>
+         <item name="colorNavItem">@color/white_color</item>
+         <item name="colorWarnChipBg">#451A03</item>
+         <item name="colorWarnChipText">#FDE68A</item>
+         <item name="colorPrimaryAlpha">#33E1BEE7</item>
+         <item name="colorSecondary">@color/accent_color</item>
+         <item name="colorSecondaryContainer">@color/color_primary_dark</item>
+         <item name="colorOnSecondaryContainer">@color/surface_card_light</item>
+         <item name="colorOnSurface">@color/white_color</item>
+         <item name="colorOnSurfaceVariant">@color/textColorSecundar</item>
+     </style>
 
-</resources>
+
+
+
+
+        </resources>

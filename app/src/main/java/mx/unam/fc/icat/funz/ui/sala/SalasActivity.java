@@ -1,9 +1,16 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.sala;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.R;
 
 /**
  * SalasActivity — Pantalla E: Salas de Juego

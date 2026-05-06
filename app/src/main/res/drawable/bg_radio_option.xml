@@ -3,16 +3,16 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_checked="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/radio_selected_bg_light"/>
+            <solid android:color="?attr/colorSecondaryContainer"/>
             <corners android:radius="10dp"/>
-            <stroke android:width="1.5dp" android:color="@color/color_primary"/>
+            <stroke android:width="1.5dp" android:color="?attr/colorPrimary"/>
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/radio_unselected_bg_light"/>
+            <solid android:color="?attr/colorSurfaceVariant"/>
             <corners android:radius="10dp"/>
-            <stroke android:width="0.5dp" android:color="@color/radio_border_light"/>
+            <stroke android:width="0.5dp" android:color="?attr/colorOutline"/>
         </shape>
     </item>
 </selector>

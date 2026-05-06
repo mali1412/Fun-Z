@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="@dimen/margin_small"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/tv_step_number"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:text="1"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:background="@drawable/bg_step_circle"
+        android:layout_marginEnd="@dimen/margin_small"/>
+
+    <TextView
+        android:id="@+id/tv_step_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Paso del ejemplo"
+        android:textSize="@dimen/text_size_small"
+        android:textColor="@color/text_primary"/>
+
+</LinearLayout>

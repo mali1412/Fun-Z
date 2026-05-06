@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Panel CLÁSICO — inflado cuando exercise.type = "CLASICO" -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Ecuación destacada -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp" app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorBgTonalCard"
+            android:layout_marginBottom="16dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:gravity="center" android:padding="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Resuelve:" android:textSize="11sp"
+                    android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="4dp"/>
+                <TextView android:id="@+id/tv_equation_display"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textSize="26sp" android:textStyle="bold"
+                    android:fontFamily="monospace" android:textColor="?attr/colorTextPrimary"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Título de pasos -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Solución paso a paso:"
+            android:textSize="12sp" android:textStyle="bold"
+            android:textColor="?attr/colorTextPrimary"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Pasos de solución (generados dinámicamente desde JSON en DB) -->
+        <LinearLayout
+            android:id="@+id/ll_solution_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_status"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"/>
+            <!-- Los TextViews de cada paso se añaden en bindClasicoPanel() -->
+
+    </LinearLayout>
+</ScrollView>

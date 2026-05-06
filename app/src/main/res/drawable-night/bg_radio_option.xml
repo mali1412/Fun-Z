@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable-night/bg_radio_option.xml — StateListDrawable para opciones de tema en modo oscuro -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/colorSecondaryContainer"/>
+            <corners android:radius="10dp"/>
+            <stroke android:width="1.5dp" android:color="?attr/colorPrimary"/>
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/colorSurfaceVariant"/>
+            <corners android:radius="10dp"/>
+            <stroke android:width="0.5dp" android:color="?attr/colorOutline"/>
+        </shape>
+    </item>
+</selector>
+
+

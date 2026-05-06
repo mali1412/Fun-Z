@@ -1,7 +1,8 @@
-package mx.unam.fc.icat.funz;
+package mx.unam.fc.icat.funz.ui.temas;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -9,21 +10,24 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.concurrent.Executors;
+
+import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.db.FunZDatabase;
+import mx.unam.fc.icat.funz.db.Module;
+import mx.unam.fc.icat.funz.ui.ejercicios.ExerciseActivity;
+import mx.unam.fc.icat.funz.ui.main.MainActivity;
+import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.R;
+
 /**
  * InfoEjemplosActivity — Pantalla C: Información / Ejemplos
- *
- * Dos pestañas en TabLayout:
- *   0 = Información  (tarjetas de teoría + video)
- *   1 = Ejemplos     (procedimiento paso a paso)
- *
- * NO tiene BottomNavigationView.
- * En su lugar tiene un botón hamburguesa (≡) que despliega
- * un drawer con los cinco destinos de navegación global.
- *
- * Al cambiar de pestaña se actualiza AppState:
- *   - Pestaña 0 → state.setInfoRead(true)
- *   - Pestaña 1 → state.setExamplesRead(true)
- * Esto incrementa el progreso del Módulo 1 en un 20% por hito.
+ * Carga dinámicamente el contenido desde la base de datos según el moduleId.
  */
 public class InfoEjemplosActivity extends AppCompatActivity {
 
@@ -31,6 +35,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     private boolean      appliedDarkTheme;
     private LinearLayout drawerMenu;
     private int          currentTab = 0;
+    private int          moduleId = 1;
+    private Module       currentModule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +46,11 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_info_ejemplos);
 
+        moduleId = getIntent().getIntExtra("module_id", 1);
         currentTab = getIntent().getIntExtra("tab", 0);
 
         bindViews();
-        setupTabs();
+        loadModuleData();
         setupHamburger();
     }
 
@@ -53,20 +60,64 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         if (state.isDarkTheme() != appliedDarkTheme) { recreate(); return; }
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Binding
-    // ════════════════════════════════════════════════════════════════════════
-
     private void bindViews() {
         drawerMenu = findViewById(R.id.drawer_menu);
         drawerMenu.setVisibility(View.GONE);
-
-        findViewById(R.id.btn_back).setOnClickListener(v -> finish());
+        findViewById(R.id.btn_volver).setOnClickListener(v -> finish());
     }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Tabs
-    // ════════════════════════════════════════════════════════════════════════
+    private void loadModuleData() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            currentModule = FunZDatabase.getInstance(this).moduleDao().getModuleSync(moduleId);
+            runOnUiThread(() -> {
+                if (currentModule != null) {
+                    populateUI();
+                    setupTabs();
+                }
+            });
+        });
+    }
+
+    private void populateUI() {
+        TextView tvTitle = findViewById(R.id.tv_module_title);
+        if (tvTitle != null) tvTitle.setText(currentModule.name);
+
+        // Info Tab
+        ((TextView) findViewById(R.id.tv_info_title_1)).setText(currentModule.infoTitle1);
+        ((TextView) findViewById(R.id.tv_info_text_1)).setText(currentModule.infoText1);
+        ((TextView) findViewById(R.id.tv_info_title_2)).setText(currentModule.infoTitle2);
+        ((TextView) findViewById(R.id.tv_info_text_2)).setText(currentModule.infoText2);
+
+        // Examples Tab
+        ((TextView) findViewById(R.id.tv_example_equation)).setText(currentModule.exampleEquation);
+        renderExampleSteps();
+    }
+
+    private void renderExampleSteps() {
+        LinearLayout container = findViewById(R.id.ll_example_steps);
+        container.removeAllViews();
+        try {
+            JSONArray steps = new JSONArray(currentModule.exampleSteps);
+            for (int i = 0; i < steps.length(); i++) {
+                View stepView = LayoutInflater.from(this).inflate(R.layout.item_example_step, container, false);
+                TextView tvNum = stepView.findViewById(R.id.tv_step_number);
+                TextView tvDesc = stepView.findViewById(R.id.tv_step_desc);
+
+                tvNum.setText(String.valueOf(i + 1));
+                tvDesc.setText(steps.getString(i));
+
+                // Resaltar el último paso (el resultado)
+                if (i == steps.length() - 1) {
+                    tvDesc.setTypeface(null, android.graphics.Typeface.BOLD);
+                    tvDesc.setTextColor(getResources().getColor(R.color.color_primary));
+                }
+
+                container.addView(stepView);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void setupTabs() {
         TabLayout tabs    = findViewById(R.id.tabs);
@@ -96,8 +147,7 @@ public class InfoEjemplosActivity extends AppCompatActivity {
             if (currentTab == 0) {
                 tabs.selectTab(tabs.getTabAt(1));
             } else {
-                // Avanzar a ejercicios desde el paso guardado
-                state.setExamplesRead(true);
+                state.setExamplesRead(moduleId, true);
                 state.resetSession();
                 goToExercise();
             }
@@ -105,8 +155,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     }
 
     private void applyProgressUpdate(int tab) {
-        if (tab == 0 && !state.isInfoRead())     state.setInfoRead(true);
-        if (tab == 1 && !state.isExamplesRead()) state.setExamplesRead(true);
+        if (tab == 0 && !state.isInfoRead(moduleId))     state.setInfoRead(moduleId, true);
+        if (tab == 1 && !state.isExamplesRead(moduleId)) state.setExamplesRead(moduleId, true);
     }
 
     private void updateNextButton(Button btn) {
@@ -125,19 +175,12 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     }
 
     private void goToExercise() {
-        Intent intent;
-        switch (state.getCurrentExStep()) {
-            case 2:  intent = new Intent(this, EjercicioClasicoActivity.class); break;
-            case 3:  intent = new Intent(this, EjercicioTilesActivity.class);   break;
-            default: intent = new Intent(this, EjercicioBalanzaActivity.class);
-        }
+        Intent intent = new Intent(this, ExerciseActivity.class);
+        intent.putExtra("module_id", moduleId);
+        intent.putExtra("step_order", state.getCurrentStep(moduleId));
         startActivity(intent);
         finish();
     }
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  Hamburguesa
-    // ════════════════════════════════════════════════════════════════════════
 
     private void setupHamburger() {
         View btnHam = findViewById(R.id.btn_hamburger);

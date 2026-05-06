@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Panel TILES — inflado cuando exercise.type = "TILES" -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Instrucción -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="Mueve los tiles para aislar x en el lado izquierdo"
+            android:textSize="11sp" android:textColor="?attr/colorTextSecondary"
+            android:gravity="center" android:layout_marginBottom="12dp"/>
+
+        <!-- Área de tiles: Izquierdo -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Lado izquierdo" android:textSize="10sp"
+            android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="4dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent" android:layout_height="70dp"
+            app:cardCornerRadius="10dp" app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorBgTonalCard"
+            android:layout_marginBottom="8dp">
+            <LinearLayout
+                android:id="@+id/ll_tiles_left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Separador "=" -->
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="━━━━━━━━ = ━━━━━━━━" android:gravity="center"
+            android:textSize="12sp" android:textColor="?attr/colorTextSecondary"
+            android:layout_marginVertical="4dp"/>
+
+        <!-- Área de tiles: Derecho -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Lado derecho" android:textSize="10sp"
+            android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="4dp"/>
+
+        <com.google.android.material.card.MaterialCardView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent" android:layout_height="70dp"
+            app:cardCornerRadius="10dp" app:cardElevation="0dp"
+            app:cardBackgroundColor="?attr/colorBgTonalCard"
+            android:layout_marginBottom="12dp">
+            <LinearLayout
+                android:id="@+id/ll_tiles_right"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp"/>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Status -->
+        <TextView android:id="@+id/tv_tiles_status"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:textSize="11sp" android:textColor="?attr/colorTextSecondary"
+            android:background="@drawable/bg_status" android:padding="8dp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+</ScrollView>

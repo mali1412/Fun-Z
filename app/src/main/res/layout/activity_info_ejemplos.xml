@@ -19,6 +19,7 @@
         android:elevation="4dp">
 
         <TextView
+            android:id="@+id/tv_module_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -52,7 +53,6 @@
         android:visibility="gone"
         android:gravity="center">
 
-        <!-- Inicio -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_inicio"
             style="@style/Widget.Material3.Button.OutlinedButton"
@@ -67,7 +67,6 @@
             app:iconGravity="top"
             app:iconTint="@null" />
 
-        <!-- Temas -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_temas"
             style="@style/Widget.Material3.Button.OutlinedButton"
@@ -82,7 +81,6 @@
             app:iconGravity="top"
             app:iconTint="@null" />
 
-        <!-- Salas -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_salas"
             style="@style/Widget.Material3.Button.OutlinedButton"
@@ -97,7 +95,6 @@
             app:iconGravity="top"
             app:iconTint="@null" />
 
-        <!-- Stats -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_stats"
             style="@style/Widget.Material3.Button.OutlinedButton"
@@ -112,7 +109,6 @@
             app:iconGravity="top"
             app:iconTint="@null" />
 
-        <!-- Config (Ajustado para visibilidad total) -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/drawer_config"
             style="@style/Widget.Material3.Button.OutlinedButton"
@@ -167,19 +163,19 @@
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/color_primary_alpha"
-                        app:strokeColor="@color/color_primary_light"
-                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="?attr/colorPrimaryAlpha"
                         android:layout_marginBottom="@dimen/margin_default">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="vertical" android:padding="@dimen/padding_card">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            <TextView android:id="@+id/tv_info_title_1"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
                                 android:text="¿Qué es una ecuación?" android:textSize="@dimen/text_size_body"
-                                android:textStyle="bold" android:textColor="@color/color_primary_dark"
+                                android:textStyle="bold" android:textColor="?attr/colorPrimary"
                                 android:layout_marginBottom="@dimen/margin_small"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Una igualdad matemática con una o más incógnitas. El objetivo es encontrar el valor de x que hace verdadera la igualdad."
-                                android:textSize="@dimen/text_size_small" android:textColor="@color/color_primary_dark"
+                            <TextView android:id="@+id/tv_info_text_1"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="..."
+                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
                                 android:lineSpacingExtra="4dp"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -189,42 +185,23 @@
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="@dimen/card_corner_radius"
                         app:cardElevation="0dp"
-                        app:cardBackgroundColor="@color/color_primary_alpha"
-                        app:strokeColor="@color/color_primary_light"
-                        app:strokeWidth="1dp"
+                        app:cardBackgroundColor="?attr/colorPrimaryAlpha"
                         android:layout_marginBottom="@dimen/margin_default">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                             android:orientation="vertical" android:padding="@dimen/padding_card">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Forma simple: x + a = b" android:textSize="@dimen/text_size_body"
-                                android:textStyle="bold" android:textColor="@color/color_primary_dark"
+                            <TextView android:id="@+id/tv_info_title_2"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="Forma simple" android:textSize="@dimen/text_size_body"
+                                android:textStyle="bold" android:textColor="?attr/colorPrimary"
                                 android:layout_marginBottom="@dimen/margin_small"/>
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Solo se necesita sumar o restar en ambos lados para despejar x. El principio clave: lo que haces a un lado, debes hacerlo al otro."
-                                android:textSize="@dimen/text_size_small" android:textColor="@color/color_primary_dark"
+                            <TextView android:id="@+id/tv_info_text_2"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                android:text="..."
+                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
                                 android:lineSpacingExtra="4dp"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/margin_small"
-                        app:cardElevation="0dp"
-                        android:layout_marginBottom="@dimen/margin_default">
-                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="@dimen/margin_small">
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="📹 Video explicativo" android:textSize="@dimen/text_size_small"
-                                android:textColor="@color/text_secondary" android:layout_marginBottom="@dimen/margin_small"/>
-                            <FrameLayout android:layout_width="match_parent" android:layout_height="120dp"
-                                android:background="#1A1A2E">
-                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                    android:layout_gravity="center" android:text="▶" android:textSize="32sp"
-                                    android:textColor="#FFFFFF"/>
-                            </FrameLayout>
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -234,46 +211,17 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                    <TextView android:id="@+id/tv_example_equation"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
                         android:text="x + 3 = 7"
                         android:fontFamily="monospace" android:textSize="@dimen/text_size_h1"
                         android:textColor="@color/text_primary" android:padding="@dimen/margin_default"
                         android:background="@drawable/bg_equation_box"
                         android:gravity="center" android:layout_marginBottom="@dimen/margin_default"/>
 
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="horizontal" android:layout_marginBottom="@dimen/margin_small">
-                        <TextView android:layout_width="24dp" android:layout_height="24dp"
-                            android:text="1" android:textSize="@dimen/text_size_small" android:textColor="#FFFFFF"
-                            android:gravity="center" android:background="@drawable/bg_step_circle"
-                            android:layout_marginEnd="@dimen/margin_small"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Identificar el término a eliminar del lado izquierdo: +3"
-                            android:textSize="@dimen/text_size_small" android:textColor="@color/text_primary"/>
-                    </LinearLayout>
-
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="horizontal" android:layout_marginBottom="@dimen/margin_small">
-                        <TextView android:layout_width="24dp" android:layout_height="24dp"
-                            android:text="2" android:textSize="@dimen/text_size_small" android:textColor="#FFFFFF"
-                            android:gravity="center" android:background="@drawable/bg_step_circle"
-                            android:layout_marginEnd="@dimen/margin_small"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Aplicar operación inversa: x + 3 − 3 = 7 − 3"
-                            android:textSize="@dimen/text_size_small" android:textColor="@color/text_primary"/>
-                    </LinearLayout>
-
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:orientation="horizontal" android:layout_marginBottom="@dimen/margin_small">
-                        <TextView android:layout_width="24dp" android:layout_height="24dp"
-                            android:text="3" android:textSize="@dimen/text_size_small" android:textColor="#FFFFFF"
-                            android:gravity="center" android:background="@drawable/bg_step_circle"
-                            android:layout_marginEnd="@dimen/margin_small"/>
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                            android:layout_weight="1" android:text="Simplificar: x = 4 ✓"
-                            android:textSize="@dimen/text_size_small" android:textStyle="bold"
-                            android:textColor="@color/color_primary"/>
-                    </LinearLayout>
+                    <LinearLayout android:id="@+id/ll_example_steps"
+                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="vertical" />
                 </LinearLayout>
 
             </LinearLayout>
