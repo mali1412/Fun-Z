@@ -193,40 +193,65 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     public void moveTile(String side, int idx, String label) {
+        // 1. Manipulación física (Punto 1)
         if (side.equals("L")) {
-            if (idx >= leftTiles.size()) return;
-            leftTiles.remove(idx);
-            int pos = rightTiles.indexOf(label);
-            if (pos >= 0) {
-                rightTiles.remove(pos);
-                _statusMessage.postValue("Par cero: " + label + " cancela con el del derecho.");
-                _statusPositive.postValue(true);
-            } else {
-                rightTiles.add(label.startsWith("+") ? label.replace("+", "-") : "+" + label.replace("-", ""));
-                _statusMessage.postValue("Se añadió el inverso al lado derecho.");
-                _statusPositive.postValue(true);
+            if (idx < leftTiles.size()) {
+                leftTiles.remove(idx);
+                rightTiles.add(invertirSigno(label));
             }
         } else {
-            if (idx >= rightTiles.size()) return;
-            rightTiles.remove(idx);
-            int posL = -1;
-            for (int i = 0; i < leftTiles.size(); i++) {
-                if (!leftTiles.get(i).equals("x") && !leftTiles.get(i).contains("/")) {
-                    posL = i; break;
-                }
-            }
-            if (posL >= 0) {
-                leftTiles.remove(posL);
-                _statusMessage.postValue("Par cero: tile derecho cancela con izquierdo.");
-                _statusPositive.postValue(true);
-            } else {
-                leftTiles.add("-1");
-                _statusMessage.postValue("Se añadió −1 al lado izquierdo.");
-                _statusPositive.postValue(false);
+            if (idx < rightTiles.size()) {
+                rightTiles.remove(idx);
+                leftTiles.add(invertirSigno(label));
             }
         }
+
+        // 2. Aplicar reglas específicas de Algebra Tiles (Punto 1)
+        ejecutarReglaParCero(leftTiles);
+        ejecutarReglaParCero(rightTiles);
+
+        // 3. Sincronización lógica con el Algoritmo (Punto 2)
+        Ecuacion ec = TraductorEcuacion.traducirSecuencia(prepararTokens());
+
+        // Si la X está aislada según el algoritmo, actualizamos la UI
+        if (ec.xEstaAislada()) {
+            int resultado = ec.valorRHS();
+            _autoAnswer.postValue(String.valueOf(resultado));
+            _statusMessage.postValue("✓ x aislada. El resultado es " + resultado);
+        }
+
         publishTiles();
-        checkTilesAutoComplete();
+    }
+
+    /**
+     * PUNTO 1: Lógica de transposición.
+     * Invierte el signo de un tile al cruzar el igual.
+     */
+    private String invertirSigno(String label) {
+        if (label.equals("x")) return "x"; // La variable no cambia de etiqueta
+        if (label.startsWith("+")) return label.replace("+", "-");
+        if (label.startsWith("-")) return label.replace("-", "+");
+        return "-" + label; // Por si acaso llega un número sin signo
+    }
+
+    /**
+     * PUNTO 2: Sincronización.
+     * Une las dos listas visuales en una sola secuencia para el algoritmo Shunting-yard.
+     */
+    private List<String> prepararTokens() {
+        List<String> tokens = new ArrayList<>(leftTiles);
+        tokens.add("=");
+        tokens.addAll(rightTiles);
+        return tokens;
+    }
+
+    private void ejecutarReglaParCero(List<String> lista) {
+        if (lista.contains("+1") && lista.contains("-1")) {
+            lista.remove("+1");
+            lista.remove("-1");
+            _statusMessage.postValue("¡Par Cero! Los elementos opuestos se anularon.");
+            _statusPositive.postValue(true);
+        }
     }
 
     private void checkTilesAutoComplete() {
@@ -245,23 +270,25 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     private void publishTiles() {
+        // 1. Actualizamos la UI con las listas de Strings
         _leftTiles.postValue(new ArrayList<>(leftTiles));
         _rightTiles.postValue(new ArrayList<>(rightTiles));
 
-        // PUNTO 2: Sincronización del modelo lógico (TraductorEcuacion)
-        // Convertimos la disposición visual de los tiles en una jerarquía matemática
+        // 2. AQUÍ INTEGRAMOS EL ALGORITMO:
+        // Creamos la secuencia que el Shunting-yard necesita
         List<String> tokens = new ArrayList<>(leftTiles);
         tokens.add("=");
         tokens.addAll(rightTiles);
 
-        // Auditoría (Punto 5): El algoritmo Shunting-yard procesa la secuencia
+        // 3. Invocamos al traductor (Auditoría de Lógica Matemática - Punto 5)
         Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(tokens);
 
-        // Si el algoritmo detecta que x está sola, informamos al usuario
+        // 4. Sincronización (Punto 2):
+        // Ahora el ViewModel no "supone", el modelo Ecuacion le "confirma" el estado.
         if (ecActual.xEstaAislada()) {
             int valorRhs = ecActual.valorRHS();
-            _statusMessage.postValue("¡Excelente! x ha sido aislada. El valor es " + valorRhs);
             _autoAnswer.postValue(String.valueOf(valorRhs));
+            _statusMessage.postValue("¡Excelente! Según el modelo, x = " + valorRhs);
             _statusPositive.postValue(true);
         }
     }
@@ -367,4 +394,7 @@ public class ExerciseViewModel extends AndroidViewModel {
     public enum ExerciseResult {
         CORRECT, CORRECT_WITH_HINT, INCORRECT, EMPTY_INPUT
     }
+
+
+
 }
