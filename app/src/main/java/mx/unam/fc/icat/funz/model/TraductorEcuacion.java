@@ -1,4 +1,6 @@
-package mx.unam.fc.icat.funz.model;import java.util.ArrayList;
+package mx.unam.fc.icat.funz.model;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -10,26 +12,20 @@ public class TraductorEcuacion {
 
     /**
      * Define los niveles de precedencia matemática (PEMDAS).
-     * Nivel 3: Potencias (Máxima prioridad)
-     * Nivel 2: Multiplicación y División
-     * Nivel 1: Suma y Resta
+     * Incluimos la barra "/" con la misma prioridad que la división "÷".
      */
     private static int obtenerPrecedencia(String op) {
         switch (op) {
             case "(": case ")": return 0;
             case "+": case "-": return 1;
-            case "×": case "÷": return 2;
+            case "×": case "÷": case "/": return 2;
             case "^":           return 3;
             default: return -1;
         }
     }
 
     /**
-     * Traduce una lista de símbolos (disposición visual) a un objeto Ecuacion
-     * con una estructura lógica jerárquica (Notación Polaca Inversa).
-     *
-     * @param tokens Secuencia de strings obtenida de la interfaz (ej. ["(", "x", "+", "2", ")", "^", "2"])
-     * @return Ecuacion con términos ordenados lógicamente por precedencia.
+     * Traduce una lista de símbolos a un objeto Ecuacion.
      */
     public static Ecuacion traducirSecuencia(List<String> tokens) {
         List<Termino> resultado = new ArrayList<>();
@@ -37,29 +33,41 @@ public class TraductorEcuacion {
 
         for (String token : tokens) {
             String t = token.trim();
+            if (t.isEmpty()) continue;
 
             if (t.equals("=")) {
-                // Al llegar al igual, procesamos lo pendiente del lado izquierdo
                 vaciarPila(operadores, resultado);
                 resultado.add(Termino.crearIgual());
             } else if (t.equals("(")) {
                 operadores.push(t);
             } else if (t.equals(")")) {
-                // Resolvemos la jerarquía dentro del paréntesis
                 while (!operadores.isEmpty() && !operadores.peek().equals("(")) {
                     resultado.add(crearTerminoEspecial(operadores.pop()));
                 }
-                if (!operadores.isEmpty()) operadores.pop(); // Quitar el "("
+                if (!operadores.isEmpty()) operadores.pop();
             } else if (esOperador(t)) {
-                // Aplicamos reglas de precedencia
+                // Si el token es un operador puro (+, -, /, etc.)
                 while (!operadores.isEmpty() &&
                         obtenerPrecedencia(operadores.peek()) >= obtenerPrecedencia(t)) {
                     resultado.add(crearTerminoEspecial(operadores.pop()));
                 }
                 operadores.push(t);
             } else {
-                // Es un operando (variable o constante)
-                resultado.add(parsearOperando(t));
+                // Si el token es un operando (ej: "x", "5", o incluso "/2" por error del tokenizer)
+                // Primero verificamos si el token "sucio" contiene un operador al inicio
+                if ((t.startsWith("/") || t.startsWith("÷")) && t.length() > 1) {
+                    // Si el token es "/2", lo separamos manualmente para no perder la operación
+                    String op = t.substring(0, 1);
+                    String num = t.substring(1);
+
+                    while (!operadores.isEmpty() && obtenerPrecedencia(operadores.peek()) >= obtenerPrecedencia(op)) {
+                        resultado.add(crearTerminoEspecial(operadores.pop()));
+                    }
+                    operadores.push(op);
+                    resultado.add(parsearOperando(num));
+                } else {
+                    resultado.add(parsearOperando(t));
+                }
             }
         }
         vaciarPila(operadores, resultado);
@@ -74,7 +82,7 @@ public class TraductorEcuacion {
     }
 
     private static boolean esOperador(String t) {
-        return t.equals("+") || t.equals("-") || t.equals("×") || t.equals("÷") || t.equals("^");
+        return t.equals("+") || t.equals("-") || t.equals("×") || t.equals("÷") || t.equals("/") || t.equals("^");
     }
 
     private static Termino crearTerminoEspecial(String op) {
@@ -82,15 +90,41 @@ public class TraductorEcuacion {
         return Termino.crearOperador(op);
     }
 
+    /**
+     * Convierte un texto en un Termino (Variable o Constante).
+     * Limpia carácteres residuales para evitar NumberFormatException.
+     */
     private static Termino parsearOperando(String t) {
-        if (t.contains("x")) {
-            String clean = t.replace("(", "").replace(")", "");
-            String coefStr = clean.replace("x", "");
-            int coef = (coefStr.isEmpty() || coefStr.equals("+")) ? 1 :
-                    (coefStr.equals("-") ? -1 : Integer.parseInt(coefStr));
+        // Limpiamos paréntesis y símbolos de operación que puedan haber quedado pegados
+        String clean = t.replace("(", "")
+                .replace(")", "")
+                .replace("/", "")
+                .replace("÷", "")
+                .trim();
+
+        if (clean.contains("x")) {
+            String coefStr = clean.replace("x", "").trim();
+            int coef;
+            if (coefStr.isEmpty() || coefStr.equals("+")) {
+                coef = 1;
+            } else if (coefStr.equals("-")) {
+                coef = -1;
+            } else {
+                try {
+                    coef = Integer.parseInt(coefStr);
+                } catch (NumberFormatException e) {
+                    coef = 1;
+                }
+            }
             return Termino.crearVariable(coef);
         } else {
-            return Termino.crearConstante(Integer.parseInt(t.replace("(", "").replace(")", "")));
+            try {
+                if (clean.isEmpty()) return Termino.crearConstante(0);
+                return Termino.crearConstante(Integer.parseInt(clean));
+            } catch (NumberFormatException e) {
+                // Si aún así falla, devolvemos una constante 0 en lugar de crashear
+                return Termino.crearConstante(0);
+            }
         }
     }
 }

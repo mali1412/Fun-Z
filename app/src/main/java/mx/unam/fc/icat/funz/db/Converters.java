@@ -21,6 +21,7 @@ public class Converters {
                 obj.put("simbolo", t.getSimbolo());
                 obj.put("coef", t.getCoeficiente());
                 obj.put("val", t.getValor());
+                obj.put("div", t.getDivisor());
                 obj.put("pos", t.isPositivo());
                 array.put(obj);
             }
@@ -44,6 +45,7 @@ public class Converters {
                     o.getString("simbolo"),
                     o.getInt("coef"),
                     o.getInt("val"),
+                    o.optInt("div", 1),
                     o.getBoolean("pos")
                 ));
             }

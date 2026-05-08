@@ -116,14 +116,45 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <ImageView
-                android:id="@+id/iv_balanza"
+            <!-- Contenedor de la balanza -->
+            <RelativeLayout
+                android:id="@+id/container_balanza"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/balanza_image_height"
-                android:src="@drawable/ic_balanza"
-                android:contentDescription="@string/desc_balanza"
-                android:layout_marginBottom="@dimen/margin_tiny"/>
+                android:layout_height="300dp"
+                android:layout_marginTop="20dp">
 
+                <!-- Base de la balanza (estática) -->
+                <ImageView
+                    android:id="@+id/balanza_base"
+                    android:layout_width="15dp"
+                    android:layout_height="150dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_balanza_base" />
+
+                <!-- Brazo de la balanza (el que va a rotar) -->
+                <!-- PivotX y PivotY al 50% para que gire sobre su propio centro -->
+                <ImageView
+                    android:id="@+id/balanza_brazo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/balanza_base"
+                    android:layout_marginBottom="-40dp"
+                    android:src="@drawable/ic_balanza_brazo_con_platos"
+                    android:transformPivotX="150dp"
+                    android:transformPivotY="20dp" />
+                <!-- Nota: Ajusta los pivots o usa pivotX/Y en código para precisión -->
+
+            </RelativeLayout>
+
+            <!-- Texto de la ecuación -->
+            <TextView
+                android:id="@+id/tv_ecuacion_visual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="x + 3 = 10"
+                android:textSize="24sp"
+                android:layout_gravity="center" />
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="horizontal" android:gravity="center"
                 android:layout_marginBottom="@dimen/margin_small"

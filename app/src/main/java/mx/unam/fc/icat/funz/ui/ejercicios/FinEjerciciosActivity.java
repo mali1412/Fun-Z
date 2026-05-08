@@ -41,7 +41,7 @@ public class FinEjerciciosActivity extends AppCompatActivity {
         TextView tvMsgFinished = findViewById(R.id.msg_module_finished);
 
 // 2. Obtenemos el ID del módulo desde el estado
-        int activeModuleId = state.getActiveModuleId();
+        int activeModuleId = state.getActiveModuleId() - 1;
 
 // 3. Creamos el texto usando el recurso de string y el ID del módulo
         String message = getString(R.string.msg_module_completed, activeModuleId);
