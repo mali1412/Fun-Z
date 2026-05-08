@@ -1,5 +1,7 @@
 package mx.unam.fc.icat.funz.ui.ejercicios;
 
+import static mx.unam.fc.icat.funz.R.*;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -35,10 +37,24 @@ public class FinEjerciciosActivity extends AppCompatActivity {
         if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_fin_ejercicios);
 
+//1. Obtenemos la referencia al TextView
+        TextView tvMsgFinished = findViewById(R.id.msg_module_finished);
+
+// 2. Obtenemos el ID del módulo desde el estado
+        int activeModuleId = state.getActiveModuleId();
+
+// 3. Creamos el texto usando el recurso de string y el ID del módulo
+        String message = getString(R.string.msg_module_completed, activeModuleId);
+
+// 4. Lo aplicamos al TextView
+        tvMsgFinished.setText(message);
+
         ((TextView) findViewById(R.id.tv_fin_ok))
                 .setText(String.valueOf(state.getSessionOk()));
         ((TextView) findViewById(R.id.tv_fin_fail))
                 .setText(String.valueOf(state.getSessionFail()));
+
+
 
         Chip chipPts = findViewById(R.id.tv_fin_pts);
         chipPts.setText("+" + state.getSessionPts() + " puntos");

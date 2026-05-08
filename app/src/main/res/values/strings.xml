@@ -161,5 +161,6 @@
 
     <!-- Accesibilidad -->
     <string name="desc_back_to_topics">Finalizar y volver a la lista de temas</string>
+    <string name="msg_module_completed">¡Has terminado el Módulo %1$d!</string>
 
 </resources>
