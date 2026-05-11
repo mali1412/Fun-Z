@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.concurrent.Executors;
 
 import mx.unam.fc.icat.funz.model.Ecuacion;
+import mx.unam.fc.icat.funz.model.ParserEcuacion;
 
 /**
  * DbSeeder — callback de Room que inserta los datos iniciales
@@ -214,7 +215,7 @@ public class DbSeeder extends RoomDatabase.Callback {
     private static Exercise buildBalanza(int moduleId, int step, String eq, String answer, String lhs, String rhs, String correctOp, String lhsAfter, String rhsAfter, String[] ops, String hint) {
         Exercise e = new Exercise();
         e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_BALANZA;
-        e.equation = eq; e.equationObj = Ecuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
+        e.equation = eq; e.equationObj = ParserEcuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
         e.lhsExpr = lhs; e.rhsExpr = rhs; e.correctOp = correctOp; e.lhsAfterOp = lhsAfter; e.rhsAfterOp = rhsAfter;
         e.ops = toJson(ops);
         return e;
@@ -223,7 +224,7 @@ public class DbSeeder extends RoomDatabase.Callback {
     private static Exercise buildClasico(int moduleId, int step, String eq, String answer, String[] steps, String hint) {
         Exercise e = new Exercise();
         e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_CLASICO;
-        e.equation = eq; e.equationObj = Ecuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
+        e.equation = eq; e.equationObj = ParserEcuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
         e.solutionSteps = toJson(steps);
         return e;
     }
@@ -231,7 +232,7 @@ public class DbSeeder extends RoomDatabase.Callback {
     private static Exercise buildTiles(int moduleId, int step, String eq, String answer, String[] left, String[] right, String hint) {
         Exercise e = new Exercise();
         e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_TILES;
-        e.equation = eq; e.equationObj = Ecuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
+        e.equation = eq; e.equationObj = ParserEcuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
         e.tilesLeft = toJson(left); e.tilesRight = toJson(right);
         return e;
     }
