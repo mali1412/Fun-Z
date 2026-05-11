@@ -209,8 +209,15 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setTextSize(10f);
         tv.setGravity(Gravity.CENTER);
         boolean isX = label.equals("x") || label.contains("/");
-        int bgColor = isX ? getColor(R.color.color_primary) : (label.startsWith("-") ? 0xFFEF4444 : 0xFF3B82F6);
-        tv.setBackgroundColor(bgColor);
+        // Drawable selector con estados (normal + presionado) por tipo de tile
+        if (isX) {
+            tv.setBackgroundResource(R.drawable.bg_tile_x);
+        } else if (label.startsWith("-")) {
+            tv.setBackgroundResource(R.drawable.bg_tile_negative);
+        } else {
+            tv.setBackgroundResource(R.drawable.bg_tile_positive);
+        }
+        tv.setClickable(true); // necesario para que el selector responda al estado pressed
         int w = isX ? dpToPx(44) : dpToPx(22);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(w, dpToPx(22));
         lp.setMargins(dpToPx(3), dpToPx(3), dpToPx(3), dpToPx(3));

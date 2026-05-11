@@ -24,6 +24,14 @@
     <color name="divider">#BDBDBD</color>
     <color name="white">#FFFFFF</color>
 
+    <!-- TILES (azulejos) -->
+    <color name="tile_x">#9C27B0</color>
+    <color name="tile_x_pressed">#6A1B9A</color>
+    <color name="tile_positive">#3B82F6</color>
+    <color name="tile_positive_pressed">#1D4ED8</color>
+    <color name="tile_negative">#EF4444</color>
+    <color name="tile_negative_pressed">#B91C1C</color>
+
     <!-- STATUS -->
     <color name="error">#EF4444</color>
     <color name="error_bg">#FEE2E2</color>
