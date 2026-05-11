@@ -21,7 +21,7 @@ public class ParserEcuacion {
         for (String token : tokens) {
             if (token.isEmpty()) continue;
             if (token.equals("=")) {
-                ec.getTerminos().add(Termino.crearIgual());
+                ec.getTerminos().add(TerminoFactory.crearIgual());
                 currentSign = 1;
             } else if (token.equals("+")) {
                 currentSign = 1;
@@ -52,7 +52,7 @@ public class ParserEcuacion {
         String coefStr = clean.replace("x", "");
         int coef = (coefStr.isEmpty() || coefStr.equals("+")) ? 1 :
                 (coefStr.equals("-") ? -1 : Integer.parseInt(coefStr));
-        return Termino.crearVariable(coef * currentSign, divisor);
+        return TerminoFactory.crearVariable(coef * currentSign, divisor);
     }
 
     private static Termino parseConstante(String token, int currentSign) {
@@ -65,7 +65,7 @@ public class ParserEcuacion {
                 if (dParts.length > 1) divisor = Integer.parseInt(dParts[1]);
                 clean = dParts[0];
             }
-            return Termino.crearConstante(Integer.parseInt(clean) * currentSign, divisor);
+            return TerminoFactory.crearConstante(Integer.parseInt(clean) * currentSign, divisor);
         } catch (Exception e) { return null; }
     }
 

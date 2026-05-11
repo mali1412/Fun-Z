@@ -9,7 +9,8 @@ import java.util.List;
 public class CalculadoraAlgebraica {
 
     public static void aplicarOperacion(Ecuacion ec, String opStr) {
-        String clean = opStr.replace("−", "-").replace("–", "-").replace("×", "*").replace("÷", "/").trim();
+        String clean = opStr.replace("−", "-").replace("–", "-")
+                .replace("×", "*").replace("÷", "/").trim();
         if (clean.length() < 2) return;
 
         char symbol = clean.charAt(0);
@@ -46,11 +47,11 @@ public class CalculadoraAlgebraica {
             int coef = (coefStr.isEmpty() || coefStr.equals("+")) ? 1 :
                     (coefStr.equals("-") ? -1 : Integer.parseInt(coefStr));
             if (symbol == '-') coef = -coef;
-            return Termino.crearVariable(coef, divisor);
+            return TerminoFactory.crearVariable(coef, divisor);
         } else {
             int val = Integer.parseInt(rest);
             if (symbol == '-') val = -val;
-            return Termino.crearConstante(val, divisor);
+            return TerminoFactory.crearConstante(val, divisor);
         }
     }
 
@@ -82,13 +83,13 @@ public class CalculadoraAlgebraica {
 
         ec.getTerminos().clear();
         reconstruirLado(ec.getTerminos(), resL);
-        ec.getTerminos().add(Termino.crearIgual());
+        ec.getTerminos().add(TerminoFactory.crearIgual());
         reconstruirLado(ec.getTerminos(), resR);
     }
 
     private static void reconstruirLado(List<Termino> list, Simplificacion s) {
-        if (s.coef != 0) list.add(Termino.crearVariable(s.coef, s.divCoef));
-        if (s.val != 0 || s.coef == 0) list.add(Termino.crearConstante(s.val, s.divVal));
+        if (s.coef != 0) list.add(TerminoFactory.crearVariable(s.coef, s.divCoef));
+        if (s.val != 0 || s.coef == 0) list.add(TerminoFactory.crearConstante(s.val, s.divVal));
     }
 
     public static double evaluarLado(Ecuacion ec, double valorX, boolean izquierdo) {
@@ -138,12 +139,26 @@ public class CalculadoraAlgebraica {
         return s;
     }
 
+    /**
+     * Calcula el Máximo Común Divisor (MCD) de dos enteros.
+     * Utiliza el Algoritmo de Euclides para mayor eficiencia.
+     * * @param a Primer número.
+     * @param b Segundo número.
+     * @return El entero más grande que divide a 'a' y 'b'. Retorna 1 si no hay divisor común.
+     */
     public static int gcd(int a, int b) {
         a = Math.abs(a); b = Math.abs(b);
         while (b > 0) { int temp = b; b = a % b; a = temp; }
         return a == 0 ? 1 : a;
     }
 
+    /**
+     * Calcula el Mínimo Común Múltiplo (mcm) de dos enteros.
+     * Se basa en la propiedad: mcm(a,b) = |a * b| / MCD(a,b).
+     * * @param a Primer número.
+     * @param b Segundo número.
+     * @return El múltiplo común más pequeño entre 'a' y 'b'.
+     */
     public static int lcm(int a, int b) {
         if (a == 0 || b == 0) return 0;
         return Math.abs(a * b) / gcd(a, b);
