@@ -182,6 +182,24 @@ public class ExerciseViewModel extends AndroidViewModel {
         Ecuacion current = _ecuacion.getValue();
         if (ex == null || current == null) return;
 
+        // Regla de negocio: división entre cero es inválida.
+        String normalizedOp = op.replace("−", "-")
+                .replace("–", "-")
+                .replace("÷", "/")
+                .trim();
+        if (normalizedOp.startsWith("/")) {
+            try {
+                int divisor = Integer.parseInt(normalizedOp.substring(1).trim());
+                if (divisor == 0) {
+                    _statusMessage.setValue("No se puede dividir entre 0");
+                    _statusPositive.setValue(false);
+                    return;
+                }
+            } catch (NumberFormatException ignored) {
+                // Si viene mal formada, no forzamos error: se delega al motor existente.
+            }
+        }
+
         // 1. Aplicamos la transformación matemática real
         current.aplicarOperacion(op);
         

@@ -92,18 +92,28 @@ public class TraductorEcuacion {
 
     /**
      * Convierte un texto en un Termino (Variable o Constante).
-     * Limpia carácteres residuales para evitar NumberFormatException.
+     * Preserva fracciones tipo x/2 o 3/2 para mantener equivalencia matemática.
      */
     private static Termino parsearOperando(String t) {
-        // Limpiamos paréntesis y símbolos de operación que puedan haber quedado pegados
         String clean = t.replace("(", "")
                 .replace(")", "")
-                .replace("/", "")
-                .replace("÷", "")
                 .trim();
 
         if (clean.contains("x")) {
-            String coefStr = clean.replace("x", "").trim();
+            int divisor = 1;
+            String base = clean;
+            if (base.contains("/") || base.contains("÷")) {
+                String[] parts = base.split("[÷/]", 2);
+                base = parts[0].trim();
+                if (parts.length > 1) {
+                    try {
+                        int parsed = Integer.parseInt(parts[1].trim());
+                        if (parsed > 0) divisor = parsed;
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+
+            String coefStr = base.replace("x", "").trim();
             int coef;
             if (coefStr.isEmpty() || coefStr.equals("+")) {
                 coef = 1;
@@ -116,15 +126,27 @@ public class TraductorEcuacion {
                     coef = 1;
                 }
             }
-            return Termino.crearVariable(coef);
-        } else {
-            try {
-                if (clean.isEmpty()) return Termino.crearConstante(0);
-                return Termino.crearConstante(Integer.parseInt(clean));
-            } catch (NumberFormatException e) {
-                // Si aún así falla, devolvemos una constante 0 en lugar de crashear
-                return Termino.crearConstante(0);
+            return Termino.crearVariable(coef, divisor);
+        }
+
+        try {
+            if (clean.isEmpty()) return Termino.crearConstante(0);
+            int divisor = 1;
+            String numerador = clean;
+            if (clean.contains("/") || clean.contains("÷")) {
+                String[] parts = clean.split("[÷/]", 2);
+                numerador = parts[0].trim();
+                if (parts.length > 1) {
+                    try {
+                        int parsed = Integer.parseInt(parts[1].trim());
+                        if (parsed > 0) divisor = parsed;
+                    } catch (NumberFormatException ignored) {}
+                }
             }
+            return Termino.crearConstante(Integer.parseInt(numerador), divisor);
+        } catch (NumberFormatException e) {
+            // Si aún así falla, devolvemos una constante 0 en lugar de crashear
+            return Termino.crearConstante(0);
         }
     }
 }
