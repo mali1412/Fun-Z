@@ -1,70 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Panel TILES — inflado cuando exercise.type = "TILES" -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:cardBackgroundColor="?attr/colorBgTonalCard"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="0dp">
 
-        <!-- Instrucción -->
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="Mueve los tiles para aislar x en el lado izquierdo"
-            android:textSize="11sp" android:textColor="?attr/colorTextSecondary"
-            android:gravity="center" android:layout_marginBottom="12dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="14dp">
 
-        <!-- Área de tiles: Izquierdo -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Lado izquierdo" android:textSize="10sp"
-            android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="4dp"/>
+            <TextView
+                android:id="@+id/tv_tiles_equation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_tiles_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_status"
+                android:gravity="center"
+                android:padding="12dp"
+                android:textColor="?attr/colorTextSecondary"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="0.85"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <com.google.android.material.card.MaterialCardView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent" android:layout_height="70dp"
-            app:cardCornerRadius="10dp" app:cardElevation="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             app:cardBackgroundColor="?attr/colorBgTonalCard"
-            android:layout_marginBottom="8dp">
-            <LinearLayout
-                android:id="@+id/ll_tiles_left"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="2dp">
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="8dp"/>
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/ll_tiles_left"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+            </ScrollView>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Separador "=" -->
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="━━━━━━━━ = ━━━━━━━━" android:gravity="center"
-            android:textSize="12sp" android:textColor="?attr/colorTextSecondary"
-            android:layout_marginVertical="4dp"/>
+        <LinearLayout
+            android:id="@+id/operation_drop_zone"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="10dp"
+            android:background="@drawable/bg_tiles_drop_zone"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <!-- Área de tiles: Derecho -->
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Lado derecho" android:textSize="10sp"
-            android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="4dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APLICAR"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_drop_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="o toca un botón"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+        </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent" android:layout_height="70dp"
-            app:cardCornerRadius="10dp" app:cardElevation="0dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             app:cardBackgroundColor="?attr/colorBgTonalCard"
-            android:layout_marginBottom="12dp">
-            <LinearLayout
-                android:id="@+id/ll_tiles_right"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="2dp">
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="8dp"/>
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/ll_tiles_right"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="6dp" />
+            </ScrollView>
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- Status -->
-        <TextView android:id="@+id/tv_tiles_status"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:textSize="11sp" android:textColor="?attr/colorTextSecondary"
-            android:background="@drawable/bg_status" android:padding="8dp"
-            android:gravity="center"/>
-
     </LinearLayout>
-</ScrollView>
+
+    <LinearLayout
+        android:id="@+id/ll_tiles_ops_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal" />
+
+</LinearLayout>

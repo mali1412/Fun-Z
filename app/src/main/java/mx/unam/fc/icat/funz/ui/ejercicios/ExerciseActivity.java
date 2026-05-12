@@ -14,6 +14,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mx.unam.fc.icat.funz.db.Exercise;
@@ -190,26 +191,58 @@ public class ExerciseActivity extends AppCompatActivity {
         LinearLayout llLeft  = currentPanel.findViewById(R.id.ll_tiles_left);
         LinearLayout llRight = currentPanel.findViewById(R.id.ll_tiles_right);
         TextView     tvSt    = currentPanel.findViewById(R.id.tv_tiles_status);
+        TextView     tvEq    = currentPanel.findViewById(R.id.tv_tiles_equation);
+        TextView     tvDrop  = currentPanel.findViewById(R.id.tv_drop_hint);
+        LinearLayout dropZone = currentPanel.findViewById(R.id.operation_drop_zone);
+        LinearLayout llOps   = currentPanel.findViewById(R.id.ll_tiles_ops_bottom);
 
         vm.statusMessage.observe(this, tvSt::setText);
-        vm.statusPositive.observe(this, pos -> tvSt.setTextColor(Boolean.TRUE.equals(pos) ? getColor(R.color.accent_green) : resolveThemeColor(R.attr.colorWarnChipText)));
-        vm.leftTilesLd.observe(this, tiles -> { renderTiles(tiles, llLeft, "L"); setupDropTarget(llLeft, "L"); });
-        vm.rightTilesLd.observe(this, tiles -> { renderTiles(tiles, llRight, "R"); setupDropTarget(llRight, "R"); });
+        vm.statusPositive.observe(this, pos -> {
+            if (pos == null) {
+                tvSt.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
+            } else {
+                tvSt.setTextColor(Boolean.TRUE.equals(pos) ? getColor(R.color.accent_green) : resolveThemeColor(R.attr.colorWarnChipText));
+            }
+        });
+        vm.lhsExpr.observe(this, lhs -> {
+            String rhs = vm.rhsExpr.getValue();
+            tvEq.setText(formatEquation(lhs, rhs));
+        });
+        vm.rhsExpr.observe(this, rhs -> {
+            String lhs = vm.lhsExpr.getValue();
+            tvEq.setText(formatEquation(lhs, rhs));
+        });
+
+        vm.ops.observe(this, opList -> {
+            llOps.removeAllViews();
+            for (String op : opList) llOps.addView(makeOpView(op));
+        });
+
+        setupOperationDropZone(dropZone, tvDrop);
+        vm.leftTilesLd.observe(this, tiles -> renderTiles(tiles, llLeft, "L"));
+        vm.rightTilesLd.observe(this, tiles -> renderTiles(tiles, llRight, "R"));
     }
 
     private void renderTiles(List<String> tiles, LinearLayout container, String side) {
         container.removeAllViews();
-        for (int i = 0; i < tiles.size(); i++) container.addView(makeTileView(tiles.get(i), i, side));
+        List<String> compactTiles = compactTilesForDisplay(tiles);
+        if (compactTiles.isEmpty()) {
+            compactTiles = new ArrayList<>();
+            compactTiles.add("0");
+        }
+        for (String label : compactTiles) {
+            container.addView(makeTileView(label));
+        }
     }
 
-    private View makeTileView(String label, int idx, String side) {
+    private View makeTileView(String label) {
         TextView tv = new TextView(this);
         tv.setText(label);
         tv.setTextColor(Color.WHITE);
-        tv.setTextSize(10f);
+        tv.setTextSize(20f);
+        tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         tv.setGravity(Gravity.CENTER);
-        boolean isX = label.equals("x") || label.contains("/");
-        // Drawable selector con estados (normal + presionado) por tipo de tile
+        boolean isX = label.endsWith("x") || label.contains("/");
         if (isX) {
             tv.setBackgroundResource(R.drawable.bg_tile_x);
         } else if (label.startsWith("-")) {
@@ -217,28 +250,119 @@ public class ExerciseActivity extends AppCompatActivity {
         } else {
             tv.setBackgroundResource(R.drawable.bg_tile_positive);
         }
-        tv.setClickable(true); // necesario para que el selector responda al estado pressed
-        int w = isX ? dpToPx(44) : dpToPx(22);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(w, dpToPx(22));
-        lp.setMargins(dpToPx(3), dpToPx(3), dpToPx(3), dpToPx(3));
+        tv.setClickable(true);
+        tv.setLongClickable(true);
+        // MATCH_PARENT de ancho para que llene el panel y quede visible en pila
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(72));
+        lp.setMargins(dpToPx(6), dpToPx(5), dpToPx(6), dpToPx(5));
         tv.setLayoutParams(lp);
+
         tv.setOnLongClickListener(v -> {
-            ClipData cd = ClipData.newPlainText("tile", side + "_" + idx + "_" + label);
+            ClipData cd = ClipData.newPlainText("tile", label);
             v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
             return true;
         });
-        if (!isX) tv.setOnClickListener(v -> vm.moveTile(side, idx, label));
         return tv;
     }
 
-    private void setupDropTarget(LinearLayout container, String targetSide) {
-        container.setOnDragListener((v, event) -> {
-            if (event.getAction() == DragEvent.ACTION_DROP) {
-                String[] p = event.getClipData().getItemAt(0).getText().toString().split("_");
-                if (p.length == 3 && !p[0].equals(targetSide) && !p[2].equals("x"))
-                    vm.moveTile(p[0], Integer.parseInt(p[1]), p[2]);
+    private String formatEquation(String lhs, String rhs) {
+        String left = lhs == null || lhs.trim().isEmpty() ? "0" : lhs.trim();
+        String right = rhs == null || rhs.trim().isEmpty() ? "0" : rhs.trim();
+        return left + " = " + right;
+    }
+
+    private List<String> compactTilesForDisplay(List<String> source) {
+        int xCount = 0;
+        int halfXCount = 0;
+        int units = 0;
+        for (String tile : source) {
+            if ("x".equals(tile)) xCount++;
+            else if ("x/2".equals(tile)) halfXCount++;
+            else if ("+1".equals(tile) || "1".equals(tile)) units++;
+            else if ("-1".equals(tile)) units--;
+        }
+
+        List<String> compact = new ArrayList<>();
+        int halfUnits = xCount * 2 + halfXCount;
+        if (halfUnits > 0) {
+            if (halfUnits % 2 == 0) {
+                int coef = halfUnits / 2;
+                compact.add(coef == 1 ? "x" : coef + "x");
+            } else {
+                compact.add(halfUnits == 1 ? "x/2" : halfUnits + "x/2");
             }
+        }
+        if (units > 0) compact.add("+" + units);
+        if (units < 0) compact.add(String.valueOf(units));
+        if (compact.isEmpty()) compact.add("0");
+        return compact;
+    }
+
+    private TextView makeOpView(String op) {
+        TextView tv = new TextView(this);
+        tv.setText(op);
+        tv.setTextSize(26f);
+        tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        tv.setTextColor(Color.WHITE);
+        tv.setGravity(Gravity.CENTER);
+        tv.setPadding(dpToPx(16), dpToPx(18), dpToPx(16), dpToPx(18));
+        tv.setClickable(true);
+        tv.setLongClickable(true);
+        if ("-1".equals(op) || "+1".equals(op) && op.startsWith("-")) {
+            tv.setBackgroundResource(R.drawable.bg_tile_negative);
+        } else if ("÷2".equals(op) || "×2".equals(op)) {
+            tv.setBackgroundResource(R.drawable.bg_tile_x);
+        } else {
+            tv.setBackgroundResource(R.drawable.bg_tile_positive);
+        }
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dpToPx(72), 1f);
+        lp.setMargins(dpToPx(5), dpToPx(4), dpToPx(5), dpToPx(4));
+        tv.setLayoutParams(lp);
+
+        tv.setOnLongClickListener(v -> {
+            ClipData cd = ClipData.newPlainText("op", op);
+            View.DragShadowBuilder shadow = new View.DragShadowBuilder(v);
+            v.startDragAndDrop(cd, shadow, v, 0);
             return true;
+        });
+        return tv;
+    }
+
+    private void setupOperationDropZone(LinearLayout dropZone, TextView dropHint) {
+        dropZone.setOnDragListener((v, event) -> {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    dropHint.setText("Suelta aquí ↓");
+                    dropZone.setAlpha(0.85f);
+                    return true;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    dropZone.setScaleX(1.05f);
+                    dropZone.setScaleY(1.05f);
+                    dropHint.setText("¡Suelta para aplicar!");
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    dropZone.setScaleX(1f);
+                    dropZone.setScaleY(1f);
+                    dropHint.setText("Suelta aquí ↓");
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    dropZone.setScaleX(1f);
+                    dropZone.setScaleY(1f);
+                    dropZone.setAlpha(1f);
+                    dropHint.setText("o toca un botón");
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    dropZone.setScaleX(1f);
+                    dropZone.setScaleY(1f);
+                    if (event.getClipData() != null && event.getClipData().getItemCount() > 0) {
+                        String op = event.getClipData().getItemAt(0).getText().toString();
+                        vm.applyTileOperation(op);
+                    }
+                    return true;
+                default:
+                    return true;
+            }
         });
     }
 
@@ -256,7 +380,17 @@ public class ExerciseActivity extends AppCompatActivity {
         vm.useHint();
         BottomSheetDialog sheet = new BottomSheetDialog(this);
         View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, null);
-        ((TextView) v.findViewById(R.id.tv_hint_content)).setText(ex.hintText);
+
+        String hintContent = ex.hintText != null ? ex.hintText : "";
+        // Para Tiles: añade dinámicamente la operación recomendada al final de la pista
+        if (Exercise.TYPE_TILES.equals(ex.type)) {
+            String nextOp = vm.expectedTileOp();
+            if (!nextOp.isEmpty()) {
+                hintContent += "\n\n💡 Próxima operación a aplicar: " + nextOp;
+            }
+        }
+
+        ((TextView) v.findViewById(R.id.tv_hint_content)).setText(hintContent);
         v.findViewById(R.id.btn_close_hint).setOnClickListener(b -> sheet.dismiss());
         sheet.setContentView(v);
         sheet.show();

@@ -145,7 +145,8 @@ public class ExerciseViewModel extends AndroidViewModel {
         leftTiles.clear();  leftTiles.addAll(parseJson(ex.tilesLeft));
         rightTiles.clear(); rightTiles.addAll(parseJson(ex.tilesRight));
         publishTiles();
-        _statusMessage.postValue("Mueve los tiles para aislar x");
+        _statusMessage.postValue("Arrastra una operación al centro para aplicarla en ambos lados.");
+        _statusPositive.postValue(null);
     }
 
     private void initClasico(Exercise ex) {
@@ -227,20 +228,48 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     public void moveTile(String side, int idx, String label) {
-        if (side.equals("L")) {
-            if (idx < leftTiles.size()) {
-                leftTiles.remove(idx);
-                rightTiles.add(invertirSigno(label));
-            }
-        } else {
-            if (idx < rightTiles.size()) {
-                rightTiles.remove(idx);
-                leftTiles.add(invertirSigno(label));
-            }
+        _statusMessage.setValue("Usa las operaciones de la parte inferior y suéltalas en la zona central.");
+        _statusPositive.setValue(false);
+    }
+
+    public void applyTileOperation(String op) {
+        String normalized = normalizeOp(op);
+        if (normalized.isEmpty()) return;
+
+        String expected = expectedTileOp();
+        if (!expected.isEmpty() && !expected.equals(normalized)) {
+            _statusMessage.setValue("Esa operación no es correcta en este paso.");
+            _statusPositive.setValue(false);
+            return;
         }
-        ejecutarReglaParCero(leftTiles);
-        ejecutarReglaParCero(rightTiles);
+
+        boolean applied = false;
+        switch (normalized) {
+            case "-1":
+                applied = removeUnitBothSides("+1");
+                break;
+            case "+1":
+                applied = removeUnitBothSides("-1");
+                break;
+            case "÷2":
+                applied = divideBothSidesByTwo();
+                break;
+            case "×2":
+                applied = multiplyBothSidesByTwo();
+                break;
+        }
+
+        if (!applied) {
+            _statusMessage.setValue("No se puede aplicar " + normalized + " sin romper el equilibrio.");
+            _statusPositive.setValue(false);
+            return;
+        }
+
         publishTiles();
+        if (!Boolean.TRUE.equals(_statusPositive.getValue())) {
+            _statusMessage.setValue("Operación aplicada en ambos lados: " + normalized + ".");
+            _statusPositive.setValue(true);
+        }
     }
 
     private String invertirSigno(String label) {
@@ -266,7 +295,11 @@ public class ExerciseViewModel extends AndroidViewModel {
         tokens.add("=");
         tokens.addAll(rightTiles);
         Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(tokens);
+        ecActual.simplificar(); // Combina "+1+1+1..." en "+6" antes de convertir a texto
         _ecuacion.postValue(ecActual);
+        _lhsExpr.postValue(ecActual.getLhsString());
+        _rhsExpr.postValue(ecActual.getRhsString());
+        _ops.postValue(getTileOps());
         if (ecActual.xEstaAislada()) {
             int valorRhs = ecActual.valorRHS();
             _autoAnswer.postValue(String.valueOf(valorRhs));
@@ -282,8 +315,111 @@ public class ExerciseViewModel extends AndroidViewModel {
         rightTiles.clear(); rightTiles.addAll(parseJson(ex.tilesRight));
         publishTiles();
         _autoAnswer.setValue(null);
-        _statusMessage.setValue("Mueve los tiles para aislar x");
+        _statusMessage.setValue("Arrastra una operación al centro para aplicarla en ambos lados.");
+        _statusPositive.setValue(null);
         startTimer();
+    }
+
+    private List<String> getTileOps() {
+        // Siempre mostramos las 4 operaciones para no revelar cuál es la correcta
+        List<String> result = new ArrayList<>();
+        result.add("-1");
+        result.add("+1");
+        result.add("÷2");
+        result.add("×2");
+        return result;
+    }
+
+    public String expectedTileOp() {
+        SideState left = summarizeSide(leftTiles);
+        if (left.units > 0) return "-1";
+        if (left.units < 0) return "+1";
+        if (left.halfX > 0) return "×2";
+        if (left.xCount > 1) return "÷2";
+        return "";
+    }
+
+    private SideState summarizeSide(List<String> side) {
+        SideState s = new SideState();
+        for (String tile : side) {
+            if ("x".equals(tile)) {
+                s.xCount++;
+            } else if ("x/2".equals(tile)) {
+                s.halfX++;
+            } else if ("+1".equals(tile) || "1".equals(tile)) {
+                s.units++;
+            } else if ("-1".equals(tile)) {
+                s.units--;
+            }
+        }
+        return s;
+    }
+
+    private boolean removeUnitBothSides(String unitLabel) {
+        boolean leftRemoved = leftTiles.remove(unitLabel);
+        boolean rightRemoved = rightTiles.remove(unitLabel);
+        if (!leftRemoved || !rightRemoved) {
+            if (leftRemoved) leftTiles.add(unitLabel);
+            if (rightRemoved) rightTiles.add(unitLabel);
+            return false;
+        }
+        return true;
+    }
+
+    private boolean divideBothSidesByTwo() {
+        SideState left = summarizeSide(leftTiles);
+        SideState right = summarizeSide(rightTiles);
+        if (left.halfX > 0 || right.halfX > 0) return false;
+        if (left.xCount % 2 != 0 || Math.abs(left.units) % 2 != 0 || Math.abs(right.units) % 2 != 0) return false;
+
+        leftTiles.clear();
+        rightTiles.clear();
+
+        for (int i = 0; i < left.xCount / 2; i++) leftTiles.add("x");
+        addUnits(leftTiles, left.units / 2);
+        for (int i = 0; i < right.xCount / 2; i++) rightTiles.add("x");
+        addUnits(rightTiles, right.units / 2);
+        return true;
+    }
+
+    private boolean multiplyBothSidesByTwo() {
+        SideState left = summarizeSide(leftTiles);
+        SideState right = summarizeSide(rightTiles);
+        leftTiles.clear();
+        rightTiles.clear();
+
+        for (int i = 0; i < left.xCount * 2; i++) leftTiles.add("x");
+        for (int i = 0; i < left.halfX; i++) leftTiles.add("x");
+        addUnits(leftTiles, left.units * 2);
+
+        for (int i = 0; i < right.xCount * 2; i++) rightTiles.add("x");
+        for (int i = 0; i < right.halfX; i++) rightTiles.add("x");
+        addUnits(rightTiles, right.units * 2);
+        return true;
+    }
+
+    private void addUnits(List<String> target, int units) {
+        if (units > 0) {
+            for (int i = 0; i < units; i++) target.add("+1");
+        } else {
+            for (int i = 0; i < -units; i++) target.add("-1");
+        }
+    }
+
+    private String normalizeOp(String op) {
+        if (op == null) return "";
+        return op.replace("−", "-")
+                .replace("–", "-")
+                .replace("/", "÷")
+                .replace("x", "×")
+                .replace("*", "×")
+                .trim();
+    }
+
+    private static class SideState {
+        int xCount;
+        int halfX;
+        int units;
     }
 
     public void verify(String input) {

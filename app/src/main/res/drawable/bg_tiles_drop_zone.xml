@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="14dp" />
+    <stroke
+        android:width="2dp"
+        android:color="@color/tiles_drop_border"
+        android:dashWidth="8dp"
+        android:dashGap="6dp" />
+    <solid android:color="@color/tiles_drop_bg" />
+</shape>
+
