@@ -87,7 +87,7 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "3x = |15|",
                                     "Dividir entre el coeficiente 3:",
                                     "x = 15 / |3|",
-                                    "x = |5| ✓"
+                                    "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: Transponer +5 → 3x = 15\nPaso 2: Dividir entre 3 → x = 5 ✓"),
                     buildTiles(1,3,"x + 2 = 12","10",
@@ -145,7 +145,7 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "5x = |30|",
                                     "Dividir entre 5:",
                                     "x = 30 / |5|",
-                                    "x = |6| ✓"
+                                    "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: Transponer -10 → 5x = 30\nPaso 2: Dividir entre 5 → x = 6 ✓"),
                     buildTiles(2,3,"2x + 1 = 7","3",
@@ -203,7 +203,7 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "x/3 = |4|",
                                     "Multiplicar por 3:",
                                     "x = 4 * |3|",
-                                    "x = |12| ✓"
+                                    "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: Transponer +2 → x/3 = 4\nPaso 2: Multiplicar por 3 → x = 12 ✓"),
                     buildTiles(3,3,"x/2 = 3","6",
@@ -260,7 +260,8 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "2x = 10 - |6|",
                                     "2x = |4|",
                                     "Dividir entre 2:",
-                                    "x = |2| ✓"
+                                    "x = 4 / |2|",
+                                    "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: 2*x + 2*3 = 2x+6.\nPaso 2: 10 - 6 = 4.\nPaso 3: 4 / 2 = 2."),
                     buildBalanza(4, 2, "3(x - 1) = 9", "4", "3x-3", "9", "+3", "3x", "12",
@@ -321,7 +322,7 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "|2x| + 2 = 10",
                                     "Pasamos el 2 restando y despejamos:",
                                     "2x = |8|",
-                                    "x = |4| ✓"
+                                    "Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: 3x - x = 2x.\nPaso 2: 10 - 2 = 8.\nPaso 3: 8 / 2 = 4."),
 
@@ -387,7 +388,7 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "x + 6 = |9|",
                                     "Finalmente, resta el 6 para despejar x:",
                                     "x = 9 - |6|",
-                                    "x = |3| ✓"
+                                    "Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: 2*x + 2*3. Paso 2: 2x - x = x. Paso 3: 9 - 6 = 3."),
 

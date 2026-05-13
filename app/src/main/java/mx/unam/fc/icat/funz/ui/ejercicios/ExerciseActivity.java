@@ -343,6 +343,14 @@ public class ExerciseActivity extends AppCompatActivity {
         if (index >= steps.size()) return;
 
         String stepText = steps.get(index);
+        if (index == steps.size() - 1) {
+            // ACTIVAMOS LA BARRA GLOBAL
+            etAnswer.requestFocus(); // Ponemos el foco en el EditText de abajo
+            // Opcionalmente podemos resaltar la barra global con un color para avisar al usuario
+            findViewById(R.id.btn_verify).setAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
+            return;
+        }
+
         // Usaremos un delimitador como "|" para saber dónde va el cuadro de texto
         if (!stepText.contains("|")) {
             TextView tvInstruction = new TextView(this);
