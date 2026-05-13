@@ -136,46 +136,46 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="?attr/colorSurface"
-            app:tabTextColor="@color/text_secondary"
-            app:tabSelectedTextColor="@color/color_primary"
-            app:tabIndicatorColor="@color/color_primary"
+            app:tabTextColor="?attr/colorTextSecondary"
+            app:tabSelectedTextColor="?attr/colorPrimary"
+            app:tabIndicatorColor="?attr/colorPrimary"
             app:tabIndicatorHeight="2dp"/>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="@dimen/padding_card">
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <LinearLayout
                     android:id="@+id/content_info"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/card_corner_radius"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="?attr/colorPrimaryAlpha"
-                        android:layout_marginBottom="@dimen/margin_default">
+                        android:layout_marginBottom="12dp">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="@dimen/padding_card">
+                            android:orientation="vertical" android:padding="20dp">
                             <TextView android:id="@+id/tv_info_title_1"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="¿Qué es una ecuación?" android:textSize="@dimen/text_size_body"
-                                android:textStyle="bold" android:textColor="?attr/colorPrimary"
-                                android:layout_marginBottom="@dimen/margin_small"/>
+                                android:textStyle="bold" android:textSize="18sp"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginBottom="8dp"/>
                             <TextView android:id="@+id/tv_info_text_1"
-                                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="..."
-                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                android:textSize="14sp" android:textColor="?attr/colorPrimary"
                                 android:lineSpacingExtra="4dp"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -183,21 +183,41 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="@dimen/card_corner_radius"
+                        app:cardCornerRadius="12dp"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="?attr/colorPrimaryAlpha"
-                        android:layout_marginBottom="@dimen/margin_default">
+                        android:layout_marginBottom="12dp">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="@dimen/padding_card">
+                            android:orientation="vertical" android:padding="20dp">
                             <TextView android:id="@+id/tv_info_title_2"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="Forma simple" android:textSize="@dimen/text_size_body"
-                                android:textStyle="bold" android:textColor="?attr/colorPrimary"
-                                android:layout_marginBottom="@dimen/margin_small"/>
+                                android:textStyle="bold" android:textSize="18sp"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginBottom="8dp"/>
                             <TextView android:id="@+id/tv_info_text_2"
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                android:textSize="14sp" android:textColor="?attr/colorPrimary"
+                                android:lineSpacingExtra="4dp"/>
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="?attr/colorPrimaryAlpha"
+                        android:layout_marginBottom="12dp">
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                            android:orientation="vertical" android:padding="20dp">
+                            <TextView android:id="@+id/tv_info_title_3"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:text="..."
-                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
+                                android:textStyle="bold" android:textSize="18sp"
+                                android:textColor="?attr/colorPrimary"
+                                android:layout_marginBottom="8dp"/>
+                            <TextView android:id="@+id/tv_info_text_3"
+                                android:layout_width="match_parent" android:layout_height="wrap_content"
+                                android:textSize="14sp" android:textColor="?attr/colorPrimary"
                                 android:lineSpacingExtra="4dp"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
@@ -211,19 +231,12 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView android:id="@+id/tv_example_equation"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
-                        android:text="x + 3 = 7"
-                        android:fontFamily="monospace" android:textSize="@dimen/text_size_h1"
-                        android:textColor="@color/text_primary" android:padding="@dimen/margin_default"
-                        android:background="@drawable/bg_equation_box"
-                        android:gravity="center" android:layout_marginBottom="@dimen/margin_default"/>
-
-                    <LinearLayout android:id="@+id/ll_example_steps"
-                        android:layout_width="match_parent" android:layout_height="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/ll_examples_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical" />
                 </LinearLayout>
-
             </LinearLayout>
         </ScrollView>
 

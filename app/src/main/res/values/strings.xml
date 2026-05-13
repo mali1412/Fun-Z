@@ -82,6 +82,7 @@
     <string name="mod2_sub">ax+b=c · Balanza</string>
     <string name="mod3_name">M&#243;dulo 3: Par&#233;ntesis</string>
     <string name="mod3_sub">a(x+b)=c(x+d)</string>
+    <string name="ejemplo">Ejemplo A</string>
 
     <!-- Estadísticas -->
     <string name="title_stats">Estad&#237;sticas</string>

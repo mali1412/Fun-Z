@@ -34,6 +34,8 @@ public class Module {
     @ColumnInfo(name = "info_text_1")  public String infoText1;
     @ColumnInfo(name = "info_title_2") public String infoTitle2;
     @ColumnInfo(name = "info_text_2")  public String infoText2;
+    @ColumnInfo(name = "info_title_3") public String infoTitle3;
+    @ColumnInfo(name = "info_text_3")  public String infoText3;
 
     @ColumnInfo(name = "example_equation") public String exampleEquation;
     @ColumnInfo(name = "example_steps")    public String exampleSteps; // JSON Array

@@ -82,39 +82,63 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         TextView tvTitle = findViewById(R.id.tv_module_title);
         if (tvTitle != null) tvTitle.setText(currentModule.name);
 
-        // Info Tab
         ((TextView) findViewById(R.id.tv_info_title_1)).setText(currentModule.infoTitle1);
         ((TextView) findViewById(R.id.tv_info_text_1)).setText(currentModule.infoText1);
         ((TextView) findViewById(R.id.tv_info_title_2)).setText(currentModule.infoTitle2);
         ((TextView) findViewById(R.id.tv_info_text_2)).setText(currentModule.infoText2);
+        ((TextView) findViewById(R.id.tv_info_title_3)).setText(currentModule.infoTitle3);
+        ((TextView) findViewById(R.id.tv_info_text_3)).setText(currentModule.infoText3);
 
-        // Examples Tab
-        ((TextView) findViewById(R.id.tv_example_equation)).setText(currentModule.exampleEquation);
         renderExampleSteps();
     }
 
     private void renderExampleSteps() {
-        LinearLayout container = findViewById(R.id.ll_example_steps);
-        container.removeAllViews();
+        LinearLayout mainContainer = findViewById(R.id.ll_examples_container);
+        if (mainContainer == null) return;
+
+        mainContainer.removeAllViews();
+
         try {
-            JSONArray steps = new JSONArray(currentModule.exampleSteps);
-            for (int i = 0; i < steps.length(); i++) {
-                View stepView = LayoutInflater.from(this).inflate(R.layout.item_example_step, container, false);
-                TextView tvNum = stepView.findViewById(R.id.tv_step_number);
-                TextView tvDesc = stepView.findViewById(R.id.tv_step_desc);
+            JSONArray allSteps = new JSONArray(currentModule.exampleSteps);
+            // Separamos las 3 ecuaciones que pusimos en el seeder con \n
+            String[] equations = currentModule.exampleEquation.split("\n");
+            String[] labels = {"Ejemplo A", "Ejemplo B", "Ejemplo C"};
 
-                tvNum.setText(String.valueOf(i + 1));
-                tvDesc.setText(steps.getString(i));
+            int stepPointer = 0;
 
-                // Resaltar el último paso (el resultado)
-                if (i == steps.length() - 1) {
-                    tvDesc.setTypeface(null, android.graphics.Typeface.BOLD);
-                    tvDesc.setTextColor(getResources().getColor(R.color.color_primary));
+            for (int i = 0; i < equations.length; i++) {
+                // Inflar el cuadrado (Card)
+                View cardView = getLayoutInflater().inflate(R.layout.item_example_card, mainContainer, false);
+
+                TextView tvLabel = cardView.findViewById(R.id.tv_example_label);
+                TextView tvEq = cardView.findViewById(R.id.tv_card_equation);
+                LinearLayout llSteps = cardView.findViewById(R.id.ll_card_steps);
+
+                tvLabel.setText(labels[i]);
+                tvEq.setText(equations[i]);
+
+                // Lógica para llenar los pasos de cada cuadrado
+                while (stepPointer < allSteps.length()) {
+                    String stepText = allSteps.getString(stepPointer);
+                    stepPointer++;
+
+                    if (stepText.isEmpty()) break; // El "" en el seeder indica fin de un ejemplo
+
+                    // Inflar cada línea de la resolución
+                    View stepItem = getLayoutInflater().inflate(R.layout.item_example_step, llSteps, false);
+                    TextView tvDesc = stepItem.findViewById(R.id.tv_step_desc);
+                    tvDesc.setText(stepText);
+
+                    if (stepText.contains("✓")) {
+                        tvDesc.setTypeface(null, android.graphics.Typeface.BOLD);
+                        tvDesc.setTextColor(getColor(R.color.color_primary));
+                    }
+
+                    llSteps.addView(stepItem);
                 }
-
-                container.addView(stepView);
+                mainContainer.addView(cardView);
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

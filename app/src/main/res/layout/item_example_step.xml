@@ -10,7 +10,6 @@
         android:id="@+id/tv_step_number"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:text="1"
         android:textSize="@dimen/text_size_small"
         android:textColor="#FFFFFF"
         android:gravity="center"
