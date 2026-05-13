@@ -1,5 +1,9 @@
 package mx.unam.fc.icat.funz.ui.ejercicios;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.util.Log;
+import android.view.animation.AnimationUtils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ClipData;
@@ -325,17 +329,62 @@ public class ExerciseActivity extends AppCompatActivity {
     private void bindClasicoPanel(Exercise exercise) {
         TextView tvEquation = currentPanel.findViewById(R.id.tv_equation_display);
         LinearLayout llSteps = currentPanel.findViewById(R.id.ll_solution_steps);
+        if (llSteps == null) {
+            Log.e("ERROR", "No se encontró el contenedor ll_solution_steps");
+            return;
+        }
         tvEquation.setText(exercise.equation);
         List<String> steps = ExerciseViewModel.parseJson(exercise.solutionSteps);
         llSteps.removeAllViews();
-        for (String step : steps) {
-            TextView tv = new TextView(this);
-            tv.setText(step);
-            tv.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurface));
-            tv.setTextSize(14f);
-            tv.setPadding(0, 4, 0, 4);
-            llSteps.addView(tv);
+        mostrarSiguientePaso(llSteps, steps, 0);
+    }
+
+    private void mostrarSiguientePaso(LinearLayout container, List<String> steps, int index) {
+        if (index >= steps.size()) return;
+
+        String stepText = steps.get(index);
+        // Usaremos un delimitador como "|" para saber dónde va el cuadro de texto
+        if (!stepText.contains("|")) {
+            TextView tvInstruction = new TextView(this);
+            tvInstruction.setText(stepText);
+            tvInstruction.setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(4));
+            tvInstruction.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
+            container.addView(tvInstruction);
+            // Pasamos automáticamente al siguiente, que debería ser el que tiene el hueco
+            mostrarSiguientePaso(container, steps, index + 1);
+            return;
         }
+
+        String[] parts = stepText.split("\\|");
+
+        View stepView = getLayoutInflater().inflate(R.layout.item_step_clasico, container, false);
+        TextView tvPre = stepView.findViewById(R.id.tv_step_prefix);
+        EditText etInput = stepView.findViewById(R.id.et_step_input);
+        TextView tvPost = stepView.findViewById(R.id.tv_step_suffix);
+        Button btnCheck = stepView.findViewById(R.id.btn_step_verify);
+
+        tvPre.setText(parts[0]);
+        if (parts.length > 2) tvPost.setText(parts[2]);
+
+        String correctAnswer = parts[1]; // La respuesta esperada está entre los | |
+
+        btnCheck.setOnClickListener(v -> {
+            if (etInput.getText().toString().trim().equals(correctAnswer)) {
+                // ÉXITO
+                etInput.setEnabled(false);
+                etInput.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E8F5E9")));
+                btnCheck.setVisibility(View.GONE);
+                tvPre.setTextColor(getColor(R.color.accent_green));
+                // Mostrar el siguiente paso
+                mostrarSiguientePaso(container, steps, index + 1);
+            } else {
+                // ERROR
+                etInput.setError("Incorrecto");
+                etInput.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake));
+            }
+        });
+
+        container.addView(stepView);
     }
 
     private void bindTilesPanel(Exercise exercise) {

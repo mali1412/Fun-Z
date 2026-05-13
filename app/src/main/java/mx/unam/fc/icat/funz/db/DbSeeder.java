@@ -58,9 +58,15 @@ public class DbSeeder extends RoomDatabase.Callback {
                     buildBalanza(1,1,"x + 5 = 10","5","x+5","10","-5","x","5",
                             new String[]{"-5","+5","×2","÷2"},
                             "Paso 1: Resta 5 a ambos lados.\n  x+5-5 = 10-5\n\nPaso 2: Simplifica.\n  x = 5 ✓"),
-                    buildClasico(1,2,"3x + 5 = 20","5",
-                            new String[]{"Transponer +5 al otro lado:","  3x = 20 - 5 = 15",
-                                    "Dividir entre el coeficiente 3:","  x = 15 ÷ 3 = 5 ✓"},
+                    buildClasico(1, 2, "3x + 5 = 20", "5",
+                            new String[]{
+                                    "Transponer +5 al otro lado:",
+                                    "3x = 20 - |5|", // El sistema pondrá un cuadro aquí
+                                    "3x = |15|",
+                                    "Dividir entre el coeficiente 3:",
+                                    "x = 15 / |3|",
+                                    "x = |5| ✓"
+                            },
                             "Paso 1: Transponer +5 → 3x = 15\nPaso 2: Dividir entre 3 → x = 5 ✓"),
                     buildTiles(1,3,"x + 2 = 12","10",
                             new String[]{"x","+1","+1"},
@@ -85,8 +91,15 @@ public class DbSeeder extends RoomDatabase.Callback {
                     buildBalanza(2,1,"2x + 3 = 11","4","2x+3","11","-3","2x","8",
                             new String[]{"-3","+3","÷2","×2"},
                             "Paso 1: Resta 3 → 2x = 8\nPaso 2: Divide entre 2 → x = 4 ✓"),
-                    buildClasico(2,2,"5x - 10 = 20","6",
-                            new String[]{"Transponer -10:","  5x = 20 + 10 = 30","Dividir entre 5:","  x = 30 ÷ 5 = 6 ✓"},
+                    buildClasico(2, 2, "5x - 10 = 20", "6",
+                            new String[]{
+                                    "Transponer -10:",
+                                    "5x = 20 + |10|",
+                                    "5x = |30|",
+                                    "Dividir entre 5:",
+                                    "x = 30 / |5|",
+                                    "x = |6| ✓"
+                            },
                             "Paso 1: Transponer -10 → 5x = 30\nPaso 2: Dividir entre 5 → x = 6 ✓"),
                     buildTiles(2,3,"2x + 1 = 7","3",
                             new String[]{"x","x","+1"},
@@ -111,8 +124,15 @@ public class DbSeeder extends RoomDatabase.Callback {
                     buildBalanza(3,1,"x/2 + 1 = 5","8","x/2+1","5","-1","x/2","4",
                             new String[]{"-1","+1","×2","÷2"},
                             "Paso 1: Resta 1 → x/2 = 4\nPaso 2: Multiplica por 2 → x = 8 ✓"),
-                    buildClasico(3,2,"x/3 + 2 = 6","12",
-                            new String[]{"Transponer +2:","  x/3 = 6 - 2 = 4","Multiplicar por 3:","  x = 4 × 3 = 12 ✓"},
+                    buildClasico(3, 2, "x/3 + 2 = 6", "12",
+                            new String[]{
+                                    "Transponer +2:",
+                                    "x/3 = 6 - |2|",
+                                    "x/3 = |4|",
+                                    "Multiplicar por 3:",
+                                    "x = 4 * |3|",
+                                    "x = |12| ✓"
+                            },
                             "Paso 1: Transponer +2 → x/3 = 4\nPaso 2: Multiplicar por 3 → x = 12 ✓"),
                     buildTiles(3,3,"x/2 = 3","6",
                             new String[]{"x/2"},
@@ -159,15 +179,29 @@ public class DbSeeder extends RoomDatabase.Callback {
                     });
             moduleDao.insertAll(Collections.singletonList(mod5));
             exerciseDao.insertAll(Arrays.asList(
-                    buildClasico(5,1,"3x + 2 = x + 10","4",
-                            new String[]{"Restar x a ambos lados:","  2x + 2 = 10","Restar 2:","  2x = 8","Dividir entre 2:","  x = 4 ✓"},
-                            "Agrupa las x en el lado izquierdo restando 'x'."),
+                    buildClasico(4,1,"2(x + 3) = 10","2",
+                            new String[]{
+                                    "Aplicar propiedad distributiva:",
+                                    "2x + |6| = 10",
+                                    "Restar 6 a ambos lados:",
+                                    "2x = |4|",
+                                    "Dividir entre 2:",
+                                    "x = |2| ✓"
+                            },
+                            "Paso 1: 2*x + 2*3 = 10 -> 2x+6 = 10\nPaso 2: 2x = 4\nPaso 3: x = 2 ✓"),
+                    buildClasico(4,3,"5(x + 2) = 20","2",
+                            new String[]{
+                                    "Distribución del coeficiente:",
+                                    "5x + |10| = 20",
+                                    "Transponer +10 al otro lado:",
+                                    "5x = 20 - |10|",
+                                    "5x = |10|",
+                                    "x = |2| ✓"
+                            },
+                            "Distribuye el 5 y luego resuelve como en el Módulo 2."),
                     buildBalanza(5,2,"4x = 2x + 6","3","4x","2x+6","-2x","2x","6",
                             new String[]{"-2x","+2x","÷2","×2"},
-                            "Paso 1: Resta 2x para agrupar las variables → 2x = 6\nPaso 2: Divide entre 2 → x = 3 ✓"),
-                    buildClasico(5,3,"5x - 4 = 2x + 5","3",
-                            new String[]{"Agrupar x:","  3x - 4 = 5","Transponer -4:","  3x = 9","Resultado:","  x = 3 ✓"},
-                            "Mueve el 2x al izquierdo y el -4 al derecho.")
+                            "Paso 1: Resta 2x para agrupar las variables → 2x = 6\nPaso 2: Divide entre 2 → x = 3 ✓")
             ));
 
             // ── Módulo 6: Expansión y agrupación ──
@@ -186,20 +220,29 @@ public class DbSeeder extends RoomDatabase.Callback {
             exerciseDao.insertAll(Arrays.asList(
                     buildClasico(6,1,"2(x + 3) = x + 9","3",
                             new String[]{
-                                    "Expandir el paréntesis:","  2x + 6 = x + 9",
-                                    "Restar x:","  x + 6 = 9",
-                                    "Restar 6:","  x = 3 ✓"},
+                                    "Expandir el paréntesis:",
+                                    "|2x| + 6 = x + 9",
+                                    "Agrupar variables (restar x):",
+                                    "x + 6 = |9|",
+                                    "Aislar la incógnita:",
+                                    "x = 9 - |6|",
+                                    "x = |3| ✓"
+                            },
                             "Primero expande el paréntesis y luego agrupa las x."),
-                    buildBalanza(6,2,"3x + 4 = 2x + 10","6","3x+4","2x+10","-2x","x+4","10",
-                            new String[]{"-2x","-4","÷2","×2","+4","+2x"},
-                            "Paso 1: Resta 2x → x + 4 = 10\nPaso 2: Resta 4 → x = 6 ✓"),
                     buildClasico(6,3,"4(x - 2) = 2x","4",
                             new String[]{
-                                    "Expandir:","  4x - 8 = 2x",
-                                    "Restar 2x:","  2x - 8 = 0",
-                                    "Sumar 8:","  2x = 8",
-                                    "Dividir entre 2:","  x = 4 ✓"},
-                            "Expande el paréntesis y luego simplifica.")
+                                    "Expandir paréntesis:",
+                                    "4x - |8| = 2x",
+                                    "Restar 2x en ambos lados:",
+                                    "|2x| - 8 = 0",
+                                    "Sumar 8 para despejar:",
+                                    "2x = |8|",
+                                    "x = |4| ✓"
+                            },
+                            "Expande el paréntesis y luego simplifica."),
+                    buildBalanza(6,2,"3x + 4 = 2x + 10","6","3x+4","2x+10","-2x","x+4","10",
+                            new String[]{"-2x","-4","÷2","×2","+4","+2x"},
+                            "Paso 1: Resta 2x → x + 4 = 10\nPaso 2: Resta 4 → x = 6 ✓")
             ));
         });
     }
