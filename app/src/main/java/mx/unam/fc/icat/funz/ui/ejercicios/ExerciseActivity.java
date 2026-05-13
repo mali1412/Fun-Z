@@ -244,13 +244,15 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setText(label);
         tv.setTextColor(Color.WHITE);
         tv.setGravity(Gravity.CENTER);
-        tv.setTextSize(22f); // Tamaño de fuente aumentado para legibilidad
+        tv.setTextSize(18f);
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
+        tv.setSingleLine(true);
+        tv.setIncludeFontPadding(false);
         int bg = label.startsWith("-") ? R.drawable.bg_tile_negative : (label.contains("x") ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
         tv.setBackgroundResource(bg);
 
-        // Ajuste para que se estiren proporcionalmente ocupando el ancho disponible
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(1, dpToPx(60), 1f);
+        int height = getResources().getDimensionPixelSize(R.dimen.balanza_source_tile_height);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, height, 1f);
         lp.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
         tv.setLayoutParams(lp);
 
@@ -261,10 +263,13 @@ public class ExerciseActivity extends AppCompatActivity {
         });
         return tv;
     }
+
     private void renderBalanzaWeights(List<Termino> terminos, GridLayout grid, boolean isLeft) {
         grid.removeAllViews();
-        // Aumentamos columnas para que quepan más bloques pequeños
         grid.setColumnCount(5);
+
+        int sizeX = getResources().getDimensionPixelSize(R.dimen.balanza_tile_size_x);
+        int sizeUnit = getResources().getDimensionPixelSize(R.dimen.balanza_tile_size_unit);
 
         for (Termino t : terminos) {
             if (t.esVariable()) {
@@ -272,7 +277,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 int bg = t.getCoeficiente() > 0 ? R.drawable.bg_tile_x : R.drawable.bg_tile_negative;
                 String label = t.getCoeficiente() > 0 ? "x" : "-x";
                 for (int i = 0; i < count; i++) {
-                    addBalanzaWeightIcon(grid, bg, 32, label, isLeft, label);
+                    addBalanzaWeightIcon(grid, bg, sizeX, label, isLeft, label);
                 }
             } else if (t.esConstante()) {
                 int val = t.getValor();
@@ -282,27 +287,29 @@ public class ExerciseActivity extends AppCompatActivity {
                 String unitLabel = val > 0 ? "+1" : "-1";
                 int bg = val > 0 ? R.drawable.bg_tile_positive : R.drawable.bg_tile_negative;
 
-                // Dibujamos N bloques de unidad
                 for (int i = 0; i < absVal; i++) {
-                    addBalanzaWeightIcon(grid, bg, 28, unitLabel, isLeft, unitLabel);
+                    addBalanzaWeightIcon(grid, bg, sizeUnit, unitLabel, isLeft, unitLabel);
                 }
             }
         }
     }
 
-    private View addBalanzaWeightIcon(GridLayout grid, int bgRes, int sizeDp, String label, boolean isLeft, String displayText) {
+    private View addBalanzaWeightIcon(GridLayout grid, int bgRes, int sizePx, String label, boolean isLeft, String displayText) {
         TextView tv = new TextView(this);
         tv.setBackgroundResource(bgRes);
         tv.setText(displayText);
         tv.setTextColor(Color.WHITE);
         tv.setGravity(Gravity.CENTER);
+        tv.setPadding(0, 0, 0, 0);
+        tv.setIncludeFontPadding(false);
+        tv.setSingleLine(true);
         // Texto muy pequeño para bloques de unidad
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, displayText.length() > 2 ? 7f : 8f);
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
 
         GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-        lp.width = dpToPx(sizeDp);
-        lp.height = dpToPx(sizeDp);
+        lp.width = sizePx;
+        lp.height = sizePx;
         lp.setMargins(dpToPx(1), dpToPx(1), dpToPx(1), dpToPx(1));
         tv.setLayoutParams(lp);
         grid.addView(tv);
@@ -373,9 +380,11 @@ public class ExerciseActivity extends AppCompatActivity {
         TextView tv = new TextView(this);
         tv.setText(label);
         tv.setTextColor(Color.WHITE);
-        tv.setTextSize(20f);
+        tv.setTextSize(18f);
         tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         tv.setGravity(Gravity.CENTER);
+        tv.setSingleLine(true);
+        tv.setIncludeFontPadding(false);
         
         if (label.startsWith("-")) {
             tv.setBackgroundResource(R.drawable.bg_tile_negative);
@@ -439,11 +448,13 @@ public class ExerciseActivity extends AppCompatActivity {
     private TextView makeOpView(String op) {
         TextView tv = new TextView(this);
         tv.setText(op);
-        tv.setTextSize(26f);
+        tv.setTextSize(22f);
         tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         tv.setTextColor(Color.WHITE);
         tv.setGravity(Gravity.CENTER);
-        tv.setPadding(dpToPx(16), dpToPx(18), dpToPx(16), dpToPx(18));
+        tv.setPadding(dpToPx(4), dpToPx(8), dpToPx(4), dpToPx(8));
+        tv.setSingleLine(true);
+        tv.setIncludeFontPadding(false);
         tv.setClickable(true);
         tv.setLongClickable(true);
         if (op.startsWith("-") || op.startsWith("−")) tv.setBackgroundResource(R.drawable.bg_tile_negative);

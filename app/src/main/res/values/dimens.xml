@@ -35,6 +35,12 @@
     <dimen name="equation_box_padding">16dp</dimen>
     <dimen name="status_bar_padding">8dp</dimen>
 
+    <!-- Dimensiones Balanza -->
+    <dimen name="balanza_plate_size">130dp</dimen>
+    <dimen name="balanza_tile_size_x">32dp</dimen>
+    <dimen name="balanza_tile_size_unit">24dp</dimen>
+    <dimen name="balanza_source_tile_height">56dp</dimen>
+
     <!-- Indicadores y Avatares -->
     <item name="disabled_alpha" format="float" type="dimen">0.5</item>
     <dimen name="progress_bar_height">8dp</dimen>

@@ -80,8 +80,8 @@
 
             <FrameLayout
                 android:id="@+id/container_lhs"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="@dimen/balanza_plate_size"
+                android:layout_height="@dimen/balanza_plate_size"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="8dp"
@@ -104,8 +104,8 @@
             <!-- PLATILLO RHS -->
             <FrameLayout
                 android:id="@+id/container_rhs"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="@dimen/balanza_plate_size"
+                android:layout_height="@dimen/balanza_plate_size"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="8dp"

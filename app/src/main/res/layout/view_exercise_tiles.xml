@@ -62,7 +62,8 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:id="@+id/ll_tiles_left"
@@ -77,31 +78,31 @@
 
         <LinearLayout
             android:id="@+id/operation_drop_zone"
-            android:layout_width="130dp"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="6dp"
             android:background="@drawable/bg_tiles_drop_zone"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="APLICAR"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_drop_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="o toca un botón"
+                android:text="aquí"
                 android:textColor="@android:color/white"
-                android:textSize="13sp" />
+                android:textSize="11sp" />
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
@@ -116,7 +117,8 @@
 
             <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:id="@+id/ll_tiles_right"
