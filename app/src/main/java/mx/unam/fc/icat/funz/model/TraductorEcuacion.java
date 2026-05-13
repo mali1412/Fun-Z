@@ -37,7 +37,7 @@ public class TraductorEcuacion {
 
             if (t.equals("=")) {
                 vaciarPila(operadores, resultado);
-                resultado.add(Termino.crearIgual());
+                resultado.add(TerminoFactory.crearIgual());
             } else if (t.equals("(")) {
                 operadores.push(t);
             } else if (t.equals(")")) {
@@ -86,8 +86,8 @@ public class TraductorEcuacion {
     }
 
     private static Termino crearTerminoEspecial(String op) {
-        if (op.equals("^")) return Termino.crearPotencia();
-        return Termino.crearOperador(op);
+        if (op.equals("^")) return TerminoFactory.crearPotencia();
+        return TerminoFactory.crearOperador(op);
     }
 
     /**
@@ -95,58 +95,39 @@ public class TraductorEcuacion {
      * Preserva fracciones tipo x/2 o 3/2 para mantener equivalencia matemática.
      */
     private static Termino parsearOperando(String t) {
-        String clean = t.replace("(", "")
-                .replace(")", "")
-                .trim();
+        // Quitamos paréntesis decorativos
+        String clean = t.replace("(", "").replace(")", "").trim();
 
         if (clean.contains("x")) {
+            // Lógica para x, 2x, -x, x/2
             int divisor = 1;
-            String base = clean;
-            if (base.contains("/") || base.contains("÷")) {
-                String[] parts = base.split("[÷/]", 2);
-                base = parts[0].trim();
-                if (parts.length > 1) {
-                    try {
-                        int parsed = Integer.parseInt(parts[1].trim());
-                        if (parsed > 0) divisor = parsed;
-                    } catch (NumberFormatException ignored) {}
-                }
-            }
+            int coef = 1;
 
-            String coefStr = base.replace("x", "").trim();
-            int coef;
-            if (coefStr.isEmpty() || coefStr.equals("+")) {
-                coef = 1;
-            } else if (coefStr.equals("-")) {
-                coef = -1;
-            } else {
-                try {
-                    coef = Integer.parseInt(coefStr);
-                } catch (NumberFormatException e) {
-                    coef = 1;
-                }
-            }
-            return Termino.crearVariable(coef, divisor);
-        }
-
-        try {
-            if (clean.isEmpty()) return Termino.crearConstante(0);
-            int divisor = 1;
-            String numerador = clean;
             if (clean.contains("/") || clean.contains("÷")) {
-                String[] parts = clean.split("[÷/]", 2);
-                numerador = parts[0].trim();
-                if (parts.length > 1) {
-                    try {
-                        int parsed = Integer.parseInt(parts[1].trim());
-                        if (parsed > 0) divisor = parsed;
-                    } catch (NumberFormatException ignored) {}
-                }
+                String[] parts = clean.split("[/÷]");
+                divisor = Integer.parseInt(parts[1].trim());
+                clean = parts[0].trim();
             }
-            return Termino.crearConstante(Integer.parseInt(numerador), divisor);
-        } catch (NumberFormatException e) {
-            // Si aún así falla, devolvemos una constante 0 en lugar de crashear
-            return Termino.crearConstante(0);
+
+            String coefStr = clean.replace("x", "").trim();
+            if (coefStr.equals("-")) coef = -1;
+            else if (!coefStr.isEmpty() && !coefStr.equals("+")) coef = Integer.parseInt(coefStr);
+
+            return TerminoFactory.crearVariable(coef, divisor);
+        } else {
+            // Lógica para constantes y fracciones numéricas
+            int divisor = 1;
+            int val;
+
+            if (clean.contains("/") || clean.contains("÷")) {
+                String[] parts = clean.split("[/÷]");
+                divisor = Integer.parseInt(parts[1].trim());
+                val = Integer.parseInt(parts[0].trim());
+            } else {
+                val = Integer.parseInt(clean);
+            }
+
+            return TerminoFactory.crearConstante(val, divisor);
         }
     }
 }

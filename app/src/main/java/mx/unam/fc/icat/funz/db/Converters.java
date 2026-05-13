@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.unam.fc.icat.funz.model.Ecuacion;
 import mx.unam.fc.icat.funz.model.Termino;
+import mx.unam.fc.icat.funz.model.TerminoFactory;
 
 public class Converters {
     @TypeConverter
@@ -39,7 +40,7 @@ public class Converters {
             List<Termino> terminos = new ArrayList<>();
             for (int i = 0; i < array.length(); i++) {
                 JSONObject o = array.getJSONObject(i);
-                terminos.add(Termino.reconstruir(
+                terminos.add(TerminoFactory.reconstruir(
                     o.getString("id"),
                     Termino.TipoTermino.valueOf(o.getString("tipo")),
                     o.getString("simbolo"),

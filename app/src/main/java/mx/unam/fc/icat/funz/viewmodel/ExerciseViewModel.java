@@ -11,7 +11,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +21,9 @@ import mx.unam.fc.icat.funz.model.TraductorEcuacion;
 import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
+import mx.unam.fc.icat.funz.model.CalculadoraAlgebraica;
+import mx.unam.fc.icat.funz.model.ParserEcuacion;
+
 
 /**
  * ExerciseViewModel — ViewModel genérico para cualquier tipo de ejercicio.
@@ -132,10 +134,10 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     private void initBalanza(Exercise ex) {
-        Ecuacion ec = Ecuacion.parsear(ex.lhsExpr + " = " + ex.rhsExpr);
+        Ecuacion ec = ParserEcuacion.parsear(ex.lhsExpr + " = " + ex.rhsExpr);
         _ecuacion.postValue(ec);
-        _lhsExpr.postValue(ec.getLhsString());
-        _rhsExpr.postValue(ec.getRhsString());
+        _lhsExpr.postValue(ParserEcuacion.terminosAString(ec.getLadoIzquierdo()));
+        _rhsExpr.postValue(ParserEcuacion.terminosAString(ec.getLadoDerecho()));
         _ops.postValue(parseJson(ex.ops));
         _statusMessage.postValue("Aísla x aplicando operaciones a ambos lados");
         updateBalanzaVisuals(ec);
@@ -150,23 +152,26 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     private void initClasico(Exercise ex) {
-        Ecuacion ec = Ecuacion.parsear(ex.equation);
+        Ecuacion ec = ParserEcuacion.parsear(ex.equation);
         _ecuacion.postValue(ec);
         _statusMessage.postValue("Resuelve la ecuación paso a paso");
     }
 
+
     private void updateBalanzaVisuals(Ecuacion ec) {
-        if (ec.xEstaAislada()) {
+        if (CalculadoraAlgebraica.xEstaAislada(ec)) {
             _tilt.postValue(0f);
             _balanced.postValue(true);
-            _autoAnswer.postValue(String.valueOf(ec.valorRHS()));
+            int valorRhs = (int) Math.round(CalculadoraAlgebraica.evaluarLado(ec, 0, false));
+            _autoAnswer.postValue(String.valueOf(valorRhs));
+
             _statusMessage.postValue("✓ ¡Excelente! x está aislada.");
             _statusPositive.postValue(true);
         } else {
-            // Calculamos peso visual basado en constantes
-            double l = ec.evaluarLado(0, true);
-            double r = ec.evaluarLado(0, false);
-            float t = (float)(r - l) * 1.5f; 
+            double l = CalculadoraAlgebraica.evaluarLado(ec, 0, true);
+            double r = CalculadoraAlgebraica.evaluarLado(ec, 0, false);
+
+            float t = (float)(r - l) * 1.5f;
             if (t > 15f) t = 15f;
             if (t < -15f) t = -15f;
             _tilt.postValue(t);
@@ -202,12 +207,12 @@ public class ExerciseViewModel extends AndroidViewModel {
         }
 
         // 1. Aplicamos la transformación matemática real
-        current.aplicarOperacion(op);
-        
+        CalculadoraAlgebraica.aplicarOperacion(current, op);
+
         // 2. Sincronizamos la UI con el nuevo estado del objeto
         _ecuacion.setValue(current);
-        _lhsExpr.setValue(current.getLhsString());
-        _rhsExpr.setValue(current.getRhsString());
+        _lhsExpr.setValue(ParserEcuacion.terminosAString(current.getLadoIzquierdo()));
+        _rhsExpr.setValue(ParserEcuacion.terminosAString(current.getLadoDerecho()));
         updateBalanzaVisuals(current);
 
         // 3. Feedback pedagógico basado en la sugerencia de la DB
@@ -291,17 +296,22 @@ public class ExerciseViewModel extends AndroidViewModel {
     private void publishTiles() {
         _leftTiles.postValue(new ArrayList<>(leftTiles));
         _rightTiles.postValue(new ArrayList<>(rightTiles));
+
         List<String> tokens = new ArrayList<>(leftTiles);
         tokens.add("=");
         tokens.addAll(rightTiles);
+
         Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(tokens);
-        ecActual.simplificar(); // Combina "+1+1+1..." en "+6" antes de convertir a texto
+        // Unifica términos para mostrar "+6" en lugar de "+1 +1 +1 ..."
+        CalculadoraAlgebraica.simplificar(ecActual);
+
         _ecuacion.postValue(ecActual);
-        _lhsExpr.postValue(ecActual.getLhsString());
-        _rhsExpr.postValue(ecActual.getRhsString());
+        _lhsExpr.postValue(ParserEcuacion.terminosAString(ecActual.getLadoIzquierdo()));
+        _rhsExpr.postValue(ParserEcuacion.terminosAString(ecActual.getLadoDerecho()));
         _ops.postValue(getTileOps());
-        if (ecActual.xEstaAislada()) {
-            int valorRhs = ecActual.valorRHS();
+
+        if (CalculadoraAlgebraica.xEstaAislada(ecActual)) {
+            int valorRhs = (int) Math.round(CalculadoraAlgebraica.evaluarLado(ecActual, 0, false));
             _autoAnswer.postValue(String.valueOf(valorRhs));
             _statusMessage.postValue("¡Excelente! x = " + valorRhs);
             _statusPositive.postValue(true);
