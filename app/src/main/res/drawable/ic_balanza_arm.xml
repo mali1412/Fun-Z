@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="120dp"
+    android:viewportWidth="240"
+    android:viewportHeight="120">
+    <!-- Barra horizontal (Pivote central en 120, 65) -->
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M40,64 L200,64 L200,66 L40,66 Z" />
+</vector>

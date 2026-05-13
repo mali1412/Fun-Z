@@ -24,10 +24,10 @@ import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
 import mx.unam.fc.icat.funz.model.CalculadoraAlgebraica;
 import mx.unam.fc.icat.funz.model.ParserEcuacion;
 
-
 /**
  * ExerciseViewModel — ViewModel genérico para cualquier tipo de ejercicio.
- * Ahora incluye un motor algebraico dinámico para la Balanza.
+ * Incluye motor algebraico dinámico y Efecto Gravedad para Balanza,
+ * y lógica de manipulación de Tiles.
  */
 public class ExerciseViewModel extends AndroidViewModel {
 
@@ -62,6 +62,9 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> _balanced = new MutableLiveData<>(false);
     public  final LiveData<Boolean>         balanced  = _balanced;
+
+    private final MutableLiveData<String> _history = new MutableLiveData<>("");
+    public final LiveData<String> history = _history;
 
     // ── Otros estados ─────────────────────────────────────────────────────────
 
@@ -139,7 +142,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         _lhsExpr.postValue(ParserEcuacion.terminosAString(ec.getLadoIzquierdo()));
         _rhsExpr.postValue(ParserEcuacion.terminosAString(ec.getLadoDerecho()));
         _ops.postValue(parseJson(ex.ops));
-        _statusMessage.postValue("Aísla x aplicando operaciones a ambos lados");
+        _statusMessage.postValue("Aísla x para equilibrar la balanza");
         updateBalanzaVisuals(ec);
     }
 
@@ -157,42 +160,44 @@ public class ExerciseViewModel extends AndroidViewModel {
         _statusMessage.postValue("Resuelve la ecuación paso a paso");
     }
 
-
     private void updateBalanzaVisuals(Ecuacion ec) {
+        String lhsStr = ParserEcuacion.terminosAString(ec.getLadoIzquierdo());
+        String rhsStr = ParserEcuacion.terminosAString(ec.getLadoDerecho());
+        _lhsExpr.postValue(lhsStr);
+        _rhsExpr.postValue(rhsStr);
+
         if (CalculadoraAlgebraica.xEstaAislada(ec)) {
             _tilt.postValue(0f);
             _balanced.postValue(true);
             int valorRhs = (int) Math.round(CalculadoraAlgebraica.evaluarLado(ec, 0, false));
             _autoAnswer.postValue(String.valueOf(valorRhs));
-
             _statusMessage.postValue("✓ ¡Excelente! x está aislada.");
             _statusPositive.postValue(true);
         } else {
-            double l = CalculadoraAlgebraica.evaluarLado(ec, 0, true);
-            double r = CalculadoraAlgebraica.evaluarLado(ec, 0, false);
-
-            float t = (float)(r - l) * 1.5f;
-            if (t > 15f) t = 15f;
-            if (t < -15f) t = -15f;
-            _tilt.postValue(t);
+            // Usamos un peso de x que no coincida necesariamente con la solución
+            // para que el usuario vea la necesidad de aislar físicamente los términos.
+            double weightX = 25.0;
+            double l = CalculadoraAlgebraica.evaluarLado(ec, weightX, true);
+            double r = CalculadoraAlgebraica.evaluarLado(ec, weightX, false);
+            double diff = l - r; 
+            float factor = 3.0f;
+            float t = (float) (diff * factor);
+            if (t > 30f) t = 30f;
+            if (t < -30f) t = -30f;
+            _tilt.postValue(-t);
             _balanced.postValue(false);
+            if (Math.abs(t) >= 30f) _statusMessage.postValue("⚠️ La balanza ha tocado suelo");
+            else _statusMessage.postValue("Busca el equilibrio de la ecuación");
+            _statusPositive.postValue(false);
         }
     }
 
-    /**
-     * Aplica una operación dinámica a la ecuación.
-     * Ahora actualiza la ecuación matemáticamente sin importar si es la op "correcta" de la DB.
-     */
     public void applyOp(String op) {
         Exercise ex = _exercise.getValue();
         Ecuacion current = _ecuacion.getValue();
         if (ex == null || current == null) return;
 
-        // Regla de negocio: división entre cero es inválida.
-        String normalizedOp = op.replace("−", "-")
-                .replace("–", "-")
-                .replace("÷", "/")
-                .trim();
+        String normalizedOp = op.replace("−", "-").replace("–", "-").replace("÷", "/").trim();
         if (normalizedOp.startsWith("/")) {
             try {
                 int divisor = Integer.parseInt(normalizedOp.substring(1).trim());
@@ -201,39 +206,31 @@ public class ExerciseViewModel extends AndroidViewModel {
                     _statusPositive.setValue(false);
                     return;
                 }
-            } catch (NumberFormatException ignored) {
-                // Si viene mal formada, no forzamos error: se delega al motor existente.
-            }
+            } catch (NumberFormatException ignored) {}
         }
 
-        // 1. Aplicamos la transformación matemática real
         CalculadoraAlgebraica.aplicarOperacion(current, op);
-
-        // 2. Sincronizamos la UI con el nuevo estado del objeto
         _ecuacion.setValue(current);
-        _lhsExpr.setValue(ParserEcuacion.terminosAString(current.getLadoIzquierdo()));
-        _rhsExpr.setValue(ParserEcuacion.terminosAString(current.getLadoDerecho()));
         updateBalanzaVisuals(current);
 
-        // 3. Feedback pedagógico basado en la sugerencia de la DB
         if (op.equals(ex.correctOp)) {
             _statusMessage.setValue("✓ Movimiento estratégico. ¡Sigue así!");
             _statusPositive.setValue(true);
         } else {
-            _statusMessage.setValue("La balanza cambió, pero busca una operación que aísle x.");
+            _statusMessage.setValue("La balanza cambió, pero busca aislar x.");
             _statusPositive.setValue(false);
         }
     }
 
-    public void resetBalanza() {
-        Exercise ex = _exercise.getValue();
-        if (ex == null) return;
-        initBalanza(ex);
-        _autoAnswer.setValue("");
-    }
+    public void applyOpToSide(String op, boolean isLeft) {
+        Ecuacion current = _ecuacion.getValue();
+        if (current == null) return;
 
-    public void moveTile(String side, int idx, String label) {
-        _statusMessage.setValue("Usa las operaciones de la parte inferior y suéltalas en la zona central.");
+        CalculadoraAlgebraica.aplicarOperacionALado(current, op, isLeft);
+        _ecuacion.setValue(current);
+        updateBalanzaVisuals(current);
+
+        _statusMessage.setValue("Has modificado solo un lado. ¡Cuidado con el equilibrio!");
         _statusPositive.setValue(false);
     }
 
@@ -243,54 +240,78 @@ public class ExerciseViewModel extends AndroidViewModel {
 
         String expected = expectedTileOp();
         if (!expected.isEmpty() && !expected.equals(normalized)) {
-            _statusMessage.setValue("Esa operación no es correcta en este paso.");
+            _statusMessage.setValue("Esa operación no es recomendada en este paso.");
             _statusPositive.setValue(false);
             return;
         }
 
         boolean applied = false;
         switch (normalized) {
-            case "-1":
-                applied = removeUnitBothSides("+1");
-                break;
-            case "+1":
-                applied = removeUnitBothSides("-1");
-                break;
-            case "÷2":
-                applied = divideBothSidesByTwo();
-                break;
-            case "×2":
-                applied = multiplyBothSidesByTwo();
-                break;
+            case "-1": applied = removeUnitBothSides("+1"); break;
+            case "+1": applied = removeUnitBothSides("-1"); break;
+            case "-x": applied = removeXBothSides("x"); break;
+            case "+x": applied = removeXBothSides("-x"); break;
+            case "÷2": applied = divideBothSidesByTwo(); break;
+            case "×2": applied = multiplyBothSidesByTwo(); break;
         }
 
         if (!applied) {
-            _statusMessage.setValue("No se puede aplicar " + normalized + " sin romper el equilibrio.");
+            _statusMessage.setValue("No se puede aplicar " + normalized + " ahora.");
             _statusPositive.setValue(false);
             return;
         }
 
         publishTiles();
-        if (!Boolean.TRUE.equals(_statusPositive.getValue())) {
-            _statusMessage.setValue("Operación aplicada en ambos lados: " + normalized + ".");
-            _statusPositive.setValue(true);
-        }
+        _statusMessage.setValue("Operación aplicada: " + normalized);
+        _statusPositive.setValue(true);
     }
 
-    private String invertirSigno(String label) {
-        if (label.equals("x")) return "x";
-        if (label.startsWith("+")) return label.replace("+", "-");
-        if (label.startsWith("-")) return label.replace("-", "+");
-        return "-" + label;
+    private boolean removeUnitBothSides(String unitLabel) {
+        if (leftTiles.contains(unitLabel) && rightTiles.contains(unitLabel)) {
+            leftTiles.remove(unitLabel);
+            rightTiles.remove(unitLabel);
+            return true;
+        }
+        return false;
     }
 
-    private void ejecutarReglaParCero(List<String> lista) {
-        if (lista.contains("+1") && lista.contains("-1")) {
-            lista.remove("+1");
-            lista.remove("-1");
-            _statusMessage.postValue("¡Par Cero! Se anularon.");
-            _statusPositive.postValue(true);
+    private boolean removeXBothSides(String xLabel) {
+        if (leftTiles.contains(xLabel) && rightTiles.contains(xLabel)) {
+            leftTiles.remove(xLabel);
+            rightTiles.remove(xLabel);
+            return true;
         }
+        return false;
+    }
+
+    private boolean divideBothSidesByTwo() {
+        SideState left = summarizeSide(leftTiles);
+        SideState right = summarizeSide(rightTiles);
+        if (left.halfX > 0 || right.halfX > 0) return false;
+        if (left.xCount % 2 != 0 || Math.abs(left.units) % 2 != 0 || Math.abs(right.units) % 2 != 0) return false;
+        
+        leftTiles.clear(); rightTiles.clear();
+        for (int i = 0; i < left.xCount / 2; i++) leftTiles.add("x");
+        addUnits(leftTiles, left.units / 2);
+        for (int i = 0; i < right.xCount / 2; i++) rightTiles.add("x");
+        addUnits(rightTiles, right.units / 2);
+        return true;
+    }
+
+    private boolean multiplyBothSidesByTwo() {
+        SideState left = summarizeSide(leftTiles);
+        SideState right = summarizeSide(rightTiles);
+        leftTiles.clear(); rightTiles.clear();
+        for (int i = 0; i < left.xCount * 2 + left.halfX; i++) leftTiles.add("x");
+        addUnits(leftTiles, left.units * 2);
+        for (int i = 0; i < right.xCount * 2 + right.halfX; i++) rightTiles.add("x");
+        addUnits(rightTiles, right.units * 2);
+        return true;
+    }
+
+    private void addUnits(List<String> target, int units) {
+        if (units > 0) for (int i = 0; i < units; i++) target.add("+1");
+        else for (int i = 0; i < -units; i++) target.add("-1");
     }
 
     private void publishTiles() {
@@ -302,7 +323,6 @@ public class ExerciseViewModel extends AndroidViewModel {
         tokens.addAll(rightTiles);
 
         Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(tokens);
-        // Unifica términos para mostrar "+6" en lugar de "+1 +1 +1 ..."
         CalculadoraAlgebraica.simplificar(ecActual);
 
         _ecuacion.postValue(ecActual);
@@ -318,32 +338,21 @@ public class ExerciseViewModel extends AndroidViewModel {
         }
     }
 
-    public void resetTiles() {
-        Exercise ex = _exercise.getValue();
-        if (ex == null) return;
-        leftTiles.clear();  leftTiles.addAll(parseJson(ex.tilesLeft));
-        rightTiles.clear(); rightTiles.addAll(parseJson(ex.tilesRight));
-        publishTiles();
-        _autoAnswer.setValue(null);
-        _statusMessage.setValue("Arrastra una operación al centro para aplicarla en ambos lados.");
-        _statusPositive.setValue(null);
-        startTimer();
-    }
-
     private List<String> getTileOps() {
-        // Siempre mostramos las 4 operaciones para no revelar cuál es la correcta
         List<String> result = new ArrayList<>();
-        result.add("-1");
-        result.add("+1");
-        result.add("÷2");
-        result.add("×2");
+        result.add("-1"); result.add("+1");
+        result.add("-x"); result.add("+x");
+        result.add("÷2"); result.add("×2");
         return result;
     }
 
     public String expectedTileOp() {
         SideState left = summarizeSide(leftTiles);
+        SideState right = summarizeSide(rightTiles);
         if (left.units > 0) return "-1";
         if (left.units < 0) return "+1";
+        if (left.xCount > 0 && right.xCount > 0) return "-x";
+        if (left.negXCount > 0 && right.negXCount > 0) return "+x";
         if (left.halfX > 0) return "×2";
         if (left.xCount > 1) return "÷2";
         return "";
@@ -352,90 +361,18 @@ public class ExerciseViewModel extends AndroidViewModel {
     private SideState summarizeSide(List<String> side) {
         SideState s = new SideState();
         for (String tile : side) {
-            if ("x".equals(tile)) {
-                s.xCount++;
-            } else if ("x/2".equals(tile)) {
-                s.halfX++;
-            } else if ("+1".equals(tile) || "1".equals(tile)) {
-                s.units++;
-            } else if ("-1".equals(tile)) {
-                s.units--;
-            }
+            if ("x".equals(tile)) s.xCount++;
+            else if ("-x".equals(tile)) s.negXCount++;
+            else if ("x/2".equals(tile)) s.halfX++;
+            else if ("+1".equals(tile) || "1".equals(tile)) s.units++;
+            else if ("-1".equals(tile)) s.units--;
         }
         return s;
     }
 
-    private boolean removeUnitBothSides(String unitLabel) {
-        boolean leftRemoved = leftTiles.remove(unitLabel);
-        boolean rightRemoved = rightTiles.remove(unitLabel);
-        if (!leftRemoved || !rightRemoved) {
-            if (leftRemoved) leftTiles.add(unitLabel);
-            if (rightRemoved) rightTiles.add(unitLabel);
-            return false;
-        }
-        return true;
-    }
-
-    private boolean divideBothSidesByTwo() {
-        SideState left = summarizeSide(leftTiles);
-        SideState right = summarizeSide(rightTiles);
-        if (left.halfX > 0 || right.halfX > 0) return false;
-        if (left.xCount % 2 != 0 || Math.abs(left.units) % 2 != 0 || Math.abs(right.units) % 2 != 0) return false;
-
-        leftTiles.clear();
-        rightTiles.clear();
-
-        for (int i = 0; i < left.xCount / 2; i++) leftTiles.add("x");
-        addUnits(leftTiles, left.units / 2);
-        for (int i = 0; i < right.xCount / 2; i++) rightTiles.add("x");
-        addUnits(rightTiles, right.units / 2);
-        return true;
-    }
-
-    private boolean multiplyBothSidesByTwo() {
-        SideState left = summarizeSide(leftTiles);
-        SideState right = summarizeSide(rightTiles);
-        leftTiles.clear();
-        rightTiles.clear();
-
-        for (int i = 0; i < left.xCount * 2; i++) leftTiles.add("x");
-        for (int i = 0; i < left.halfX; i++) leftTiles.add("x");
-        addUnits(leftTiles, left.units * 2);
-
-        for (int i = 0; i < right.xCount * 2; i++) rightTiles.add("x");
-        for (int i = 0; i < right.halfX; i++) rightTiles.add("x");
-        addUnits(rightTiles, right.units * 2);
-        return true;
-    }
-
-    private void addUnits(List<String> target, int units) {
-        if (units > 0) {
-            for (int i = 0; i < units; i++) target.add("+1");
-        } else {
-            for (int i = 0; i < -units; i++) target.add("-1");
-        }
-    }
-
-    private String normalizeOp(String op) {
-        if (op == null) return "";
-        return op.replace("−", "-")
-                .replace("–", "-")
-                .replace("/", "÷")
-                .replace("x", "×")
-                .replace("*", "×")
-                .trim();
-    }
-
-    private static class SideState {
-        int xCount;
-        int halfX;
-        int units;
-    }
-
     public void verify(String input) {
         Exercise ex = _exercise.getValue();
-        if (ex == null) return;
-        if (input == null || input.trim().isEmpty()) {
+        if (ex == null || input == null || input.trim().isEmpty()) {
             _exerciseResult.setValue(ExerciseResult.EMPTY_INPUT);
             return;
         }
@@ -446,8 +383,7 @@ public class ExerciseViewModel extends AndroidViewModel {
                 correct = Double.parseDouble(input.trim()) == Double.parseDouble(ex.correctAnswer.trim());
             } catch (NumberFormatException ignored) {}
         }
-        stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, correct, hintUsed,
-                               correct ? (hintUsed ? ex.pointsHint : ex.pointsCorrect) : 0);
+        stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, correct, hintUsed, correct ? (hintUsed ? 50 : 100) : 0);
         if (correct) {
             if (ex.stepOrder >= totalSteps) repo.unlockModule(ex.moduleId + 1);
             _exerciseResult.setValue(hintUsed ? ExerciseResult.CORRECT_WITH_HINT : ExerciseResult.CORRECT);
@@ -456,9 +392,15 @@ public class ExerciseViewModel extends AndroidViewModel {
         }
     }
 
-    public void useHint()          { hintUsed = true; }
-    public boolean isHintUsed()    { return hintUsed; }
-    public void retryWithoutHint() { hintUsed = false; retryCurrentExercise(); }
+    public void resetBalanza() {
+        Exercise ex = _exercise.getValue();
+        if (ex != null) initBalanza(ex);
+    }
+
+    public void resetTiles() {
+        Exercise ex = _exercise.getValue();
+        if (ex != null) initTiles(ex);
+    }
 
     public void retryCurrentExercise() {
         Exercise ex = _exercise.getValue();
@@ -470,11 +412,12 @@ public class ExerciseViewModel extends AndroidViewModel {
         startTimer();
     }
 
+    public void useHint()          { hintUsed = true; }
+    public void retryWithoutHint() { hintUsed = false; retryCurrentExercise(); }
+
     public void startTimer() {
         new Handler(Looper.getMainLooper()).post(() -> {
             cancelTimer();
-            _timerUrgent.setValue(false);
-            _timerDisplay.setValue("2:00");
             timer = new CountDownTimer(TIME_MS, 1000) {
                 @Override public void onTick(long ms) {
                     long s = ms / 1000;
@@ -493,10 +436,11 @@ public class ExerciseViewModel extends AndroidViewModel {
         if (timer != null) { timer.cancel(); timer = null; }
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        cancelTimer();
+    @Override protected void onCleared() { super.onCleared(); cancelTimer(); }
+
+    private String normalizeOp(String op) {
+        if (op == null) return "";
+        return op.replace("−", "-").replace("–", "-").replace("/", "÷").replace("x", "×").replace("*", "×").trim();
     }
 
     public static List<String> parseJson(String json) {
@@ -511,6 +455,8 @@ public class ExerciseViewModel extends AndroidViewModel {
         }
         return result;
     }
+
+    private static class SideState { int xCount; int negXCount; int halfX; int units; }
 
     public enum ExerciseResult { CORRECT, CORRECT_WITH_HINT, INCORRECT, EMPTY_INPUT }
 }

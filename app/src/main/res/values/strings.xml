@@ -119,6 +119,7 @@
     <string name="balance_status_initial">Aplica &#8722;5 a ambos lados para aislar x</string>
     <string name="ten">10</string>
     <string name="eq_bal">x + 5</string>
+    <string name="label_pieces">PIEZAS</string>
 
     <!-- Operaciones (Unicode) -->
     <string name="op_minus_5">&#8722;5</string>
@@ -129,6 +130,7 @@
 
     <!-- Accesibilidad -->
     <string name="desc_balanza">Representaci&#243;n visual de una balanza en equilibrio</string>
+    <string name="desc_trash">Eliminar pieza</string>
 
     <string name="exercise_classic_title">Ejercicio 2/3</string>
     <string name="op_minus">&#8722;</string>

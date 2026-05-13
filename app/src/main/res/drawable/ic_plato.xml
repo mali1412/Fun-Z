@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <!-- Plato de la balanza -->
+    <path
+        android:fillColor="#94A3B8"
+        android:pathData="M5,70 Q50,100 95,70 L95,75 Q50,105 5,75 Z" />
+    <!-- Cuerdas o soporte -->
+    <path
+        android:strokeColor="#64748B"
+        android:strokeWidth="2"
+        android:pathData="M50,0 L5,70 M50,0 L95,70" />
+</vector>

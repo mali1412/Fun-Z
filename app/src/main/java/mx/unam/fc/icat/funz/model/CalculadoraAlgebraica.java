@@ -1,6 +1,5 @@
 package mx.unam.fc.icat.funz.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,6 +8,14 @@ import java.util.List;
 public class CalculadoraAlgebraica {
 
     public static void aplicarOperacion(Ecuacion ec, String opStr) {
+        aplicarOperacionLados(ec, opStr, true, true);
+    }
+
+    public static void aplicarOperacionALado(Ecuacion ec, String opStr, boolean izquierdo) {
+        aplicarOperacionLados(ec, opStr, izquierdo, !izquierdo);
+    }
+
+    private static void aplicarOperacionLados(Ecuacion ec, String opStr, boolean ladoIzquierdo, boolean ladoDerecho) {
         String clean = opStr.replace("−", "-").replace("–", "-")
                 .replace("×", "*").replace("÷", "/").trim();
         if (clean.length() < 2) return;
@@ -21,13 +28,19 @@ public class CalculadoraAlgebraica {
                 Termino t = buildTerminoFromOp(symbol, rest);
                 int igualIdx = ec.indiceIgual();
                 if (igualIdx >= 0) {
-                    ec.getTerminos().add(igualIdx, t.copiar());
-                    ec.getTerminos().add(t.copiar());
+                    if (ladoIzquierdo) {
+                        ec.getTerminos().add(igualIdx, t.copiar());
+                        igualIdx++;
+                    }
+                    if (ladoDerecho) {
+                        ec.getTerminos().add(t.copiar());
+                    }
                 }
             } else if (symbol == '*' || symbol == '/') {
                 int value = Integer.parseInt(rest);
                 if (value == 0) return;
-                distribuirOperacion(ec, symbol, value);
+                if (ladoIzquierdo) distribuirOperacionLado(ec, symbol, value, true);
+                if (ladoDerecho) distribuirOperacionLado(ec, symbol, value, false);
             }
         } catch (NumberFormatException ignored) {}
 
@@ -55,8 +68,13 @@ public class CalculadoraAlgebraica {
         }
     }
 
-    private static void distribuirOperacion(Ecuacion ec, char symbol, int value) {
-        for (Termino t : ec.getTerminos()) {
+    private static void distribuirOperacionLado(Ecuacion ec, char symbol, int value, boolean izquierdo) {
+        int igualIdx = ec.indiceIgual();
+        int start = izquierdo ? 0 : (igualIdx >= 0 ? igualIdx + 1 : 0);
+        int end = izquierdo ? (igualIdx >= 0 ? igualIdx : ec.getTerminos().size()) : ec.getTerminos().size();
+
+        for (int i = start; i < end; i++) {
+            Termino t = ec.getTerminos().get(i);
             if (t.esIgual()) continue;
             int nVal = t.esVariable() ? t.getCoeficiente() : t.getValor();
             int nDiv = t.getDivisor();
@@ -104,18 +122,27 @@ public class CalculadoraAlgebraica {
 
     public static boolean xEstaAislada(Ecuacion ec) {
         List<Termino> lhs = ec.getLadoIzquierdo();
-        int xCount = 0;
-        boolean xOk = false;
-        int constVal = 0;
+        List<Termino> rhs = ec.getLadoDerecho();
+
+        // 1. Verificar LHS: Debe tener exactamente una 'x' (coef 1, div 1) y ninguna constante != 0
+        int xCountL = 0;
+        boolean xOkL = false;
         for (Termino t : lhs) {
             if (t.esVariable()) {
-                xCount++;
-                if (t.getCoeficiente() == 1 && t.getDivisor() == 1) xOk = true;
-            } else if (t.esConstante()) {
-                constVal = t.getValor();
+                xCountL++;
+                if (t.getCoeficiente() == 1 && t.getDivisor() == 1) xOkL = true;
+            } else if (t.esConstante() && t.getValor() != 0) {
+                return false; // Hay constantes en el lado de la x
             }
         }
-        return xCount == 1 && xOk && constVal == 0;
+        if (xCountL != 1 || !xOkL) return false;
+
+        // 2. Verificar RHS: No debe haber NINGUNA variable x
+        for (Termino t : rhs) {
+            if (t.esVariable()) return false;
+        }
+
+        return true;
     }
 
     private static class Simplificacion {
@@ -139,26 +166,12 @@ public class CalculadoraAlgebraica {
         return s;
     }
 
-    /**
-     * Calcula el Máximo Común Divisor (MCD) de dos enteros.
-     * Utiliza el Algoritmo de Euclides para mayor eficiencia.
-     * * @param a Primer número.
-     * @param b Segundo número.
-     * @return El entero más grande que divide a 'a' y 'b'. Retorna 1 si no hay divisor común.
-     */
     public static int gcd(int a, int b) {
         a = Math.abs(a); b = Math.abs(b);
         while (b > 0) { int temp = b; b = a % b; a = temp; }
         return a == 0 ? 1 : a;
     }
 
-    /**
-     * Calcula el Mínimo Común Múltiplo (mcm) de dos enteros.
-     * Se basa en la propiedad: mcm(a,b) = |a * b| / MCD(a,b).
-     * * @param a Primer número.
-     * @param b Segundo número.
-     * @return El múltiplo común más pequeño entre 'a' y 'b'.
-     */
     public static int lcm(int a, int b) {
         if (a == 0 || b == 0) return 0;
         return Math.abs(a * b) / gcd(a, b);

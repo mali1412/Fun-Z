@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="120dp"
+    android:viewportWidth="240"
+    android:viewportHeight="120">
+    <!-- Poste vertical -->
+    <path android:fillColor="#94A3B8"
+        android:pathData="M118,60 L122,60 L122,110 L118,110 Z"/>
+    <!-- Base horizontal -->
+    <path android:fillColor="#64748B"
+        android:pathData="M80,110 L160,110 Q165,110 165,114 L165,118 L75,118 L75,114 Q75,110 80,110 Z"/>
+    <!-- Pivote central -->
+    <path android:fillColor="#475569"
+        android:pathData="M115,60 Q120,55 125,60 Q130,65 125,70 Q120,75 115,70 Q110,65 115,60 Z"/>
+</vector>
