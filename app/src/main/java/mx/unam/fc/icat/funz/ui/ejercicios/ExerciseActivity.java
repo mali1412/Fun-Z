@@ -2,15 +2,18 @@ package mx.unam.fc.icat.funz.ui.ejercicios;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ClipData;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.TypedValue;
 import android.view.*;
 import android.view.animation.AccelerateInterpolator;
@@ -50,6 +53,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private EditText     etAnswer;
     private LinearLayout drawerMenu;
     private FrameLayout  panelContainer;
+    private FrameLayout  celebrationLayer;
     private View         loadingView;
     private View         currentPanel;
     private int moduleId;
@@ -80,6 +84,7 @@ public class ExerciseActivity extends AppCompatActivity {
         chipTimer      = findViewById(R.id.tv_timer);
         etAnswer       = findViewById(R.id.et_answer);
         panelContainer = findViewById(R.id.panel_container);
+        celebrationLayer = findViewById(R.id.celebration_layer);
         loadingView    = findViewById(R.id.loading_view);
         drawerMenu = findViewById(R.id.drawer_menu);
         drawerMenu.setVisibility(View.GONE);
@@ -259,6 +264,7 @@ public class ExerciseActivity extends AppCompatActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, height, 1f);
         lp.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
         tv.setLayoutParams(lp);
+        tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
             ClipData cd = ClipData.newPlainText("balanza_tile", label + "|S");
@@ -317,6 +323,7 @@ public class ExerciseActivity extends AppCompatActivity {
         lp.setMargins(dpToPx(1), dpToPx(1), dpToPx(1), dpToPx(1));
         tv.setLayoutParams(lp);
         grid.addView(tv);
+        tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
             ClipData cd = ClipData.newPlainText("balanza_tile", label + "|" + (isLeft ? "L" : "R"));
@@ -378,6 +385,7 @@ public class ExerciseActivity extends AppCompatActivity {
 
         btnCheck.setOnClickListener(v -> {
             if (etInput.getText().toString().trim().equals(correctAnswer)) {
+                playStepSuccessHaptic();
                 // ÉXITO
                 etInput.setEnabled(false);
                 etInput.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E8F5E9")));
@@ -386,6 +394,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 // Mostrar el siguiente paso
                 mostrarSiguientePaso(container, steps, index + 1);
             } else {
+                playStepErrorHaptic();
                 // ERROR
                 etInput.setError("Incorrecto");
                 etInput.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake));
@@ -457,6 +466,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(72));
         lp.setMargins(dpToPx(6), dpToPx(5), dpToPx(6), dpToPx(5));
         tv.setLayoutParams(lp);
+        tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
             ClipData cd = ClipData.newPlainText("tile", label);
@@ -521,6 +531,7 @@ public class ExerciseActivity extends AppCompatActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dpToPx(72), 1f);
         lp.setMargins(dpToPx(5), dpToPx(4), dpToPx(5), dpToPx(4));
         tv.setLayoutParams(lp);
+        tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
             ClipData cd = ClipData.newPlainText("op", op);
@@ -560,31 +571,111 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void triggerConfetti(FrameLayout container) {
         if (container == null) return;
-        Random random = new Random();
-        for (int i = 0; i < 25; i++) {
-            View p = new View(this);
-            int size = dpToPx(random.nextInt(8) + 4);
-            p.setLayoutParams(new FrameLayout.LayoutParams(size, size));
-            p.setBackgroundColor(Color.HSVToColor(new float[]{random.nextInt(360), 0.8f, 1f}));
-            p.setX(container.getWidth() / 2f); p.setY(container.getHeight() / 2f);
-            container.addView(p);
-            p.animate().translationX(random.nextFloat() * container.getWidth())
-                .translationY(random.nextFloat() * container.getHeight())
-                .rotation(random.nextInt(360)).alpha(0f).setDuration(1500)
-                .setInterpolator(new AccelerateInterpolator())
-                .setListener(new AnimatorListenerAdapter() { 
-                    @Override public void onAnimationEnd(Animator a) { container.removeView(p); } 
-                }).start();
-        }
+        container.post(() -> {
+            int width = container.getWidth();
+            int height = container.getHeight();
+            if (width == 0 || height == 0) return;
+            Random random = new Random();
+            for (int i = 0; i < 25; i++) {
+                View p = new View(this);
+                int size = dpToPx(random.nextInt(8) + 4);
+                p.setLayoutParams(new FrameLayout.LayoutParams(size, size));
+                p.setBackgroundColor(Color.HSVToColor(new float[]{random.nextInt(360), 0.8f, 1f}));
+                p.setX(width / 2f);
+                p.setY(height / 2f);
+                container.addView(p);
+                p.animate().translationX(random.nextFloat() * width)
+                    .translationY(random.nextFloat() * height)
+                    .rotation(random.nextInt(360)).alpha(0f).setDuration(1500)
+                    .setInterpolator(new AccelerateInterpolator())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override public void onAnimationEnd(Animator a) { container.removeView(p); }
+                    }).start();
+            }
+        });
     }
 
     private void handleResult(ExerciseViewModel.ExerciseResult res) {
         if (res == ExerciseViewModel.ExerciseResult.CORRECT || res == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT) {
+            playSuccessFeedback();
             showResultDialog(true, res == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT);
         } else if (res == ExerciseViewModel.ExerciseResult.INCORRECT) {
+            playErrorFeedback();
             showResultDialog(false, false);
         } else if (res == ExerciseViewModel.ExerciseResult.EMPTY_INPUT) {
             Toast.makeText(this, "Ingresa una respuesta", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void playSuccessFeedback() {
+        playFinalSuccessHaptic();
+        playSuccessCelebration();
+    }
+
+    private void playErrorFeedback() {
+        playFinalErrorHaptic();
+    }
+
+    private void playStepSuccessHaptic() {
+        if (!isHapticFeedbackEnabled()) return;
+        View anchor = panelContainer != null ? panelContainer : findViewById(android.R.id.content);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+        vibratePattern(new long[]{0, 18}, new int[]{0, 110});
+    }
+
+    private void playStepErrorHaptic() {
+        if (!isHapticFeedbackEnabled()) return;
+        View anchor = etAnswer != null ? etAnswer : findViewById(android.R.id.content);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.REJECT);
+        vibratePattern(new long[]{0, 34, 18, 26}, new int[]{0, 120, 0, 90});
+    }
+
+    private void playFinalSuccessHaptic() {
+        if (!isHapticFeedbackEnabled()) return;
+        View anchor = panelContainer != null ? panelContainer : findViewById(android.R.id.content);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+        vibratePattern(new long[]{0, 28, 40, 36}, new int[]{0, 170, 0, 220});
+    }
+
+    private void playFinalErrorHaptic() {
+        if (!isHapticFeedbackEnabled()) return;
+        View anchor = etAnswer != null ? etAnswer : findViewById(android.R.id.content);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.REJECT);
+        vibratePattern(new long[]{0, 80, 30, 60}, new int[]{0, 180, 0, 120});
+    }
+
+    private boolean isHapticFeedbackEnabled() {
+        return AppState.getInstance().isHapticFeedbackEnabled();
+    }
+
+    private void vibratePattern(long[] timings, int[] amplitudes) {
+        Vibrator vibrator = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            VibratorManager manager = (VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE);
+            if (manager != null) vibrator = manager.getDefaultVibrator();
+        } else {
+            vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        }
+        if (vibrator == null || !vibrator.hasVibrator()) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1));
+        } else {
+            vibrator.vibrate(timings, -1);
+        }
+    }
+
+    private void playSuccessCelebration() {
+        if (panelContainer != null) {
+            panelContainer.animate()
+                    .scaleX(1.03f)
+                    .scaleY(1.03f)
+                    .setDuration(140)
+                    .withEndAction(() -> panelContainer.animate().scaleX(1f).scaleY(1f).setDuration(180).start())
+                    .start();
+        }
+        if (celebrationLayer != null) {
+            triggerConfetti(celebrationLayer);
         }
     }
 
@@ -642,6 +733,7 @@ public class ExerciseActivity extends AppCompatActivity {
             i.putExtra("session_continue", true);
             startActivity(i);
         }
+        overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
         finish();
     }
 

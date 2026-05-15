@@ -21,6 +21,8 @@ public class AppStateRepository {
     public void setUsername(String username) { state.setUsername(username); }
     public boolean isDarkTheme() { return state.isDarkTheme(); }
     public void setDarkTheme(boolean darkTheme) { state.setDarkTheme(darkTheme); }
+    public boolean isHapticFeedbackEnabled() { return state.isHapticFeedbackEnabled(); }
+    public void setHapticFeedbackEnabled(boolean enabled) { state.setHapticFeedbackEnabled(enabled); }
 
     // Progreso general
     public int getTotalPoints() { return state.getTotalPoints(); }
@@ -42,4 +44,3 @@ public class AppStateRepository {
         state.markExerciseDone(moduleId, step, totalSteps, correct, hintUsed, points);
     }
 }
-

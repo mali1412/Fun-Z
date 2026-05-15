@@ -167,6 +167,7 @@ public class TemasActivity extends AppCompatActivity {
         i.putExtra("module_id",  target[0]);
         i.putExtra("step_order", target[1]);
         startActivity(i);
+        overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
     }
 
     // ════════════════════════════════════════════════════════════════════════

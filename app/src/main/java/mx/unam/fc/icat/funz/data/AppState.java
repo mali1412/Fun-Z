@@ -39,6 +39,9 @@ public class AppState {
     public boolean isDarkTheme()           { return b("dark_theme", false); }
     public void    setDarkTheme(boolean v) { put("dark_theme", v); }
 
+    public boolean isHapticFeedbackEnabled()           { return b("haptic_feedback", true); }
+    public void    setHapticFeedbackEnabled(boolean v) { put("haptic_feedback", v); }
+
     // ════════════════════════════════════════════════════════════════════════
     //  Progreso genérico por módulo
     // ════════════════════════════════════════════════════════════════════════

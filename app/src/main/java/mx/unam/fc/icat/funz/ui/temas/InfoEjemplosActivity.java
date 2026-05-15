@@ -203,6 +203,7 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         intent.putExtra("module_id", moduleId);
         intent.putExtra("step_order", state.getCurrentStep(moduleId));
         startActivity(intent);
+        overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
         finish();
     }
 
