@@ -169,6 +169,51 @@
                     android:textColor="?attr/colorTextPrimary" />
             </RadioGroup>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_audio_feedback"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_secondary"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="@dimen/margin_small"
+                tools:ignore="SmallSp" />
+
+            <RadioGroup
+                android:id="@+id/rg_audio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/margin_large">
+
+                <RadioButton
+                    android:id="@+id/rb_audio_on"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:text="@string/audio_on"
+                    android:textSize="@dimen/text_size_small"
+                    android:checked="true"
+                    android:background="@drawable/bg_radio_option"
+                    android:layout_marginEnd="@dimen/margin_small"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="?attr/colorTextPrimary" />
+
+                <RadioButton
+                    android:id="@+id/rb_audio_off"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight="1"
+                    android:text="@string/audio_off"
+                    android:textSize="@dimen/text_size_small"
+                    android:background="@drawable/bg_radio_option"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:textColor="?attr/colorTextPrimary" />
+            </RadioGroup>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
                 android:layout_width="match_parent"

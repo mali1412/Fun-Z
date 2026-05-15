@@ -68,9 +68,12 @@
     <string name="label_username">NOMBRE DE USUARIO</string>
     <string name="label_hint">Escribe tu nombre</string>
     <string name="label_theme">TEMA</string>
-    <string name="label_haptic_feedback">RETROALIMENTACION HAPTICA</string>
+    <string name="label_haptic_feedback">VIBRACION</string>
     <string name="haptic_on">Activada</string>
     <string name="haptic_off">Desactivada</string>
+    <string name="label_audio_feedback">SONIDO</string>
+    <string name="audio_on">Activada</string>
+    <string name="audio_off">Desactivada</string>
     <string name="label_credits">CR&#201;DITOS</string>
     <string name="app_version_info">FunZ v4.0 &#183; UNAM 2026</string>
     <string name="dev_name_1">Ch&#225;vez Mart&#237;nez Marco Antonio</string>

@@ -42,6 +42,9 @@ public class AppState {
     public boolean isHapticFeedbackEnabled()           { return b("haptic_feedback", true); }
     public void    setHapticFeedbackEnabled(boolean v) { put("haptic_feedback", v); }
 
+    public boolean isAudioFeedbackEnabled()           { return b("audio_feedback", true); }
+    public void    setAudioFeedbackEnabled(boolean v) { put("audio_feedback", v); }
+
     // ════════════════════════════════════════════════════════════════════════
     //  Progreso genérico por módulo
     // ════════════════════════════════════════════════════════════════════════

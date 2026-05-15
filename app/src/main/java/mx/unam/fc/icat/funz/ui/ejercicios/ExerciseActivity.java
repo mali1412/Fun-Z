@@ -9,6 +9,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ClipData;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -56,6 +58,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private FrameLayout  celebrationLayer;
     private View         loadingView;
     private View         currentPanel;
+    private ToneGenerator toneGenerator;
     private int moduleId;
     private int stepOrder;
 
@@ -216,6 +219,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     if (label.equals("x")) op = "+x";
                     else if (!label.startsWith("+") && !label.startsWith("-")) op = "+" + label;
                     vm.applyOp(op);
+                    playMoveSound();
                 }
             }
             return true;
@@ -240,6 +244,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             else if (label.startsWith("-")) inverseOp = "+" + label.substring(1);
                             else inverseOp = "-" + label;
                             vm.applyOp(inverseOp);
+                            playMoveSound();
                         }
                     }
                 }
@@ -386,6 +391,7 @@ public class ExerciseActivity extends AppCompatActivity {
         btnCheck.setOnClickListener(v -> {
             if (etInput.getText().toString().trim().equals(correctAnswer)) {
                 playStepSuccessHaptic();
+                playStepSuccessSound();
                 // ÉXITO
                 etInput.setEnabled(false);
                 etInput.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E8F5E9")));
@@ -395,6 +401,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 mostrarSiguientePaso(container, steps, index + 1);
             } else {
                 playStepErrorHaptic();
+                playStepErrorSound();
                 // ERROR
                 etInput.setError("Incorrecto");
                 etInput.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake));
@@ -558,6 +565,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     if (event.getClipData() != null && event.getClipData().getItemCount() > 0) {
                         String op = event.getClipData().getItemAt(0).getText().toString();
                         vm.applyTileOperation(op);
+                        playMoveSound();
                     }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -609,11 +617,13 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void playSuccessFeedback() {
         playFinalSuccessHaptic();
+        playFinalSuccessSound();
         playSuccessCelebration();
     }
 
     private void playErrorFeedback() {
         playFinalErrorHaptic();
+        playFinalErrorSound();
     }
 
     private void playStepSuccessHaptic() {
@@ -644,8 +654,49 @@ public class ExerciseActivity extends AppCompatActivity {
         vibratePattern(new long[]{0, 80, 30, 60}, new int[]{0, 180, 0, 120});
     }
 
+    private void playStepSuccessSound() {
+        playTone(ToneGenerator.TONE_PROP_BEEP, 30);
+    }
+
+    private void playMoveSound() {
+        // Sonido corto tipo tecla para confirmar movimiento sin ser invasivo.
+        playTone(ToneGenerator.TONE_PROP_BEEP, 22);
+    }
+
+    private void playStepErrorSound() {
+        playTone(ToneGenerator.TONE_PROP_NACK, 45);
+    }
+
+    private void playFinalSuccessSound() {
+        playTone(ToneGenerator.TONE_PROP_ACK, 85);
+    }
+
+    private void playFinalErrorSound() {
+        playTone(ToneGenerator.TONE_PROP_NACK, 70);
+    }
+
+    private ToneGenerator getToneGenerator() {
+        if (toneGenerator != null) return toneGenerator;
+        try {
+            toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 35);
+        } catch (RuntimeException ignored) {
+            toneGenerator = null;
+        }
+        return toneGenerator;
+    }
+
+    private void playTone(int toneType, int durationMs) {
+        if (!isAudioFeedbackEnabled()) return;
+        ToneGenerator tg = getToneGenerator();
+        if (tg != null) tg.startTone(toneType, durationMs);
+    }
+
     private boolean isHapticFeedbackEnabled() {
         return AppState.getInstance().isHapticFeedbackEnabled();
+    }
+
+    private boolean isAudioFeedbackEnabled() {
+        return AppState.getInstance().isAudioFeedbackEnabled();
     }
 
     private void vibratePattern(long[] timings, int[] amplitudes) {
@@ -784,5 +835,12 @@ public class ExerciseActivity extends AppCompatActivity {
     private int dpToPx(int dp) { return (int)(dp * getResources().getDisplayMetrics().density); }
     private int resolveThemeColor(int attr) { TypedValue tv = new TypedValue(); getTheme().resolveAttribute(attr, tv, true); return tv.data; }
 
-    @Override protected void onDestroy() { super.onDestroy(); vm.cancelTimer(); }
+    @Override protected void onDestroy() {
+        super.onDestroy();
+        if (toneGenerator != null) {
+            toneGenerator.release();
+            toneGenerator = null;
+        }
+        vm.cancelTimer();
+    }
 }

@@ -23,6 +23,8 @@ public class AppStateRepository {
     public void setDarkTheme(boolean darkTheme) { state.setDarkTheme(darkTheme); }
     public boolean isHapticFeedbackEnabled() { return state.isHapticFeedbackEnabled(); }
     public void setHapticFeedbackEnabled(boolean enabled) { state.setHapticFeedbackEnabled(enabled); }
+    public boolean isAudioFeedbackEnabled() { return state.isAudioFeedbackEnabled(); }
+    public void setAudioFeedbackEnabled(boolean enabled) { state.setAudioFeedbackEnabled(enabled); }
 
     // Progreso general
     public int getTotalPoints() { return state.getTotalPoints(); }

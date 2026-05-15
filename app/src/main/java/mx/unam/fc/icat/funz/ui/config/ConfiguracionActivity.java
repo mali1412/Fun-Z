@@ -34,6 +34,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
     private TextInputEditText etUsername;
     private RadioGroup        rgTheme;
     private RadioGroup        rgHaptic;
+    private RadioGroup        rgAudio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.et_username);
         rgTheme    = findViewById(R.id.rg_theme);
         rgHaptic   = findViewById(R.id.rg_haptic);
+        rgAudio    = findViewById(R.id.rg_audio);
 
         observeViewModel();
         vm.loadCurrentConfig(); // dispara la carga inicial de los LiveData
@@ -59,7 +61,8 @@ public class ConfiguracionActivity extends AppCompatActivity {
                     : "";
             boolean isDark = (rgTheme.getCheckedRadioButtonId() == R.id.rb_dark);
             boolean hapticEnabled = (rgHaptic.getCheckedRadioButtonId() == R.id.rb_haptic_on);
-            vm.saveConfig(newName, isDark, hapticEnabled);
+            boolean audioEnabled = (rgAudio.getCheckedRadioButtonId() == R.id.rb_audio_on);
+            vm.saveConfig(newName, isDark, hapticEnabled, audioEnabled);
         });
 
         setupNavigation();
@@ -76,6 +79,8 @@ public class ConfiguracionActivity extends AppCompatActivity {
                 rgTheme.check(Boolean.TRUE.equals(dark) ? R.id.rb_dark : R.id.rb_light));
         vm.currentHapticFeedback.observe(this, enabled ->
                 rgHaptic.check(Boolean.TRUE.equals(enabled) ? R.id.rb_haptic_on : R.id.rb_haptic_off));
+        vm.currentAudioFeedback.observe(this, enabled ->
+                rgAudio.check(Boolean.TRUE.equals(enabled) ? R.id.rb_audio_on : R.id.rb_audio_off));
 
         // Evento de resultado del guardado (un solo disparo)
         vm.saveEvent.observe(this, result -> {

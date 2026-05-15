@@ -41,6 +41,9 @@ public class ConfiguracionViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> _currentHapticFeedback = new MutableLiveData<>();
     public  final LiveData<Boolean>         currentHapticFeedback  = _currentHapticFeedback;
 
+    private final MutableLiveData<Boolean> _currentAudioFeedback = new MutableLiveData<>();
+    public  final LiveData<Boolean>         currentAudioFeedback  = _currentAudioFeedback;
+
     // ── Eventos de un solo disparo ────────────────────────────────────────────
 
     /**
@@ -60,6 +63,7 @@ public class ConfiguracionViewModel extends AndroidViewModel {
         _currentUsername.setValue(stateRepo.getUsername());
         _currentDarkTheme.setValue(stateRepo.isDarkTheme());
         _currentHapticFeedback.setValue(stateRepo.isHapticFeedbackEnabled());
+        _currentAudioFeedback.setValue(stateRepo.isAudioFeedbackEnabled());
     }
 
     // ════════════════════════════════════════════════════════════════════════
@@ -73,7 +77,7 @@ public class ConfiguracionViewModel extends AndroidViewModel {
      * @param newUsername Nombre introducido por el usuario (puede estar vacío)
      * @param newDark     true si el usuario seleccionó tema oscuro
      */
-    public void saveConfig(String newUsername, boolean newDark, boolean hapticEnabled) {
+    public void saveConfig(String newUsername, boolean newDark, boolean hapticEnabled, boolean audioEnabled) {
         // Actualizar nombre solo si no está vacío
         if (newUsername != null && !newUsername.trim().isEmpty()) {
             stateRepo.setUsername(newUsername.trim());
@@ -82,6 +86,7 @@ public class ConfiguracionViewModel extends AndroidViewModel {
         boolean themeChanged = newDark != stateRepo.isDarkTheme();
         stateRepo.setDarkTheme(newDark);
         stateRepo.setHapticFeedbackEnabled(hapticEnabled);
+        stateRepo.setAudioFeedbackEnabled(audioEnabled);
 
         _saveEvent.setValue(themeChanged ? SaveResult.THEME_CHANGED : SaveResult.SAVED);
     }
