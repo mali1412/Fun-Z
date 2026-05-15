@@ -440,7 +440,12 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     private String normalizeOp(String op) {
         if (op == null) return "";
-        return op.replace("−", "-").replace("–", "-").replace("/", "÷").replace("x", "×").replace("*", "×").trim();
+        return op
+                .replace("−", "-")
+                .replace("–", "-")
+                .replace("/", "÷")
+                .replace("*", "×")
+                .trim();
     }
 
     public static List<String> parseJson(String json) {
