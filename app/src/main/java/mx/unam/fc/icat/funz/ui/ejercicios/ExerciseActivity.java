@@ -231,7 +231,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     if (label.equals(AlgebraTokens.X)) op = AlgebraTokens.POS_X;
                     else if (!label.startsWith("+") && !label.startsWith("-")) op = "+" + label;
                     vm.applyOp(op);
-                    playMoveSound();
+                    playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
                 }
             }
             return true;
@@ -256,7 +256,7 @@ public class ExerciseActivity extends AppCompatActivity {
                             else if (label.startsWith("-")) inverseOp = "+" + label.substring(1);
                             else inverseOp = "-" + label;
                             vm.applyOp(inverseOp);
-                            playMoveSound();
+                            playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
                         }
                     }
                 }
@@ -582,7 +582,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     if (event.getClipData() != null && event.getClipData().getItemCount() > 0) {
                         String op = event.getClipData().getItemAt(0).getText().toString();
                         vm.applyTileOperation(op);
-                        playMoveSound();
+                        playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
                     }
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -678,6 +678,11 @@ public class ExerciseActivity extends AppCompatActivity {
     private void playMoveSound() {
         // Sonido corto tipo tecla para confirmar movimiento sin ser invasivo.
         playTone(ToneGenerator.TONE_PROP_BEEP, 22);
+    }
+
+    private void playDropFeedback(boolean success) {
+        if (success) playMoveSound();
+        else playStepErrorSound();
     }
 
     private void playStepErrorSound() {

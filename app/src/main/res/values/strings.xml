@@ -241,6 +241,7 @@
     <string name="status_op_cannot_apply_format">No se puede aplicar %1$s ahora.</string>
     <string name="status_op_applied_format">Operaci&#243;n aplicada: %1$s</string>
     <string name="status_x_equals_format">&#161;Excelente! x = %1$d</string>
+    <string name="status_equation_already_solved">La ecuaci&#243;n ya est&#225; resuelta. No se pueden aplicar m&#225;s operaciones.</string>
 
     <!-- Inicio / reanudar -->
     <string name="resume_title_default_start">Comenzar aprendizaje</string>

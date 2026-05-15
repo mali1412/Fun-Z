@@ -201,6 +201,12 @@ public class ExerciseViewModel extends AndroidViewModel {
         Ecuacion current = _ecuacion.getValue();
         if (ex == null || current == null) return;
 
+        if (CalculadoraAlgebraica.xEstaAislada(current)) {
+            _statusMessage.setValue(s(R.string.status_equation_already_solved));
+            _statusPositive.setValue(false);
+            return;
+        }
+
         String normalizedOp = op.replace(AlgebraTokens.MINUS_SIGN, AlgebraTokens.MINUS)
                 .replace(AlgebraTokens.EN_DASH, AlgebraTokens.MINUS)
                 .replace(AlgebraTokens.DIV_SYMBOL, AlgebraTokens.DIV_ASCII)
@@ -244,6 +250,13 @@ public class ExerciseViewModel extends AndroidViewModel {
     public void applyTileOperation(String op) {
         String normalized = normalizeOp(op);
         if (normalized.isEmpty()) return;
+
+        Ecuacion current = _ecuacion.getValue();
+        if (current != null && CalculadoraAlgebraica.xEstaAislada(current)) {
+            _statusMessage.setValue(s(R.string.status_equation_already_solved));
+            _statusPositive.setValue(false);
+            return;
+        }
 
         String expected = expectedTileOp();
         if (!expected.isEmpty() && !expected.equals(normalized)) {
