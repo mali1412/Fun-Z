@@ -84,7 +84,7 @@ public class ConfiguracionActivity extends AppCompatActivity {
 
         // Evento de resultado del guardado (un solo disparo)
         vm.saveEvent.observe(this, result -> {
-            Toast.makeText(this, "✓ Cambios guardados", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.config_saved), Toast.LENGTH_SHORT).show();
             if (result == ConfiguracionViewModel.SaveResult.THEME_CHANGED) {
                 appliedDarkTheme = AppState.getInstance().isDarkTheme();
                 recreate(); // re-aplica el tema de inmediato

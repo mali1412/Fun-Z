@@ -7,7 +7,7 @@
     <string name="welcome_format">&#161;Hola, %1$s!</string>
     <string name="streak_format">&#128293; Racha: %1$d d&#237;as</string>
     <string name="streak_default">&#128293; Racha: 0 d&#237;as</string>
-    <string name="resume_default">M&#243;dulo 1 · Ej. 1/3</string>
+    <string name="resume_default">M&#243;dulo 1 · Ej. 1 de 3</string>
     <string name="btn_resume">&#9654; Reanudar</string>
     <string name="label_continue">CONTINUAR</string>
     <string name="label_quick_access">ACCESO R&#193;PIDO</string>
@@ -22,7 +22,7 @@
     <string name="titulo_modulos">M&#243;dulos</string>
     <string name="modulo">M&#243;dulo</string>
     <string name="label_practice">Pr&#225;ctica</string>
-    <string name="loading">Cargando...</string>
+    <string name="loading">Cargando&#8230;</string>
     <string name="_0">0%</string>
 
     <!-- Medallas -->
@@ -31,14 +31,14 @@
     <string name="medal_grad">&#127891;</string>
 
     <!-- Ejercicios -->
-    <string name="exercise_title_1">Ejercicio 1/3</string>
-    <string name="exercise_title_2">Ejercicio 2/3</string>
-    <string name="exercise_title_3">Ejercicio 3/3</string>
+    <string name="exercise_title_1">Ejercicio 1 de 3</string>
+    <string name="exercise_title_2">Ejercicio 2 de 3</string>
+    <string name="exercise_title_3">Ejercicio 3 de 3</string>
     <string name="btn_verify">Verificar</string>
     <string name="btn_hint">&#128161;</string>
     <string name="btn_hamburger">&#8801;</string>
     <string name="btn_exit">&#10005;</string>
-    <string name="load_hint">Pista cargando...</string>
+    <string name="load_hint">Pista cargando&#8230;</string>
 
     <!-- Ecuaciones -->
     <string name="eq_balanza">x + 5 = 10</string>
@@ -109,6 +109,7 @@
     <!-- Toolbar y Navegación de Ejercicios -->
     <string name="btn_exit_text">&#8592; Salir</string>
     <string name="timer_default">2:00</string>
+    <string name="timer_finished">0:00</string>
     <string name="x_equals">x = </string>
     <string name="answer_hint">Sigue las instrucciones</string>
 
@@ -120,7 +121,7 @@
     <string name="nav_config_short">Config</string>
 
     <!-- Ejercicio Balanza -->
-    <string name="method_balanza">&#9878; Balanza &#183; Ej. 1/3</string>
+    <string name="method_balanza">&#9878; Balanza &#183; Ej. 1 de 3</string>
     <string name="label_solve">Resuelve:</string>
     <string name="balance_instruction">Aplica la misma operaci&#243;n a ambos lados:</string>
     <string name="balance_status_initial">Aplica &#8722;5 a ambos lados para aislar x</string>
@@ -167,9 +168,83 @@
     <string name="pts_earned_format">+%1$d puntos</string>
     <string name="summary_methods">Temas: Balanza &#183; Cl&#225;sico &#183; Algebra Tiles</string>
     <string name="btn_back_to_topics">Ir a Temas</string>
+    <string name="fin_grad_icon">&#127891;</string>
+    <string name="pts_earned_placeholder">+0 puntos</string>
 
     <!-- Accesibilidad -->
     <string name="desc_back_to_topics">Finalizar y volver a la lista de temas</string>
     <string name="msg_module_completed">¡Has terminado el Módulo %1$d!</string>
+
+    <!-- Hardcoded cleanup -->
+    <string name="title_progress_by_module">PROGRESO POR M&#211;DULO</string>
+    <string name="status_locked">Bloqueado</string>
+    <string name="percent_format">%1$d%%</string>
+    <string name="module_unlock_requirement">Completa el m&#243;dulo anterior para desbloquear</string>
+    <string name="module_locked_toast_format">&#128274; %1$s bloqueado</string>
+    <string name="module_completed_chip">&#9989;</string>
+    <string name="module_subtitle_completed_format">%1$s &#183; Completado</string>
+    <string name="tab_info">Informaci&#243;n</string>
+    <string name="tab_examples">Ejemplos</string>
+    <string name="btn_examples_next">Ejemplos &#8594;</string>
+    <string name="btn_exercises_next">Ejercicios &#8594;</string>
+    <string name="page_indicator_format">%1$d / 2</string>
+    <string name="page_indicator_default">1 de 2</string>
+    <string name="drop_hint_release">Suelta aqu&#237; &#8595;</string>
+    <string name="drop_hint_touch">o toca un bot&#243;n</string>
+    <string name="toast_enter_answer">Ingresa una respuesta</string>
+    <string name="dialog_correct_points_format">&#161;Bien hecho!\n+%1$d puntos</string>
+    <string name="dialog_correct_hint_extra">\n\nUsaste pista. &#161;Intenta sin pista la pr&#243;xima para m&#225;s puntos!</string>
+    <string name="dialog_incorrect_title">&#129300; Intenta de nuevo</string>
+    <string name="dialog_incorrect_message">Revisa tus pasos para encontrar el error.</string>
+    <string name="btn_finish">Finalizar</string>
+    <string name="btn_next_arrow">Siguiente &#8594;</string>
+    <string name="btn_retry">Reintentar</string>
+    <string name="btn_exit_text_plain">Salir</string>
+    <string name="dialog_timeup_message">No te rindas, &#161;vuelve a intentarlo!</string>
+    <string name="toolbar_module_exercise_format">M&#243;dulo %1$d &#183; Ej. %2$d</string>
+    <string name="input_error_incorrect">Incorrecto</string>
+    <string name="hint_tile_suggestion_format">\n\n&#128161; Sugerencia: Intenta aplicar %1$s</string>
+    <string name="example_label_a">Ejemplo A</string>
+    <string name="example_label_b">Ejemplo B</string>
+    <string name="example_label_c">Ejemplo C</string>
+    <string name="log_tag_error">ExerciseActivity</string>
+    <string name="log_missing_steps_container">No se encontr&#243; el contenedor ll_solution_steps</string>
+
+    <!-- Placeholders y textos movidos desde layouts -->
+    <string name="shortcut_icon_placeholder">1</string>
+    <string name="shortcut_module_placeholder">M&#243;dulo 1</string>
+    <string name="module_card_btn_info">&#128214; Info</string>
+    <string name="module_card_btn_examples">&#128161; Ejemplos</string>
+    <string name="module_card_btn_exercises">&#9654; Ejercicios</string>
+    <string name="module_card_locked_with_icon">&#128274; Bloqueado</string>
+    <string name="tiles_apply">APLICAR</string>
+    <string name="tiles_here">aqu&#237;</string>
+    <string name="classic_steps_title">Soluci&#243;n paso a paso:</string>
+    <string name="example_step_placeholder">Paso del ejemplo</string>
+    <string name="module_title_placeholder">M&#243;dulo 1</string>
+    <string name="btn_back_arrow">&#8592; Volver</string>
+    <string name="symbol_check_mark">&#10003;</string>
+    <string name="default_username">Usuario</string>
+
+    <!-- Mensajes dinámicos de ViewModel -->
+    <string name="status_isolate_x_balance">A&#237;sla x para equilibrar la balanza</string>
+    <string name="status_drag_operation_center">Arrastra una operaci&#243;n al centro para aplicarla en ambos lados.</string>
+    <string name="status_solve_equation_step_by_step">Resuelve la ecuaci&#243;n paso a paso</string>
+    <string name="status_x_isolated_success">&#10003; &#161;Excelente! x est&#225; aislada.</string>
+    <string name="status_balance_touched_ground">&#9888;&#65039; La balanza ha tocado suelo</string>
+    <string name="status_seek_balance">Busca el equilibrio de la ecuaci&#243;n</string>
+    <string name="status_divide_by_zero_error">No se puede dividir entre 0</string>
+    <string name="status_strategic_move">&#10003; Movimiento estrat&#233;gico. &#161;Sigue as&#237;!</string>
+    <string name="status_balance_changed_hint">La balanza cambi&#243;, pero busca aislar x.</string>
+    <string name="status_modified_one_side">Has modificado solo un lado. &#161;Cuidado con el equilibrio!</string>
+    <string name="status_op_not_recommended">Esa operaci&#243;n no es recomendada en este paso.</string>
+    <string name="status_op_cannot_apply_format">No se puede aplicar %1$s ahora.</string>
+    <string name="status_op_applied_format">Operaci&#243;n aplicada: %1$s</string>
+    <string name="status_x_equals_format">&#161;Excelente! x = %1$d</string>
+
+    <!-- Inicio / reanudar -->
+    <string name="resume_title_default_start">Comenzar aprendizaje</string>
+    <string name="resume_badge_completed_format">M&#243;dulo %1$d &#9989; Completado</string>
+    <string name="resume_badge_progress_format">M&#243;dulo %1$d &#183; Ej. %2$d/%3$d</string>
 
 </resources>

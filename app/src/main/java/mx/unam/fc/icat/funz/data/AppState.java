@@ -3,15 +3,37 @@ package mx.unam.fc.icat.funz.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import mx.unam.fc.icat.funz.R;
+
 /**
  * AppState — Singleton que gestiona el estado global del usuario.
  */
 public class AppState {
 
     private static final String PREFS = "funz_prefs";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_TOTAL_POINTS = "total_points";
+    private static final String KEY_DARK_THEME = "dark_theme";
+    private static final String KEY_HAPTIC_FEEDBACK = "haptic_feedback";
+    private static final String KEY_AUDIO_FEEDBACK = "audio_feedback";
+    private static final String KEY_ACTIVE_MODULE = "active_module";
+    private static final String KEY_HINT_BAL = "hint_bal";
+    private static final String KEY_HINT_CLA = "hint_cla";
+    private static final String KEY_HINT_TIL = "hint_til";
+
+    private static final String KEY_MODULE_PREFIX = "mod_";
+    private static final String KEY_STEP_SUFFIX = "_step";
+    private static final String KEY_INFO_SUFFIX = "_info";
+    private static final String KEY_EXAMPLES_SUFFIX = "_ex";
+    private static final String KEY_DONE_SUFFIX = "_done";
+    private static final String KEY_COUNT_SUFFIX = "_count";
+    private static final String KEY_LOCKED_SUFFIX = "_locked";
+    private static final String KEY_STEP_MARKER_PREFIX = "_s";
+
     private static AppState instance;
 
     private SharedPreferences prefs;
+    private String defaultUsername;
 
     public static AppState getInstance() {
         if (instance == null) instance = new AppState();
@@ -20,6 +42,7 @@ public class AppState {
 
     public void init(Context ctx) {
         prefs = ctx.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        defaultUsername = ctx.getString(R.string.default_username);
     }
 
     private AppState() {}
@@ -28,44 +51,44 @@ public class AppState {
     //  Usuario
     // ════════════════════════════════════════════════════════════════════════
 
-    public String  getUsername()           { return str("username", "Usuario"); }
-    public void    setUsername(String v)   { put("username", v); }
+    public String  getUsername()           { return str(KEY_USERNAME, defaultUsername != null ? defaultUsername : ""); }
+    public void    setUsername(String v)   { put(KEY_USERNAME, v); }
 
-    public int     getTotalPoints()        { return i("total_points", 0); }
-    public void    addPoints(int pts)      { put("total_points", getTotalPoints() + pts); }
+    public int     getTotalPoints()        { return i(KEY_TOTAL_POINTS, 0); }
+    public void    addPoints(int pts)      { put(KEY_TOTAL_POINTS, getTotalPoints() + pts); }
 
     public int     getStreakDays()         { return i("streak_days", 1); }
 
-    public boolean isDarkTheme()           { return b("dark_theme", false); }
-    public void    setDarkTheme(boolean v) { put("dark_theme", v); }
+    public boolean isDarkTheme()           { return b(KEY_DARK_THEME, false); }
+    public void    setDarkTheme(boolean v) { put(KEY_DARK_THEME, v); }
 
-    public boolean isHapticFeedbackEnabled()           { return b("haptic_feedback", true); }
-    public void    setHapticFeedbackEnabled(boolean v) { put("haptic_feedback", v); }
+    public boolean isHapticFeedbackEnabled()           { return b(KEY_HAPTIC_FEEDBACK, true); }
+    public void    setHapticFeedbackEnabled(boolean v) { put(KEY_HAPTIC_FEEDBACK, v); }
 
-    public boolean isAudioFeedbackEnabled()           { return b("audio_feedback", true); }
-    public void    setAudioFeedbackEnabled(boolean v) { put("audio_feedback", v); }
+    public boolean isAudioFeedbackEnabled()           { return b(KEY_AUDIO_FEEDBACK, true); }
+    public void    setAudioFeedbackEnabled(boolean v) { put(KEY_AUDIO_FEEDBACK, v); }
 
     // ════════════════════════════════════════════════════════════════════════
     //  Progreso genérico por módulo
     // ════════════════════════════════════════════════════════════════════════
 
-    public int  getCurrentStep(int moduleId)             { return i("mod_" + moduleId + "_step", 1); }
-    private void setCurrentStep(int moduleId, int step)  { put("mod_" + moduleId + "_step", step); }
+    public int  getCurrentStep(int moduleId)             { return i(moduleStepKey(moduleId), 1); }
+    private void setCurrentStep(int moduleId, int step)  { put(moduleStepKey(moduleId), step); }
 
-    public boolean isInfoRead(int moduleId)              { return b("mod_" + moduleId + "_info", false); }
-    public void    setInfoRead(int moduleId, boolean v)  { put("mod_" + moduleId + "_info", v); }
+    public boolean isInfoRead(int moduleId)              { return b(moduleInfoKey(moduleId), false); }
+    public void    setInfoRead(int moduleId, boolean v)  { put(moduleInfoKey(moduleId), v); }
 
-    public boolean isExamplesRead(int moduleId)              { return b("mod_" + moduleId + "_ex", false); }
-    public void    setExamplesRead(int moduleId, boolean v)  { put("mod_" + moduleId + "_ex", v); }
+    public boolean isExamplesRead(int moduleId)              { return b(moduleExamplesKey(moduleId), false); }
+    public void    setExamplesRead(int moduleId, boolean v)  { put(moduleExamplesKey(moduleId), v); }
 
-    public boolean isStepDone(int moduleId, int step)        { return b("mod_" + moduleId + "_s" + step, false); }
-    private void   setStepDone(int moduleId, int step)       { put("mod_" + moduleId + "_s" + step, true); }
+    public boolean isStepDone(int moduleId, int step)        { return b(moduleStepDoneKey(moduleId, step), false); }
+    private void   setStepDone(int moduleId, int step)       { put(moduleStepDoneKey(moduleId, step), true); }
 
-    public boolean isModuleComplete(int moduleId)            { return b("mod_" + moduleId + "_done", false); }
-    private void   setModuleComplete(int moduleId)           { put("mod_" + moduleId + "_done", true); }
+    public boolean isModuleComplete(int moduleId)            { return b(moduleDoneKey(moduleId), false); }
+    private void   setModuleComplete(int moduleId)           { put(moduleDoneKey(moduleId), true); }
 
-    public int  getModuleExerciseCount(int moduleId)             { return i("mod_" + moduleId + "_count", 3); }
-    public void setModuleExerciseCount(int moduleId, int count)  { put("mod_" + moduleId + "_count", count); }
+    public int  getModuleExerciseCount(int moduleId)             { return i(moduleCountKey(moduleId), 3); }
+    public void setModuleExerciseCount(int moduleId, int count)  { put(moduleCountKey(moduleId), count); }
 
     public int getModuleProgress(int moduleId) {
         if (isModuleComplete(moduleId)) return 100;
@@ -84,7 +107,7 @@ public class AppState {
 
     public boolean isModuleUnlocked(int moduleId) {
         if (moduleId <= 1) return true;
-        return !b("mod_" + moduleId + "_locked", true);
+        return !b(moduleLockedKey(moduleId), true);
     }
 
     // Shorthands para Estadísticas y Main
@@ -118,7 +141,7 @@ public class AppState {
                 setModuleComplete(moduleId);
                 setCurrentStep(moduleId, 1);
                 // Desbloqueo lógico para el siguiente módulo
-                put("mod_" + (moduleId + 1) + "_locked", false);
+                put(moduleLockedKey(moduleId + 1), false);
                 // Al completar el módulo, el siguiente se vuelve el activo automáticamente
                 setActiveModuleId(moduleId + 1);
             }
@@ -135,24 +158,18 @@ public class AppState {
     }
 
     // Pistas (Hints)
-    public void setHintUsedBal(boolean v) { put("hint_bal", v); }
-    public void setHintUsedCla(boolean v) { put("hint_cla", v); }
-    public void setHintUsedTil(boolean v) { put("hint_til", v); }
+    public void setHintUsedBal(boolean v) { put(KEY_HINT_BAL, v); }
+    public void setHintUsedCla(boolean v) { put(KEY_HINT_CLA, v); }
+    public void setHintUsedTil(boolean v) { put(KEY_HINT_TIL, v); }
 
     // ════════════════════════════════════════════════════════════════════════
     //  Helpers
     // ════════════════════════════════════════════════════════════════════════
 
-    public int getActiveModuleId() { return i("active_module", 1); }
-    public void setActiveModuleId(int id) { put("active_module", id); }
+    public int getActiveModuleId() { return i(KEY_ACTIVE_MODULE, 1); }
+    public void setActiveModuleId(int id) { put(KEY_ACTIVE_MODULE, id); }
 
     public boolean isMod2Unlocked()  { return isModuleUnlocked(2); }
-    
-    public String getResumeBadge() {
-        int mod = getActiveModuleId();
-        if (isModuleComplete(mod)) return "Módulo " + mod + " ✅ Completado";
-        return "Módulo " + mod + " · Ej. " + getCurrentStep(mod) + "/" + getModuleExerciseCount(mod);
-    }
 
     private String  str(String k, String def)  { return prefs != null ? prefs.getString(k, def) : def; }
     private int     i(String k, int def)       { return prefs != null ? prefs.getInt(k, def) : def; }
@@ -161,4 +178,32 @@ public class AppState {
     private void put(String k, String v)  { if (prefs != null) prefs.edit().putString(k, v).apply(); }
     private void put(String k, int v)     { if (prefs != null) prefs.edit().putInt(k, v).apply(); }
     private void put(String k, boolean v) { if (prefs != null) prefs.edit().putBoolean(k, v).apply(); }
+
+    private String moduleStepKey(int moduleId) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_STEP_SUFFIX;
+    }
+
+    private String moduleInfoKey(int moduleId) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_INFO_SUFFIX;
+    }
+
+    private String moduleExamplesKey(int moduleId) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_EXAMPLES_SUFFIX;
+    }
+
+    private String moduleStepDoneKey(int moduleId, int step) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_STEP_MARKER_PREFIX + step;
+    }
+
+    private String moduleDoneKey(int moduleId) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_DONE_SUFFIX;
+    }
+
+    private String moduleCountKey(int moduleId) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_COUNT_SUFFIX;
+    }
+
+    private String moduleLockedKey(int moduleId) {
+        return KEY_MODULE_PREFIX + moduleId + KEY_LOCKED_SUFFIX;
+    }
 }

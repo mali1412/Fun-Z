@@ -10,14 +10,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 
-import mx.unam.fc.icat.funz.ui.ejercicios.ExerciseActivity;
-import mx.unam.fc.icat.funz.viewmodel.MainViewModel;
 import mx.unam.fc.icat.funz.data.AppState;
+import mx.unam.fc.icat.funz.ui.ejercicios.ExerciseActivity;
 import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
-import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
-import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
-import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
 import mx.unam.fc.icat.funz.ui.temas.InfoEjemplosActivity;
+import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
+import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
+import mx.unam.fc.icat.funz.utils.AppIntentKeys;
+import mx.unam.fc.icat.funz.viewmodel.MainViewModel;
 import mx.unam.fc.icat.funz.R;
 
 /**
@@ -109,16 +110,16 @@ public class MainActivity extends AppCompatActivity {
         AppState state = AppState.getInstance();
         if (step == 1 && (!state.isInfoRead(moduleId) || !state.isExamplesRead(moduleId))) {
             Intent i = new Intent(this, InfoEjemplosActivity.class);
-            i.putExtra("module_id", moduleId);
-            i.putExtra("tab", 0); // Empezar en la pestaña de Información
+            i.putExtra(AppIntentKeys.MODULE_ID, moduleId);
+            i.putExtra(AppIntentKeys.TAB, AppIntentKeys.TAB_INFO); // Empezar en la pestaña de Información
             startActivity(i);
             return;
         }
 
         // 3. De lo contrario, lo mandamos al ejercicio correspondiente
         Intent i = new Intent(this, ExerciseActivity.class);
-        i.putExtra("module_id",  moduleId);
-        i.putExtra("step_order", step);
+        i.putExtra(AppIntentKeys.MODULE_ID,  moduleId);
+        i.putExtra(AppIntentKeys.STEP_ORDER, step);
         startActivity(i);
     }
 }

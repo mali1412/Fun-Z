@@ -4,23 +4,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
+    android:layout_marginBottom="@dimen/padding_xlarge"
+    app:cardCornerRadius="@dimen/card_corner_radius_small"
+    app:cardElevation="@dimen/card_elevation_small"
     app:cardBackgroundColor="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/margin_default">
 
         <TextView
             android:id="@+id/tv_example_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ejemplo"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_small"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary" />
 
@@ -29,16 +29,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="16dp"
-            android:textSize="24sp"
+            android:padding="@dimen/margin_default"
+            android:textSize="@dimen/text_size_h1"
             android:fontFamily="monospace"
             android:textColor="?attr/colorTextPrimary" />
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#DDDDDD"
-            android:layout_marginVertical="8dp"/>
+            android:layout_height="@dimen/divider_thickness"
+            android:background="@color/divider"
+            android:layout_marginVertical="@dimen/margin_small"/>
 
         <LinearLayout
             android:id="@+id/ll_card_steps"

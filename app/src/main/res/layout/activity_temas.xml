@@ -28,17 +28,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/titulo_modulos"
-        android:textSize="20sp"
+        android:textSize="@dimen/text_size_h2"
         android:textStyle="bold"
         android:textColor="@color/text_primary"
-        android:padding="16dp"/>
+        android:padding="@dimen/margin_default"/>
 
     <!-- Lista de módulos — poblada dinámicamente -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="12dp">
+        android:padding="@dimen/margin_medium">
 
         <LinearLayout
             android:id="@+id/ll_modules_container"

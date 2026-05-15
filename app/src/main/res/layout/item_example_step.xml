@@ -8,10 +8,10 @@
 
     <TextView
         android:id="@+id/tv_step_number"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="@dimen/step_number_size"
+        android:layout_height="@dimen/step_number_size"
         android:textSize="@dimen/text_size_small"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/white"
         android:gravity="center"
         android:background="@drawable/bg_step_circle"
         android:layout_marginEnd="@dimen/margin_small"/>
@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Paso del ejemplo"
+        android:text="@string/example_step_placeholder"
         android:textSize="@dimen/text_size_small"
         android:textColor="@color/text_primary"/>
 

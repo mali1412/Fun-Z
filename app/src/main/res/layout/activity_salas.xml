@@ -16,23 +16,23 @@
         app:labelVisibilityMode="labeled"
         app:itemTextColor="@color/nav_item_color"
         app:itemIconTint="@color/nav_item_color"
-        android:elevation="4dp"/>
+        android:elevation="@dimen/card_elevation"/>
 
     <!-- Título de la pantalla -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/button_height"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="16dp"
+        android:paddingStart="@dimen/margin_default"
         android:background="?attr/colorSurface"
-        android:elevation="2dp">
+        android:elevation="@dimen/card_elevation_small">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_salas"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_body"
             android:textStyle="bold"
             android:textColor="@color/text_primary"/>
     </LinearLayout>
@@ -44,33 +44,33 @@
         android:layout_weight="1"
         android:orientation="vertical"
         android:gravity="center"
-        android:padding="32dp">
+        android:padding="@dimen/padding_large">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ic_rocket"
-            android:textSize="56sp"
+            android:textSize="@dimen/text_size_emoji_large"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="@dimen/margin_default"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/coming_soon"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size_h2"
             android:textStyle="bold"
             android:textColor="@color/color_primary"
             android:layout_gravity="center"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginBottom="@dimen/margin_medium"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/salas_coming_soon_desc"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_size_caption"
             android:textColor="@color/text_secondary"
             android:gravity="center"
-            android:lineSpacingExtra="4dp"/>
+            android:lineSpacingExtra="@dimen/margin_tiny"/>
     </LinearLayout>
 </LinearLayout>

@@ -57,7 +57,7 @@ public class FinEjerciciosActivity extends AppCompatActivity {
 
 
         Chip chipPts = findViewById(R.id.tv_fin_pts);
-        chipPts.setText("+" + state.getSessionPts() + " puntos");
+        chipPts.setText(getString(R.string.pts_earned_format, state.getSessionPts()));
 
         Button btnTemas = findViewById(R.id.btn_go_temas);
         btnTemas.setOnClickListener(v -> {

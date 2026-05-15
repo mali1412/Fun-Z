@@ -20,6 +20,7 @@ import mx.unam.fc.icat.funz.ui.main.MainActivity;
 import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.utils.AppIntentKeys;
 import mx.unam.fc.icat.funz.R;
 
 /**
@@ -110,15 +111,15 @@ public class TemasActivity extends AppCompatActivity {
 
         int pct = vm.getModuleProgress(mod.id);
         pbMod.setProgress(pct);
-        chipBadge.setText(pct + "%");
+        chipBadge.setText(getString(R.string.percent_format, pct));
 
         if (!mod.unlocked) {
             // Módulo bloqueado
             lockOverlay.setVisibility(View.VISIBLE);
-            tvLockMsg.setText("Completa el módulo anterior para desbloquear");
+            tvLockMsg.setText(R.string.module_unlock_requirement);
             llActions.setVisibility(View.GONE);
             card.setOnClickListener(v ->
-                    Toast.makeText(this, "🔒 " + mod.name + " bloqueado", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(this, getString(R.string.module_locked_toast_format, mod.name), Toast.LENGTH_SHORT).show());
         } else {
             // Módulo disponible
             lockOverlay.setVisibility(View.GONE);
@@ -136,15 +137,15 @@ public class TemasActivity extends AppCompatActivity {
 
             btnInfo.setOnClickListener(v -> {
                 Intent i = new Intent(this, InfoEjemplosActivity.class);
-                i.putExtra("module_id", mod.id);
-                i.putExtra("tab", 0);
+                i.putExtra(AppIntentKeys.MODULE_ID, mod.id);
+                i.putExtra(AppIntentKeys.TAB, AppIntentKeys.TAB_INFO);
                 startActivity(i);
             });
 
             btnEjemplos.setOnClickListener(v -> {
                 Intent i = new Intent(this, InfoEjemplosActivity.class);
-                i.putExtra("module_id", mod.id);
-                i.putExtra("tab", 1);
+                i.putExtra(AppIntentKeys.MODULE_ID, mod.id);
+                i.putExtra(AppIntentKeys.TAB, AppIntentKeys.TAB_EXAMPLES);
                 startActivity(i);
             });
 
@@ -153,8 +154,8 @@ public class TemasActivity extends AppCompatActivity {
             // Borde verde si completado
             AppState state = AppState.getInstance();
             if (state.isModuleComplete(mod.id)) {
-                chipBadge.setText("✅");
-                tvSub.setText(mod.subtitle + " · Completado");
+                chipBadge.setText(R.string.module_completed_chip);
+                tvSub.setText(getString(R.string.module_subtitle_completed_format, mod.subtitle));
             }
         }
 
@@ -164,8 +165,8 @@ public class TemasActivity extends AppCompatActivity {
     private void startExercise(int moduleId) {
         int[] target = vm.getStartTarget(moduleId);
         Intent i = new Intent(this, ExerciseActivity.class);
-        i.putExtra("module_id",  target[0]);
-        i.putExtra("step_order", target[1]);
+        i.putExtra(AppIntentKeys.MODULE_ID,  target[0]);
+        i.putExtra(AppIntentKeys.STEP_ORDER, target[1]);
         startActivity(i);
         overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
     }

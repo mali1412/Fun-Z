@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/drawable/bg_avatar_circle.xml — Círculo semitransparente para avatar -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <solid android:color="#38FFFFFF"/>
-    <stroke android:width="1.5dp" android:color="#66FFFFFF"/>
+    <solid android:color="@color/white_alpha_22"/>
+    <stroke android:width="@dimen/tile_stroke_width" android:color="@color/white_alpha_40"/>
 </shape>

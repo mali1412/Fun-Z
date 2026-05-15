@@ -10,21 +10,21 @@
     <LinearLayout
         android:id="@+id/topbar"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/toolbar_height"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="@dimen/margin_small"
+        android:paddingEnd="@dimen/margin_small"
         android:background="?attr/colorSurface"
-        android:elevation="4dp">
+        android:elevation="@dimen/toolbar_elevation">
 
         <TextView
             android:id="@+id/tv_module_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Módulo 1"
-            android:textSize="13sp"
+            android:text="@string/module_title_placeholder"
+            android:textSize="@dimen/text_size_caption"
             android:textStyle="bold"
             android:textColor="@color/text_primary"
             android:gravity="center"/>
@@ -32,12 +32,12 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_hamburger"
             style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:text="&#8801;"
-            android:textSize="16sp"
+            android:layout_width="@dimen/toolbar_button_size"
+            android:layout_height="@dimen/toolbar_button_size"
+            android:text="@string/btn_hamburger"
+            android:textSize="@dimen/text_size_body"
             android:padding="0dp"
-            app:cornerRadius="8dp"/>
+            app:cornerRadius="@dimen/margin_small"/>
     </LinearLayout>
 
     <!-- DRAWER -->
@@ -46,10 +46,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="@dimen/drawer_top_margin"
         android:background="?attr/colorSurface"
         android:padding="@dimen/margin_small"
-        android:elevation="8dp"
+        android:elevation="@dimen/drawer_elevation"
         android:visibility="gone"
         android:gravity="center">
 
@@ -59,9 +59,9 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:text="Inicio"
-            android:textSize="9sp"
+            android:layout_margin="@dimen/margin_xxsmall"
+            android:text="@string/nav_inicio_short"
+            android:textSize="@dimen/text_size_micro"
             android:padding="0dp"
             app:icon="@drawable/ic_home"
             app:iconGravity="top"
@@ -73,9 +73,9 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:text="Temas"
-            android:textSize="9sp"
+            android:layout_margin="@dimen/margin_xxsmall"
+            android:text="@string/nav_temas_short"
+            android:textSize="@dimen/text_size_micro"
             android:padding="0dp"
             app:icon="@drawable/ic_book"
             app:iconGravity="top"
@@ -87,9 +87,9 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:text="Salas"
-            android:textSize="9sp"
+            android:layout_margin="@dimen/margin_xxsmall"
+            android:text="@string/nav_salas_short"
+            android:textSize="@dimen/text_size_micro"
             android:padding="0dp"
             app:icon="@drawable/ic_room"
             app:iconGravity="top"
@@ -101,9 +101,9 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:text="Stats"
-            android:textSize="9sp"
+            android:layout_margin="@dimen/margin_xxsmall"
+            android:text="@string/nav_stats_short"
+            android:textSize="@dimen/text_size_micro"
             android:padding="0dp"
             app:icon="@drawable/ic_bar_chart"
             app:iconGravity="top"
@@ -115,9 +115,9 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/button_height"
             android:layout_weight="1"
-            android:layout_margin="2dp"
-            android:text="Config"
-            android:textSize="9sp"
+            android:layout_margin="@dimen/margin_xxsmall"
+            android:text="@string/nav_config_short"
+            android:textSize="@dimen/text_size_micro"
             android:padding="0dp"
             app:icon="@drawable/ic_settings"
             app:iconGravity="top" />
@@ -129,17 +129,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="@dimen/drawer_top_margin">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/tab_layout_height"
             android:background="?attr/colorSurface"
             app:tabTextColor="?attr/colorTextSecondary"
             app:tabSelectedTextColor="?attr/colorPrimary"
             app:tabIndicatorColor="?attr/colorPrimary"
-            app:tabIndicatorHeight="2dp"/>
+            app:tabIndicatorHeight="@dimen/tab_indicator_height"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -151,7 +151,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/margin_default">
 
                 <LinearLayout
                     android:id="@+id/content_info"
@@ -162,63 +162,63 @@
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="?attr/colorPrimaryAlpha"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="@dimen/margin_medium">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="20dp">
+                            android:orientation="vertical" android:padding="@dimen/padding_xlarge">
                             <TextView android:id="@+id/tv_info_title_1"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:textStyle="bold" android:textSize="18sp"
+                                android:textStyle="bold" android:textSize="@dimen/text_size_title"
                                 android:textColor="?attr/colorPrimary"
-                                android:layout_marginBottom="8dp"/>
+                                android:layout_marginBottom="@dimen/margin_small"/>
                             <TextView android:id="@+id/tv_info_text_1"
                                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                                android:textSize="14sp" android:textColor="?attr/colorPrimary"
-                                android:lineSpacingExtra="4dp"/>
+                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
+                                android:lineSpacingExtra="@dimen/margin_tiny"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="?attr/colorPrimaryAlpha"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="@dimen/margin_medium">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="20dp">
+                            android:orientation="vertical" android:padding="@dimen/padding_xlarge">
                             <TextView android:id="@+id/tv_info_title_2"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:textStyle="bold" android:textSize="18sp"
+                                android:textStyle="bold" android:textSize="@dimen/text_size_title"
                                 android:textColor="?attr/colorPrimary"
-                                android:layout_marginBottom="8dp"/>
+                                android:layout_marginBottom="@dimen/margin_small"/>
                             <TextView android:id="@+id/tv_info_text_2"
                                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                                android:textSize="14sp" android:textColor="?attr/colorPrimary"
-                                android:lineSpacingExtra="4dp"/>
+                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
+                                android:lineSpacingExtra="@dimen/margin_tiny"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
+                        app:cardCornerRadius="@dimen/card_corner_radius_small"
                         app:cardElevation="0dp"
                         app:cardBackgroundColor="?attr/colorPrimaryAlpha"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="@dimen/margin_medium">
                         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                            android:orientation="vertical" android:padding="20dp">
+                            android:orientation="vertical" android:padding="@dimen/padding_xlarge">
                             <TextView android:id="@+id/tv_info_title_3"
                                 android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                android:textStyle="bold" android:textSize="18sp"
+                                android:textStyle="bold" android:textSize="@dimen/text_size_title"
                                 android:textColor="?attr/colorPrimary"
-                                android:layout_marginBottom="8dp"/>
+                                android:layout_marginBottom="@dimen/margin_small"/>
                             <TextView android:id="@+id/tv_info_text_3"
                                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                                android:textSize="14sp" android:textColor="?attr/colorPrimary"
-                                android:lineSpacingExtra="4dp"/>
+                                android:textSize="@dimen/text_size_small" android:textColor="?attr/colorPrimary"
+                                android:lineSpacingExtra="@dimen/margin_tiny"/>
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
@@ -256,7 +256,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height"
-                android:text="← Volver"
+                android:text="@string/btn_back_arrow"
                 android:textSize="@dimen/text_size_small"
                 app:cornerRadius="@dimen/margin_small"/>
 
@@ -265,7 +265,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="1 / 2"
+                android:text="@string/page_indicator_default"
                 android:textSize="@dimen/text_size_small"
                 android:textColor="@color/text_secondary"
                 android:gravity="center"/>
@@ -274,7 +274,7 @@
                 android:id="@+id/btn_next"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/button_height"
-                android:text="Ejemplos →"
+                android:text="@string/btn_examples_next"
                 android:textSize="@dimen/text_size_small"
                 android:backgroundTint="@color/color_primary"
                 app:cornerRadius="@dimen/margin_small"/>

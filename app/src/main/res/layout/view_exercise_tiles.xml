@@ -4,21 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="@dimen/margin_small">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/margin_small"
         app:cardBackgroundColor="?attr/colorBgTonalCard"
-        app:cardCornerRadius="14dp"
+        app:cardCornerRadius="@dimen/padding_medium"
         app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="14dp">
+            android:padding="@dimen/padding_medium">
 
             <TextView
                 android:id="@+id/tv_tiles_equation"
@@ -26,26 +26,26 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="?attr/colorOnSurface"
-                android:textSize="28sp"
+                android:textSize="@dimen/text_size_equation"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_tiles_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/margin_small"
                 android:background="@drawable/bg_status"
                 android:gravity="center"
-                android:padding="12dp"
+                android:padding="@dimen/padding_card"
                 android:textColor="?attr/colorTextSecondary"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="@dimen/margin_medium"
         android:layout_weight="0.85"
         android:gravity="center"
         android:orientation="horizontal">
@@ -55,10 +55,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             app:cardBackgroundColor="?attr/colorBgTonalCard"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="@dimen/padding_medium"
             app:cardElevation="0dp"
             app:strokeColor="@color/divider"
-            app:strokeWidth="2dp">
+            app:strokeWidth="@dimen/tab_indicator_height">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -71,38 +71,38 @@
                     android:layout_height="wrap_content"
                     android:gravity="top|center_horizontal"
                     android:orientation="vertical"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp" />
+                    android:paddingTop="@dimen/tile_container_padding"
+                    android:paddingBottom="@dimen/tile_container_padding" />
             </ScrollView>
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:id="@+id/operation_drop_zone"
-            android:layout_width="100dp"
+            android:layout_width="@dimen/operation_drop_zone_width"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="6dp"
+            android:layout_marginHorizontal="@dimen/margin_small"
             android:background="@drawable/bg_tiles_drop_zone"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="8dp">
+            android:padding="@dimen/margin_small">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="APLICAR"
+                android:text="@string/tiles_apply"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_body"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_drop_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="@dimen/margin_tiny"
                 android:gravity="center"
-                android:text="aquí"
+                android:text="@string/tiles_here"
                 android:textColor="@android:color/white"
-                android:textSize="11sp" />
+                android:textSize="@dimen/text_size_button_small" />
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
@@ -110,10 +110,10 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             app:cardBackgroundColor="?attr/colorBgTonalCard"
-            app:cardCornerRadius="14dp"
+            app:cardCornerRadius="@dimen/padding_medium"
             app:cardElevation="0dp"
             app:strokeColor="@color/divider"
-            app:strokeWidth="2dp">
+            app:strokeWidth="@dimen/tab_indicator_height">
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -126,8 +126,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="top|center_horizontal"
                     android:orientation="vertical"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp" />
+                    android:paddingTop="@dimen/tile_container_padding"
+                    android:paddingBottom="@dimen/tile_container_padding" />
             </ScrollView>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
@@ -136,7 +136,7 @@
         android:id="@+id/ll_tiles_ops_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/margin_tiny"
         android:orientation="horizontal" />
 
 </LinearLayout>

@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    bg_tile_positive.xml
-    Drawable con estados para tiles de números positivos (+1, +2, …).
-    - Presionado → azul oscuro
-    - Normal     → azul medio
--->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
-        <shape>
+        <shape android:shape="rectangle">
             <solid android:color="@color/tile_positive_pressed"/>
-            <corners android:radius="6dp"/>
+            <corners android:radius="@dimen/tile_corner_radius"/>
         </shape>
     </item>
     <item>
-        <shape>
+        <shape android:shape="rectangle">
             <solid android:color="@color/tile_positive"/>
-            <corners android:radius="6dp"/>
+            <corners android:radius="@dimen/tile_corner_radius"/>
         </shape>
     </item>
 </selector>
-

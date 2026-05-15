@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="@dimen/margin_small"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurface"
+    tools:ignore="MissingContentDescription">
 
     <!-- BARRA SUPERIOR - Muy compacta para priorizar la balanza -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="@dimen/card_corner_radius"
         app:cardElevation="0dp"
         app:cardBackgroundColor="?attr/colorBgTonalCard"
-        android:layout_marginBottom="4dp">
+        android:layout_marginBottom="@dimen/margin_tiny">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp"
+            android:padding="@dimen/margin_small"
             android:gravity="center">
             <TextView
                 android:id="@+id/tv_balanza_equation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="22sp"
+                android:textSize="@dimen/text_size_op"
                 android:textStyle="bold"
                 android:textColor="?attr/colorOnSurface"
                 android:text="@string/eq_balanza" />
@@ -36,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="11sp"
+                android:textSize="@dimen/text_size_button_small"
                 android:textColor="?attr/colorTextSecondary"
                 android:text="@string/balance_instruction" />
         </LinearLayout>
@@ -50,8 +52,8 @@
         android:layout_weight="1"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small">
 
         <ImageView
             android:id="@+id/iv_balanza_base"
@@ -76,7 +78,10 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_balanza_arm" />
+                android:src="@drawable/ic_balanza_arm"
+                android:contentDescription="@null"
+                android:importantForAccessibility="no"
+                tools:ignore="MissingContentDescription" />
 
             <FrameLayout
                 android:id="@+id/container_lhs"
@@ -84,20 +89,24 @@
                 android:layout_height="@dimen/balanza_plate_size"
                 android:layout_centerVertical="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/margin_small"
                 android:clipChildren="false"
-                android:background="@drawable/bg_tiles_drop_zone">
+                android:background="@drawable/bg_tiles_drop_zone"
+                android:importantForAccessibility="no"
+                tools:ignore="MissingContentDescription">
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_plato"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no" />
                 <GridLayout
                     android:id="@+id/grid_lhs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="28dp"
+                    android:layout_marginBottom="@dimen/balanza_plate_bottom_margin"
                     android:columnCount="3" />
             </FrameLayout>
 
@@ -108,20 +117,24 @@
                 android:layout_height="@dimen/balanza_plate_size"
                 android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/margin_small"
                 android:clipChildren="false"
-                android:background="@drawable/bg_tiles_drop_zone">
+                android:background="@drawable/bg_tiles_drop_zone"
+                android:importantForAccessibility="no"
+                tools:ignore="MissingContentDescription">
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_plato"
-                    android:scaleType="centerInside" />
+                    android:scaleType="centerInside"
+                    android:contentDescription="@null"
+                    android:importantForAccessibility="no" />
                 <GridLayout
                     android:id="@+id/grid_rhs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="28dp"
+                    android:layout_marginBottom="@dimen/balanza_plate_bottom_margin"
                     android:columnCount="3" />
             </FrameLayout>
         </RelativeLayout>
@@ -133,20 +146,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp"
+        android:padding="@dimen/padding_card"
         android:background="@drawable/bg_equation_box"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="2dp">
+        android:layout_marginHorizontal="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:elevation="@dimen/card_elevation_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_caption"
             android:textStyle="bold"
             android:textColor="?attr/colorPrimary"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="8dp"/>
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:layout_marginStart="@dimen/margin_small"/>
 
         <LinearLayout
             android:id="@+id/ll_balanza_source_tiles"
@@ -158,9 +171,9 @@
 
         <ImageView
             android:id="@+id/iv_trash_bin"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:padding="8dp"
+            android:layout_width="@dimen/button_height"
+            android:layout_height="@dimen/button_height"
+            android:padding="@dimen/margin_small"
             android:src="@drawable/ic_delete"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/desc_trash" />

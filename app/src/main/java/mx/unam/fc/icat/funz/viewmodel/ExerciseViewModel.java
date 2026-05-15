@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Exercise;
@@ -20,9 +21,11 @@ import mx.unam.fc.icat.funz.model.Ecuacion;
 import mx.unam.fc.icat.funz.model.TraductorEcuacion;
 import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
+import mx.unam.fc.icat.funz.utils.AlgebraTokens;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
 import mx.unam.fc.icat.funz.model.CalculadoraAlgebraica;
 import mx.unam.fc.icat.funz.model.ParserEcuacion;
+import mx.unam.fc.icat.funz.R;
 
 /**
  * ExerciseViewModel — ViewModel genérico para cualquier tipo de ejercicio.
@@ -68,7 +71,7 @@ public class ExerciseViewModel extends AndroidViewModel {
 
     // ── Otros estados ─────────────────────────────────────────────────────────
 
-    private final MutableLiveData<String>  _timerDisplay = new MutableLiveData<>("2:00");
+    private final MutableLiveData<String>  _timerDisplay = new MutableLiveData<>();
     public  final LiveData<String>          timerDisplay  = _timerDisplay;
 
     private final MutableLiveData<Boolean> _timerUrgent = new MutableLiveData<>(false);
@@ -106,6 +109,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         FunZApp appScope = (FunZApp) app;
         repo = appScope.getExerciseRepository();
         stateRepo = appScope.getAppStateRepository();
+        _timerDisplay.setValue(s(R.string.timer_default));
     }
 
     public void loadExercise(int moduleId, int stepOrder) {
@@ -142,7 +146,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         _lhsExpr.postValue(ParserEcuacion.terminosAString(ec.getLadoIzquierdo()));
         _rhsExpr.postValue(ParserEcuacion.terminosAString(ec.getLadoDerecho()));
         _ops.postValue(parseJson(ex.ops));
-        _statusMessage.postValue("Aísla x para equilibrar la balanza");
+        _statusMessage.postValue(s(R.string.status_isolate_x_balance));
         updateBalanzaVisuals(ec);
     }
 
@@ -150,14 +154,14 @@ public class ExerciseViewModel extends AndroidViewModel {
         leftTiles.clear();  leftTiles.addAll(parseJson(ex.tilesLeft));
         rightTiles.clear(); rightTiles.addAll(parseJson(ex.tilesRight));
         publishTiles();
-        _statusMessage.postValue("Arrastra una operación al centro para aplicarla en ambos lados.");
+        _statusMessage.postValue(s(R.string.status_drag_operation_center));
         _statusPositive.postValue(null);
     }
 
     private void initClasico(Exercise ex) {
         Ecuacion ec = ParserEcuacion.parsear(ex.equation);
         _ecuacion.postValue(ec);
-        _statusMessage.postValue("Resuelve la ecuación paso a paso");
+        _statusMessage.postValue(s(R.string.status_solve_equation_step_by_step));
     }
 
     private void updateBalanzaVisuals(Ecuacion ec) {
@@ -171,7 +175,7 @@ public class ExerciseViewModel extends AndroidViewModel {
             _balanced.postValue(true);
             int valorRhs = (int) Math.round(CalculadoraAlgebraica.evaluarLado(ec, 0, false));
             _autoAnswer.postValue(String.valueOf(valorRhs));
-            _statusMessage.postValue("✓ ¡Excelente! x está aislada.");
+            _statusMessage.postValue(s(R.string.status_x_isolated_success));
             _statusPositive.postValue(true);
         } else {
             // Usamos un peso de x que no coincida necesariamente con la solución
@@ -186,8 +190,8 @@ public class ExerciseViewModel extends AndroidViewModel {
             if (t < -30f) t = -30f;
             _tilt.postValue(-t);
             _balanced.postValue(false);
-            if (Math.abs(t) >= 30f) _statusMessage.postValue("⚠️ La balanza ha tocado suelo");
-            else _statusMessage.postValue("Busca el equilibrio de la ecuación");
+            if (Math.abs(t) >= 30f) _statusMessage.postValue(s(R.string.status_balance_touched_ground));
+            else _statusMessage.postValue(s(R.string.status_seek_balance));
             _statusPositive.postValue(false);
         }
     }
@@ -197,12 +201,15 @@ public class ExerciseViewModel extends AndroidViewModel {
         Ecuacion current = _ecuacion.getValue();
         if (ex == null || current == null) return;
 
-        String normalizedOp = op.replace("−", "-").replace("–", "-").replace("÷", "/").trim();
-        if (normalizedOp.startsWith("/")) {
+        String normalizedOp = op.replace(AlgebraTokens.MINUS_SIGN, AlgebraTokens.MINUS)
+                .replace(AlgebraTokens.EN_DASH, AlgebraTokens.MINUS)
+                .replace(AlgebraTokens.DIV_SYMBOL, AlgebraTokens.DIV_ASCII)
+                .trim();
+        if (normalizedOp.startsWith(AlgebraTokens.DIV_ASCII)) {
             try {
-                int divisor = Integer.parseInt(normalizedOp.substring(1).trim());
+                int divisor = Integer.parseInt(normalizedOp.substring(AlgebraTokens.DIV_ASCII.length()).trim());
                 if (divisor == 0) {
-                    _statusMessage.setValue("No se puede dividir entre 0");
+                    _statusMessage.setValue(s(R.string.status_divide_by_zero_error));
                     _statusPositive.setValue(false);
                     return;
                 }
@@ -214,10 +221,10 @@ public class ExerciseViewModel extends AndroidViewModel {
         updateBalanzaVisuals(current);
 
         if (op.equals(ex.correctOp)) {
-            _statusMessage.setValue("✓ Movimiento estratégico. ¡Sigue así!");
+            _statusMessage.setValue(s(R.string.status_strategic_move));
             _statusPositive.setValue(true);
         } else {
-            _statusMessage.setValue("La balanza cambió, pero busca aislar x.");
+            _statusMessage.setValue(s(R.string.status_balance_changed_hint));
             _statusPositive.setValue(false);
         }
     }
@@ -230,7 +237,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         _ecuacion.setValue(current);
         updateBalanzaVisuals(current);
 
-        _statusMessage.setValue("Has modificado solo un lado. ¡Cuidado con el equilibrio!");
+        _statusMessage.setValue(s(R.string.status_modified_one_side));
         _statusPositive.setValue(false);
     }
 
@@ -240,29 +247,29 @@ public class ExerciseViewModel extends AndroidViewModel {
 
         String expected = expectedTileOp();
         if (!expected.isEmpty() && !expected.equals(normalized)) {
-            _statusMessage.setValue("Esa operación no es recomendada en este paso.");
+            _statusMessage.setValue(s(R.string.status_op_not_recommended));
             _statusPositive.setValue(false);
             return;
         }
 
         boolean applied = false;
         switch (normalized) {
-            case "-1": applied = removeUnitBothSides("+1"); break;
-            case "+1": applied = removeUnitBothSides("-1"); break;
-            case "-x": applied = removeXBothSides("x"); break;
-            case "+x": applied = removeXBothSides("-x"); break;
-            case "÷2": applied = divideBothSidesByTwo(); break;
-            case "×2": applied = multiplyBothSidesByTwo(); break;
+            case AlgebraTokens.NEG_ONE: applied = removeUnitBothSides(AlgebraTokens.POS_ONE); break;
+            case AlgebraTokens.POS_ONE: applied = removeUnitBothSides(AlgebraTokens.NEG_ONE); break;
+            case AlgebraTokens.NEG_X: applied = removeXBothSides(AlgebraTokens.X); break;
+            case AlgebraTokens.POS_X: applied = removeXBothSides(AlgebraTokens.NEG_X); break;
+            case AlgebraTokens.DIV_TWO: applied = divideBothSidesByTwo(); break;
+            case AlgebraTokens.MUL_TWO: applied = multiplyBothSidesByTwo(); break;
         }
 
         if (!applied) {
-            _statusMessage.setValue("No se puede aplicar " + normalized + " ahora.");
+            _statusMessage.setValue(s(R.string.status_op_cannot_apply_format, normalized));
             _statusPositive.setValue(false);
             return;
         }
 
         publishTiles();
-        _statusMessage.setValue("Operación aplicada: " + normalized);
+        _statusMessage.setValue(s(R.string.status_op_applied_format, normalized));
         _statusPositive.setValue(true);
     }
 
@@ -291,9 +298,9 @@ public class ExerciseViewModel extends AndroidViewModel {
         if (left.xCount % 2 != 0 || Math.abs(left.units) % 2 != 0 || Math.abs(right.units) % 2 != 0) return false;
         
         leftTiles.clear(); rightTiles.clear();
-        for (int i = 0; i < left.xCount / 2; i++) leftTiles.add("x");
+        for (int i = 0; i < left.xCount / 2; i++) leftTiles.add(AlgebraTokens.X);
         addUnits(leftTiles, left.units / 2);
-        for (int i = 0; i < right.xCount / 2; i++) rightTiles.add("x");
+        for (int i = 0; i < right.xCount / 2; i++) rightTiles.add(AlgebraTokens.X);
         addUnits(rightTiles, right.units / 2);
         return true;
     }
@@ -302,16 +309,16 @@ public class ExerciseViewModel extends AndroidViewModel {
         SideState left = summarizeSide(leftTiles);
         SideState right = summarizeSide(rightTiles);
         leftTiles.clear(); rightTiles.clear();
-        for (int i = 0; i < left.xCount * 2 + left.halfX; i++) leftTiles.add("x");
+        for (int i = 0; i < left.xCount * 2 + left.halfX; i++) leftTiles.add(AlgebraTokens.X);
         addUnits(leftTiles, left.units * 2);
-        for (int i = 0; i < right.xCount * 2 + right.halfX; i++) rightTiles.add("x");
+        for (int i = 0; i < right.xCount * 2 + right.halfX; i++) rightTiles.add(AlgebraTokens.X);
         addUnits(rightTiles, right.units * 2);
         return true;
     }
 
     private void addUnits(List<String> target, int units) {
-        if (units > 0) for (int i = 0; i < units; i++) target.add("+1");
-        else for (int i = 0; i < -units; i++) target.add("-1");
+        if (units > 0) for (int i = 0; i < units; i++) target.add(AlgebraTokens.POS_ONE);
+        else for (int i = 0; i < -units; i++) target.add(AlgebraTokens.NEG_ONE);
     }
 
     private void publishTiles() {
@@ -319,7 +326,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         _rightTiles.postValue(new ArrayList<>(rightTiles));
 
         List<String> tokens = new ArrayList<>(leftTiles);
-        tokens.add("=");
+        tokens.add(AlgebraTokens.EQUALS);
         tokens.addAll(rightTiles);
 
         Ecuacion ecActual = TraductorEcuacion.traducirSecuencia(tokens);
@@ -333,39 +340,39 @@ public class ExerciseViewModel extends AndroidViewModel {
         if (CalculadoraAlgebraica.xEstaAislada(ecActual)) {
             int valorRhs = (int) Math.round(CalculadoraAlgebraica.evaluarLado(ecActual, 0, false));
             _autoAnswer.postValue(String.valueOf(valorRhs));
-            _statusMessage.postValue("¡Excelente! x = " + valorRhs);
+            _statusMessage.postValue(s(R.string.status_x_equals_format, valorRhs));
             _statusPositive.postValue(true);
         }
     }
 
     private List<String> getTileOps() {
         List<String> result = new ArrayList<>();
-        result.add("-1"); result.add("+1");
-        result.add("-x"); result.add("+x");
-        result.add("÷2"); result.add("×2");
+        result.add(AlgebraTokens.NEG_ONE); result.add(AlgebraTokens.POS_ONE);
+        result.add(AlgebraTokens.NEG_X); result.add(AlgebraTokens.POS_X);
+        result.add(AlgebraTokens.DIV_TWO); result.add(AlgebraTokens.MUL_TWO);
         return result;
     }
 
     public String expectedTileOp() {
         SideState left = summarizeSide(leftTiles);
         SideState right = summarizeSide(rightTiles);
-        if (left.units > 0) return "-1";
-        if (left.units < 0) return "+1";
-        if (left.xCount > 0 && right.xCount > 0) return "-x";
-        if (left.negXCount > 0 && right.negXCount > 0) return "+x";
-        if (left.halfX > 0) return "×2";
-        if (left.xCount > 1) return "÷2";
+        if (left.units > 0) return AlgebraTokens.NEG_ONE;
+        if (left.units < 0) return AlgebraTokens.POS_ONE;
+        if (left.xCount > 0 && right.xCount > 0) return AlgebraTokens.NEG_X;
+        if (left.negXCount > 0 && right.negXCount > 0) return AlgebraTokens.POS_X;
+        if (left.halfX > 0) return AlgebraTokens.MUL_TWO;
+        if (left.xCount > 1) return AlgebraTokens.DIV_TWO;
         return "";
     }
 
     private SideState summarizeSide(List<String> side) {
         SideState s = new SideState();
         for (String tile : side) {
-            if ("x".equals(tile)) s.xCount++;
-            else if ("-x".equals(tile)) s.negXCount++;
-            else if ("x/2".equals(tile)) s.halfX++;
-            else if ("+1".equals(tile) || "1".equals(tile)) s.units++;
-            else if ("-1".equals(tile)) s.units--;
+            if (AlgebraTokens.X.equals(tile)) s.xCount++;
+            else if (AlgebraTokens.NEG_X.equals(tile)) s.negXCount++;
+            else if (AlgebraTokens.HALF_X.equals(tile)) s.halfX++;
+            else if (AlgebraTokens.POS_ONE.equals(tile) || AlgebraTokens.ONE.equals(tile)) s.units++;
+            else if (AlgebraTokens.NEG_ONE.equals(tile)) s.units--;
         }
         return s;
     }
@@ -421,11 +428,11 @@ public class ExerciseViewModel extends AndroidViewModel {
             timer = new CountDownTimer(TIME_MS, 1000) {
                 @Override public void onTick(long ms) {
                     long s = ms / 1000;
-                    _timerDisplay.setValue(String.format("%d:%02d", s / 60, s % 60));
+                    _timerDisplay.setValue(String.format(Locale.getDefault(), "%d:%02d", s / 60, s % 60));
                     _timerUrgent.setValue(s <= 20);
                 }
                 @Override public void onFinish() {
-                    _timerDisplay.setValue("0:00");
+                    _timerDisplay.setValue(s(R.string.timer_finished));
                     _timerFinished.setValue(null);
                 }
             }.start();
@@ -441,10 +448,10 @@ public class ExerciseViewModel extends AndroidViewModel {
     private String normalizeOp(String op) {
         if (op == null) return "";
         return op
-                .replace("−", "-")
-                .replace("–", "-")
-                .replace("/", "÷")
-                .replace("*", "×")
+                .replace(AlgebraTokens.MINUS_SIGN, AlgebraTokens.MINUS)
+                .replace(AlgebraTokens.EN_DASH, AlgebraTokens.MINUS)
+                .replace(AlgebraTokens.DIV_ASCII, AlgebraTokens.DIV_SYMBOL)
+                .replace(AlgebraTokens.MUL_ASCII, AlgebraTokens.MUL_SYMBOL)
                 .trim();
     }
 
@@ -462,6 +469,10 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     private static class SideState { int xCount; int negXCount; int halfX; int units; }
+
+    private String s(int resId, Object... args) {
+        return getApplication().getString(resId, args);
+    }
 
     public enum ExerciseResult { CORRECT, CORRECT_WITH_HINT, INCORRECT, EMPTY_INPUT }
 }

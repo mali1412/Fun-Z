@@ -1,24 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Márgenes y Paddings Generales -->
+    <dimen name="margin_xxsmall">2dp</dimen>
+    <dimen name="margin_xsmall">2dp</dimen>
     <dimen name="margin_tiny">4dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">12dp</dimen>
     <dimen name="margin_default">16dp</dimen>
     <dimen name="margin_large">24dp</dimen>
     <dimen name="padding_card">12dp</dimen>
+    <dimen name="padding_medium">14dp</dimen>
+    <dimen name="padding_xlarge">20dp</dimen>
     <dimen name="padding_large">32dp</dimen>
 
     <!-- Tamaños de Texto (Escalables) -->
     <dimen name="text_size_h1">24sp</dimen>
     <dimen name="text_size_h2">20sp</dimen>
     <dimen name="text_size_body">16sp</dimen>
+    <dimen name="text_size_title">18sp</dimen>
+    <dimen name="text_size_subtitle">15sp</dimen>
+    <dimen name="text_size_caption">13sp</dimen>
+    <dimen name="text_size_label">12sp</dimen>
+    <dimen name="text_size_button_small">11sp</dimen>
     <dimen name="text_size_small">14sp</dimen>
     <dimen name="text_size_tiny">10sp</dimen>
     <dimen name="text_size_micro">9sp</dimen>
     <dimen name="text_size_equation">26sp</dimen>
+    <dimen name="text_size_op">22sp</dimen>
+    <dimen name="text_size_emoji_large">56sp</dimen>
 
     <!-- Componentes UI -->
     <dimen name="card_corner_radius">16dp</dimen>
+    <dimen name="card_corner_radius_small">12dp</dimen>
+    <dimen name="card_corner_radius_medium">9dp</dimen>
     <dimen name="card_corner_radius_large">20dp</dimen>
     <dimen name="card_elevation">4dp</dimen>
     <dimen name="card_elevation_small">2dp</dimen>
@@ -27,6 +41,10 @@
     <dimen name="button_height_tiny">32dp</dimen>
     <dimen name="nav_bar_height">64dp</dimen>
     <dimen name="toolbar_height">50dp</dimen>
+    <dimen name="tab_layout_height">48dp</dimen>
+    <dimen name="tab_indicator_height">2dp</dimen>
+    <dimen name="toolbar_elevation">4dp</dimen>
+    <dimen name="drawer_elevation">8dp</dimen>
 
     <!-- Elementos de Ejercicios -->
     <dimen name="chip_equation_min_width">40dp</dimen>
@@ -39,7 +57,7 @@
     <dimen name="balanza_plate_size">130dp</dimen>
     <dimen name="balanza_tile_size_x">32dp</dimen>
     <dimen name="balanza_tile_size_unit">24dp</dimen>
-    <dimen name="balanza_source_tile_height">56dp</dimen>
+    <dimen name="balanza_source_tile_height">32dp</dimen>
 
     <!-- Indicadores y Avatares -->
     <item name="disabled_alpha" format="float" type="dimen">0.5</item>
@@ -56,8 +74,35 @@
 
     <!-- Dimensiones específicas para Tiles -->
     <dimen name="tile_container_height">100dp</dimen>
+    <dimen name="quick_access_card_height">100dp</dimen>
+    <dimen name="quick_access_card_width">100dp</dimen>
+    <dimen name="shortcut_avatar_size">40dp</dimen>
+    <dimen name="stats_summary_card_height">90dp</dimen>
+    <dimen name="medal_badge_size">48dp</dimen>
+    <dimen name="drawer_top_margin">50dp</dimen>
+    <dimen name="toolbar_button_size">36dp</dimen>
+    <dimen name="chip_small_height">26dp</dimen>
+    <dimen name="operation_drop_zone_width">100dp</dimen>
+    <dimen name="balanza_plate_bottom_margin">28dp</dimen>
     <dimen name="tile_stroke_width">1.5dp</dimen>
+    <dimen name="tile_stroke_width_bold">2dp</dimen>
     <dimen name="tile_container_padding">6dp</dimen>
+    <dimen name="tile_item_height">72dp</dimen>
+    <dimen name="tile_margin_h">6dp</dimen>
+    <dimen name="tile_margin_v">5dp</dimen>
     <dimen name="equal_divider_width">32dp</dimen>
+    <dimen name="input_corner_radius">10dp</dimen>
+    <dimen name="step_input_width">60dp</dimen>
+    <dimen name="step_input_height">45dp</dimen>
+    <dimen name="step_number_size">24dp</dimen>
+    <dimen name="divider_thickness">1dp</dimen>
+
+    <dimen name="stroke_width_thin">0.5dp</dimen>
+    <dimen name="stroke_width_standard">1dp</dimen>
+    <dimen name="tile_corner_radius">6dp</dimen>
+    <dimen name="progress_bar_radius">4dp</dimen>
+    <dimen name="drop_zone_radius">14dp</dimen>
+    <dimen name="drop_zone_dash_width">8dp</dimen>
+    <dimen name="drop_zone_dash_gap">6dp</dimen>
 
 </resources>

@@ -2,6 +2,8 @@ package mx.unam.fc.icat.funz.model;
 
 import java.util.List;
 
+import mx.unam.fc.icat.funz.utils.AlgebraTokens;
+
 /**
  * Motor de procesamiento para manipulación y validación de ecuaciones.
  */
@@ -16,8 +18,11 @@ public class CalculadoraAlgebraica {
     }
 
     private static void aplicarOperacionLados(Ecuacion ec, String opStr, boolean ladoIzquierdo, boolean ladoDerecho) {
-        String clean = opStr.replace("−", "-").replace("–", "-")
-                .replace("×", "*").replace("÷", "/").trim();
+        String clean = opStr.replace(AlgebraTokens.MINUS_SIGN, AlgebraTokens.MINUS)
+                .replace(AlgebraTokens.EN_DASH, AlgebraTokens.MINUS)
+                .replace(AlgebraTokens.MUL_SYMBOL, AlgebraTokens.MUL_ASCII)
+                .replace(AlgebraTokens.DIV_SYMBOL, AlgebraTokens.DIV_ASCII)
+                .trim();
         if (clean.length() < 2) return;
 
         char symbol = clean.charAt(0);
@@ -30,7 +35,6 @@ public class CalculadoraAlgebraica {
                 if (igualIdx >= 0) {
                     if (ladoIzquierdo) {
                         ec.getTerminos().add(igualIdx, t.copiar());
-                        igualIdx++;
                     }
                     if (ladoDerecho) {
                         ec.getTerminos().add(t.copiar());
@@ -49,16 +53,16 @@ public class CalculadoraAlgebraica {
 
     private static Termino buildTerminoFromOp(char symbol, String rest) {
         int divisor = 1;
-        if (rest.contains("/")) {
-            String[] dParts = rest.split("/");
+        if (rest.contains(AlgebraTokens.DIV_ASCII)) {
+            String[] dParts = rest.split(AlgebraTokens.DIV_ASCII);
             if (dParts.length > 1) divisor = Integer.parseInt(dParts[1]);
             rest = dParts[0];
         }
 
-        if (rest.contains("x")) {
-            String coefStr = rest.replace("x", "");
-            int coef = (coefStr.isEmpty() || coefStr.equals("+")) ? 1 :
-                    (coefStr.equals("-") ? -1 : Integer.parseInt(coefStr));
+        if (rest.contains(AlgebraTokens.X_SYMBOL)) {
+            String coefStr = rest.replace(AlgebraTokens.X_SYMBOL, "");
+            int coef = (coefStr.isEmpty() || coefStr.equals(AlgebraTokens.PLUS)) ? 1 :
+                    (coefStr.equals(AlgebraTokens.MINUS) ? -1 : Integer.parseInt(coefStr));
             if (symbol == '-') coef = -coef;
             return TerminoFactory.crearVariable(coef, divisor);
         } else {

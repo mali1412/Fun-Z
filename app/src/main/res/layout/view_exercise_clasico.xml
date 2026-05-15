@@ -11,27 +11,27 @@
         <!-- Ecuación destacada -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp" app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/card_corner_radius_small" app:cardElevation="0dp"
             app:cardBackgroundColor="?attr/colorBgTonalCard"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/margin_default">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:gravity="center" android:padding="16dp">
+                android:orientation="vertical" android:gravity="center" android:padding="@dimen/margin_default">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Resuelve:" android:textSize="11sp"
-                    android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="4dp"/>
+                    android:text="@string/label_solve" android:textSize="@dimen/text_size_button_small"
+                    android:textColor="?attr/colorTextSecondary" android:layout_marginBottom="@dimen/margin_tiny"/>
                 <TextView android:id="@+id/tv_equation_display"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:textSize="26sp" android:textStyle="bold"
+                    android:textSize="@dimen/text_size_equation" android:textStyle="bold"
                     android:fontFamily="monospace" android:textColor="?attr/colorTextPrimary"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Título de pasos -->
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Solución paso a paso:"
-            android:textSize="12sp" android:textStyle="bold"
+            android:text="@string/classic_steps_title"
+            android:textSize="@dimen/text_size_label" android:textStyle="bold"
             android:textColor="?attr/colorTextPrimary"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="@dimen/margin_small"/>
 
         <!-- Pasos de solución (generados dinámicamente desde JSON en DB) -->
         <LinearLayout
@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="12dp"
+            android:padding="@dimen/padding_card"
             android:animateLayoutChanges="true"/>
             <!-- Los TextViews de cada paso se añaden en bindClasicoPanel() -->
 

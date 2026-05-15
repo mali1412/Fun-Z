@@ -23,6 +23,7 @@ import mx.unam.fc.icat.funz.ui.main.MainActivity;
 import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
+import mx.unam.fc.icat.funz.utils.AppIntentKeys;
 import mx.unam.fc.icat.funz.R;
 
 /**
@@ -46,8 +47,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_info_ejemplos);
 
-        moduleId = getIntent().getIntExtra("module_id", 1);
-        currentTab = getIntent().getIntExtra("tab", 0);
+        moduleId = getIntent().getIntExtra(AppIntentKeys.MODULE_ID, 1);
+        currentTab = getIntent().getIntExtra(AppIntentKeys.TAB, AppIntentKeys.TAB_INFO);
 
         bindViews();
         loadModuleData();
@@ -102,7 +103,11 @@ public class InfoEjemplosActivity extends AppCompatActivity {
             JSONArray allSteps = new JSONArray(currentModule.exampleSteps);
             // Separamos las 3 ecuaciones que pusimos en el seeder con \n
             String[] equations = currentModule.exampleEquation.split("\n");
-            String[] labels = {"Ejemplo A", "Ejemplo B", "Ejemplo C"};
+            String[] labels = {
+                    getString(R.string.example_label_a),
+                    getString(R.string.example_label_b),
+                    getString(R.string.example_label_c)
+            };
 
             int stepPointer = 0;
 
@@ -129,7 +134,7 @@ public class InfoEjemplosActivity extends AppCompatActivity {
                     TextView tvDesc = stepItem.findViewById(R.id.tv_step_desc);
                     tvDesc.setText(stepText);
 
-                    if (stepText.contains("✓")) {
+                    if (stepText.contains(getString(R.string.symbol_check_mark))) {
                         tvDesc.setTypeface(null, android.graphics.Typeface.BOLD);
                         tvDesc.setTextColor(getColor(R.color.color_primary));
                     }
@@ -147,8 +152,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
         TabLayout tabs    = findViewById(R.id.tabs);
         Button    btnNext = findViewById(R.id.btn_next);
 
-        tabs.addTab(tabs.newTab().setText("Información"));
-        tabs.addTab(tabs.newTab().setText("Ejemplos"));
+        tabs.addTab(tabs.newTab().setText(R.string.tab_info));
+        tabs.addTab(tabs.newTab().setText(R.string.tab_examples));
         tabs.selectTab(tabs.getTabAt(currentTab));
 
         updateNextButton(btnNext);
@@ -184,10 +189,10 @@ public class InfoEjemplosActivity extends AppCompatActivity {
     }
 
     private void updateNextButton(Button btn) {
-        btn.setText(currentTab == 0 ? "Ejemplos →" : "Ejercicios →");
+        btn.setText(currentTab == 0 ? getString(R.string.btn_examples_next) : getString(R.string.btn_exercises_next));
         TextView tvIndicator = findViewById(R.id.tv_page_indicator);
         if (tvIndicator != null) {
-            tvIndicator.setText((currentTab + 1) + " / 2");
+            tvIndicator.setText(getString(R.string.page_indicator_format, currentTab + 1));
         }
     }
 
@@ -200,8 +205,8 @@ public class InfoEjemplosActivity extends AppCompatActivity {
 
     private void goToExercise() {
         Intent intent = new Intent(this, ExerciseActivity.class);
-        intent.putExtra("module_id", moduleId);
-        intent.putExtra("step_order", state.getCurrentStep(moduleId));
+        intent.putExtra(AppIntentKeys.MODULE_ID, moduleId);
+        intent.putExtra(AppIntentKeys.STEP_ORDER, state.getCurrentStep(moduleId));
         startActivity(intent);
         overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
         finish();

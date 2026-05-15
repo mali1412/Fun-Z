@@ -2,6 +2,7 @@ package mx.unam.fc.icat.funz.ui.stats;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -56,7 +57,7 @@ public class EstadisticasActivity extends AppCompatActivity {
         vm.uiState.observe(this, s -> {
             // Actualizar tarjetas de resumen
             ((TextView) findViewById(R.id.tv_stat_pts)).setText(String.valueOf(s.totalPoints));
-            ((TextView) findViewById(R.id.tv_stat_prog)).setText(s.totalProgress + "%");
+            ((TextView) findViewById(R.id.tv_stat_prog)).setText(getString(R.string.percent_format, s.totalProgress));
             ((TextView) findViewById(R.id.tv_stat_streak)).setText(String.valueOf(s.streakDays));
             ((TextView) findViewById(R.id.tv_stat_resolved)).setText(String.valueOf(s.exercisesResolved));
 
@@ -76,14 +77,14 @@ public class EstadisticasActivity extends AppCompatActivity {
 
         // Re-añadir el título de sección si se borró
         TextView title = new TextView(this);
-        title.setText("PROGRESO POR MÓDULO");
-        title.setTextSize(10);
+        title.setText(R.string.title_progress_by_module);
+        title.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_tiny));
         title.setTypeface(null, android.graphics.Typeface.BOLD);
         title.setTextColor(getColor(R.color.text_secondary));
         title.setLetterSpacing(0.08f);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, 0, 0, dpToPx(8));
+        params.setMargins(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.margin_small));
         title.setLayoutParams(params);
         llModulesContainer.addView(title);
 
@@ -98,11 +99,11 @@ public class EstadisticasActivity extends AppCompatActivity {
             int progress = vm.getModuleProgress(m.id);
 
             if (m.unlocked) {
-                tvStatus.setText(progress + "%");
+                tvStatus.setText(getString(R.string.percent_format, progress));
                 pb.setProgress(progress);
                 tvStatus.setTextColor(getColor(R.color.color_primary));
             } else {
-                tvStatus.setText("Bloqueado");
+                tvStatus.setText(R.string.status_locked);
                 pb.setProgress(0);
                 tvStatus.setTextColor(getColor(R.color.text_secondary));
             }
@@ -121,9 +122,6 @@ public class EstadisticasActivity extends AppCompatActivity {
         if (s.totalProgress >= 50) mMod.setBackgroundResource(R.drawable.bg_medal_earned);
     }
 
-    private int dpToPx(int dp) {
-        return (int) (dp * getResources().getDisplayMetrics().density);
-    }
 
     private void setupNavigation() {
         BottomNavigationView nav = findViewById(R.id.bottom_nav);

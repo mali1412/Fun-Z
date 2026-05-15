@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- res/drawable/bg_step_active.xml — Fondo para el paso activo en el método clásico -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#EEF2FF"/>
-    <corners android:radius="9dp"/>
-    <stroke android:width="2dp" android:color="#9C27B0"/>
+    <solid android:color="@color/step_active_bg"/>
+    <corners android:radius="@dimen/card_corner_radius_medium"/>
+    <stroke android:width="@dimen/tile_stroke_width_bold" android:color="@color/color_primary"/>
 </shape>

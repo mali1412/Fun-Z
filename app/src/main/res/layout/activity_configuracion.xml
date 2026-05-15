@@ -27,7 +27,7 @@
         android:paddingStart="@dimen/margin_default"
         android:paddingEnd="@dimen/margin_default"
         android:background="?attr/colorSurface"
-        android:elevation="2dp"
+        android:elevation="@dimen/card_elevation_small"
         tools:ignore="UnusedAttribute">
         <TextView
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_username"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_tiny"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_theme"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_tiny"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_haptic_feedback"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_tiny"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
@@ -173,7 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_audio_feedback"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_tiny"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
@@ -229,7 +229,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_credits"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_size_tiny"
                 android:textStyle="bold"
                 android:textColor="@color/text_secondary"
                 android:letterSpacing="0.08"
@@ -257,7 +257,7 @@
                         android:textSize="@dimen/text_size_body"
                         android:textStyle="bold"
                         android:textColor="@color/text_primary"
-                        android:layout_marginBottom="4dp" />
+                        android:layout_marginBottom="@dimen/margin_tiny" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -284,7 +284,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/team_info"
-                        android:textSize="11sp"
+                        android:textSize="@dimen/text_size_button_small"
                         android:textColor="@color/text_secondary"
                         android:layout_marginTop="@dimen/margin_small"
                         tools:ignore="SmallSp" />

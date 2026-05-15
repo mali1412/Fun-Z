@@ -14,6 +14,7 @@ import mx.unam.fc.icat.funz.data.FunZApp;
 import mx.unam.fc.icat.funz.db.Module;
 import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
+import mx.unam.fc.icat.funz.R;
 
 /**
  * MainViewModel — ViewModel para la pantalla de Inicio.
@@ -56,7 +57,7 @@ public class MainViewModel extends AndroidViewModel {
                     if (m.id == activeId) return m.name;
                 }
             }
-            return "Comenzar aprendizaje";
+            return app.getString(R.string.resume_title_default_start);
         });
 
         // Lógica para obtener los últimos 3 módulos activos/desbloqueados
@@ -83,11 +84,20 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public void refreshUiState() {
-        _welcomeText.setValue("¡Hola, " + stateRepo.getUsername() + "!");
-        _streakText.setValue("🔥 Racha: " + stateRepo.getStreakDays() + " días");
+        _welcomeText.setValue(getApplication().getString(R.string.welcome_format, stateRepo.getUsername()));
+        _streakText.setValue(getApplication().getString(R.string.streak_format, stateRepo.getStreakDays()));
 
         int activeModId = stateRepo.getActiveModuleId();
-        _resumeBadge.setValue(stateRepo.getResumeBadge());
+        if (stateRepo.isModuleComplete(activeModId)) {
+            _resumeBadge.setValue(getApplication().getString(R.string.resume_badge_completed_format, activeModId));
+        } else {
+            _resumeBadge.setValue(getApplication().getString(
+                    R.string.resume_badge_progress_format,
+                    activeModId,
+                    stateRepo.getCurrentStep(activeModId),
+                    stateRepo.getModuleExerciseCount(activeModId)
+            ));
+        }
         _resumeProgress.setValue(stateRepo.getModuleProgress(activeModId));
     }
 

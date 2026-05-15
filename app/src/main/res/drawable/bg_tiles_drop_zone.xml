@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <corners android:radius="14dp" />
+    <corners android:radius="@dimen/drop_zone_radius" />
     <stroke
-        android:width="2dp"
+        android:width="@dimen/tile_stroke_width_bold"
         android:color="@color/tiles_drop_border"
-        android:dashWidth="8dp"
-        android:dashGap="6dp" />
+        android:dashWidth="@dimen/drop_zone_dash_width"
+        android:dashGap="@dimen/drop_zone_dash_gap" />
     <solid android:color="@color/tiles_drop_bg" />
 </shape>
-

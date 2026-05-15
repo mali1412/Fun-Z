@@ -37,7 +37,6 @@ public class AppStateRepository {
     public int getModuleExerciseCount(int moduleId) { return state.getModuleExerciseCount(moduleId); }
     public boolean isStepDone(int moduleId, int step) { return state.isStepDone(moduleId, step); }
     public boolean isModuleComplete(int moduleId) { return state.isModuleComplete(moduleId); }
-    public String getResumeBadge() { return state.getResumeBadge(); }
 
     // Sesión de ejercicios
     public void resetSession() { state.resetSession(); }

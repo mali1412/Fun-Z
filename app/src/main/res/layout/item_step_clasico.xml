@@ -5,35 +5,35 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:padding="8dp"
-    android:layout_marginBottom="4dp">
+    android:padding="@dimen/margin_small"
+    android:layout_marginBottom="@dimen/margin_tiny">
 
     <TextView
         android:id="@+id/tv_step_prefix"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_size_title"
         android:textColor="?attr/colorTextPrimary"
         android:fontFamily="monospace" />
 
     <EditText
         android:id="@+id/et_step_input"
-        android:layout_width="60dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
+        android:layout_width="@dimen/step_input_width"
+        android:layout_height="@dimen/step_input_height"
+        android:layout_marginStart="@dimen/margin_tiny"
+        android:layout_marginEnd="@dimen/margin_tiny"
         android:background="@drawable/bg_input_square"
         android:gravity="center"
         android:inputType="textVisiblePassword"
         android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
-        android:textSize="18sp" />
+        android:textSize="@dimen/text_size_title" />
 
     <TextView
         android:id="@+id/tv_step_suffix"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="@dimen/text_size_title"
         android:textColor="?attr/colorTextPrimary"
         android:fontFamily="monospace" />
 
@@ -46,9 +46,9 @@
         android:id="@+id/btn_step_verify"
         style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="@dimen/button_height_small"
         android:text="@string/btn_verify"
         android:textAllCaps="false"
-        app:cornerRadius="8dp" />
+        app:cornerRadius="@dimen/margin_small" />
 
 </LinearLayout>

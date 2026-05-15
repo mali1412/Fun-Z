@@ -22,6 +22,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -36,11 +37,11 @@ import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.main.MainActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
 import mx.unam.fc.icat.funz.ui.stats.EstadisticasActivity;
-import mx.unam.fc.icat.funz.ui.temas.InfoEjemplosActivity;
 import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
+import mx.unam.fc.icat.funz.utils.AlgebraTokens;
+import mx.unam.fc.icat.funz.utils.AppIntentKeys;
 import mx.unam.fc.icat.funz.viewmodel.ExerciseViewModel;
 import mx.unam.fc.icat.funz.data.AppState;
-import mx.unam.fc.icat.funz.model.Ecuacion;
 import mx.unam.fc.icat.funz.model.Termino;
 import mx.unam.fc.icat.funz.R;
 
@@ -49,6 +50,15 @@ import mx.unam.fc.icat.funz.R;
  * Tiles (Arrastrables) y modo Clásico.
  */
 public class ExerciseActivity extends AppCompatActivity {
+
+    private static final String DRAG_LABEL_BALANZA_TILE = "balanza_tile";
+    private static final String DRAG_LABEL_TILE = "tile";
+    private static final String DRAG_LABEL_OP = "op";
+    private static final String DRAG_PAYLOAD_SEPARATOR = "|";
+    private static final String DRAG_PAYLOAD_SEPARATOR_REGEX = "\\|";
+    private static final String DRAG_SIDE_SOURCE = "S";
+    private static final String DRAG_SIDE_LEFT = "L";
+    private static final String DRAG_SIDE_RIGHT = "R";
 
     private ExerciseViewModel vm;
     private Chip         chipTimer;
@@ -69,9 +79,9 @@ public class ExerciseActivity extends AppCompatActivity {
         if (state.isDarkTheme()) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_exercise);
 
-        moduleId  = getIntent().getIntExtra("module_id",  1);
-        stepOrder = getIntent().getIntExtra("step_order", 1);
-        if (!getIntent().getBooleanExtra("session_continue", false)) {
+        moduleId  = getIntent().getIntExtra(AppIntentKeys.MODULE_ID,  1);
+        stepOrder = getIntent().getIntExtra(AppIntentKeys.STEP_ORDER, 1);
+        if (!getIntent().getBooleanExtra(AppIntentKeys.SESSION_CONTINUE, false)) {
             state.resetSession();
         }
 
@@ -100,7 +110,7 @@ public class ExerciseActivity extends AppCompatActivity {
         vm.loading.observe(this, loading  -> loadingView.setVisibility(loading  ? View.VISIBLE : View.GONE));
         vm.exercise.observe(this, exercise -> {
             if (exercise == null) return;
-            updateToolbarTitle(exercise);
+            updateToolbarTitle();
             showPanelForType(exercise);
         });
 
@@ -132,13 +142,13 @@ public class ExerciseActivity extends AppCompatActivity {
 
     private void bindTypePanel(Exercise exercise) {
         switch (exercise.type) {
-            case Exercise.TYPE_BALANZA: bindBalanzaPanel(exercise); break;
+            case Exercise.TYPE_BALANZA: bindBalanzaPanel(); break;
             case Exercise.TYPE_CLASICO: bindClasicoPanel(exercise); break;
-            case Exercise.TYPE_TILES:   bindTilesPanel(exercise);   break;
+            case Exercise.TYPE_TILES:   bindTilesPanel();   break;
         }
     }
 
-    private void bindBalanzaPanel(Exercise exercise) {
+    private void bindBalanzaPanel() {
         TextView tvEq = currentPanel.findViewById(R.id.tv_balanza_equation);
         ImageView ivBase = currentPanel.findViewById(R.id.iv_balanza_base);
         RelativeLayout rlArm = currentPanel.findViewById(R.id.rl_balanza_arm);
@@ -153,15 +163,15 @@ public class ExerciseActivity extends AppCompatActivity {
         vm.rhsExpr.observe(this, rhs -> tvEq.setText(formatEquation(vm.lhsExpr.getValue(), rhs)));
 
         vm.balanced.observe(this, balanced -> {
-            int color = balanced ? Color.parseColor("#10B981") : Color.parseColor("#F59E0B");
+            int color = ContextCompat.getColor(this, balanced ? R.color.success : R.color.warning);
             ivBase.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
             if (balanced) {
-                tvStatus.setTextColor(Color.parseColor("#059669"));
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.accent_green));
                 tvStatus.animate().scaleX(1.2f).scaleY(1.2f).setDuration(300)
                         .withEndAction(() -> tvStatus.animate().scaleX(1f).scaleY(1f).start()).start();
                 triggerConfetti(confettiContainer);
             } else {
-                tvStatus.setTextColor(Color.GRAY);
+                tvStatus.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
             }
         });
 
@@ -192,12 +202,14 @@ public class ExerciseActivity extends AppCompatActivity {
             if (llSource != null) {
                 llSource.removeAllViews();
                 List<String> labels = new ArrayList<>();
-                labels.add("x");
-                labels.add("-x");
-                labels.add("+1");
-                labels.add("-1");
+                labels.add(AlgebraTokens.X);
+                labels.add(AlgebraTokens.NEG_X);
+                labels.add(AlgebraTokens.POS_ONE);
+                labels.add(AlgebraTokens.NEG_ONE);
                 for (String op : opList) {
-                    String clean = op.replace(" ", "").replace("−", "-").replace("–", "-");
+                    String clean = op.replace(" ", "")
+                            .replace(AlgebraTokens.MINUS_SIGN, AlgebraTokens.MINUS)
+                            .replace(AlgebraTokens.EN_DASH, AlgebraTokens.MINUS);
                     if ((clean.startsWith("+") || clean.startsWith("-")) && !labels.contains(clean)) {
                         labels.add(clean);
                     }
@@ -213,10 +225,10 @@ public class ExerciseActivity extends AppCompatActivity {
                 ClipData data = event.getClipData();
                 if (data != null && data.getItemCount() > 0) {
                     String raw = data.getItemAt(0).getText().toString();
-                    String label = raw.split("\\|")[0];
+                    String label = parseDragPayload(raw)[0];
                     // Ahora aplicamos a ambos lados para mantener la igualdad
                     String op = label;
-                    if (label.equals("x")) op = "+x";
+                    if (label.equals(AlgebraTokens.X)) op = AlgebraTokens.POS_X;
                     else if (!label.startsWith("+") && !label.startsWith("-")) op = "+" + label;
                     vm.applyOp(op);
                     playMoveSound();
@@ -234,12 +246,12 @@ public class ExerciseActivity extends AppCompatActivity {
                     ClipData data = event.getClipData();
                     if (data != null && data.getItemCount() > 0) {
                         String raw = data.getItemAt(0).getText().toString();
-                        if (raw.contains("|")) {
-                            String[] parts = raw.split("\\|");
+                        if (raw.contains(DRAG_PAYLOAD_SEPARATOR)) {
+                            String[] parts = parseDragPayload(raw);
                             String label = parts[0];
                             // Al tirar a la basura, restamos lo mismo de ambos lados para mantener la igualdad
                             String inverseOp;
-                            if (label.equals("x")) inverseOp = "-x";
+                            if (label.equals(AlgebraTokens.X)) inverseOp = AlgebraTokens.NEG_X;
                             else if (label.startsWith("+")) inverseOp = "-" + label.substring(1);
                             else if (label.startsWith("-")) inverseOp = "+" + label.substring(1);
                             else inverseOp = "-" + label;
@@ -256,23 +268,25 @@ public class ExerciseActivity extends AppCompatActivity {
     private View makeBalanzaSourceTile(String label) {
         TextView tv = new TextView(this);
         tv.setText(label);
-        tv.setTextColor(Color.WHITE);
+        tv.setTextColor(ContextCompat.getColor(this, R.color.white));
         tv.setGravity(Gravity.CENTER);
-        tv.setTextSize(18f);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_body));
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
         tv.setSingleLine(true);
         tv.setIncludeFontPadding(false);
-        int bg = label.startsWith("-") ? R.drawable.bg_tile_negative : (label.contains("x") ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
+        int bg = label.startsWith(AlgebraTokens.MINUS)
+                ? R.drawable.bg_tile_negative
+                : (label.contains(AlgebraTokens.X_SYMBOL) ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
         tv.setBackgroundResource(bg);
 
-        int height = getResources().getDimensionPixelSize(R.dimen.balanza_source_tile_height);
+        int height = getResources().getDimensionPixelSize(R.dimen.balanza_tile_size_x);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, height, 1f);
-        lp.setMargins(dpToPx(4), dpToPx(4), dpToPx(4), dpToPx(4));
+        lp.setMargins(dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.margin_tiny));
         tv.setLayoutParams(lp);
         tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
-            ClipData cd = ClipData.newPlainText("balanza_tile", label + "|S");
+            ClipData cd = ClipData.newPlainText(DRAG_LABEL_BALANZA_TILE, label + DRAG_PAYLOAD_SEPARATOR + DRAG_SIDE_SOURCE);
             v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
             return true;
         });
@@ -290,7 +304,7 @@ public class ExerciseActivity extends AppCompatActivity {
             if (t.esVariable()) {
                 int count = Math.abs(t.getCoeficiente());
                 int bg = t.getCoeficiente() > 0 ? R.drawable.bg_tile_x : R.drawable.bg_tile_negative;
-                String label = t.getCoeficiente() > 0 ? "x" : "-x";
+                String label = t.getCoeficiente() > 0 ? AlgebraTokens.X : AlgebraTokens.NEG_X;
                 for (int i = 0; i < count; i++) {
                     addBalanzaWeightIcon(grid, bg, sizeX, label, isLeft, label);
                 }
@@ -299,7 +313,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 if (val == 0) continue;
 
                 int absVal = Math.abs(val);
-                String unitLabel = val > 0 ? "+1" : "-1";
+                String unitLabel = val > 0 ? AlgebraTokens.POS_ONE : AlgebraTokens.NEG_ONE;
                 int bg = val > 0 ? R.drawable.bg_tile_positive : R.drawable.bg_tile_negative;
 
                 for (int i = 0; i < absVal; i++) {
@@ -309,40 +323,43 @@ public class ExerciseActivity extends AppCompatActivity {
         }
     }
 
-    private View addBalanzaWeightIcon(GridLayout grid, int bgRes, int sizePx, String label, boolean isLeft, String displayText) {
+    private void addBalanzaWeightIcon(GridLayout grid, int bgRes, int sizePx, String label, boolean isLeft, String displayText) {
         TextView tv = new TextView(this);
         tv.setBackgroundResource(bgRes);
         tv.setText(displayText);
-        tv.setTextColor(Color.WHITE);
+        tv.setTextColor(ContextCompat.getColor(this, R.color.white));
         tv.setGravity(Gravity.CENTER);
         tv.setPadding(0, 0, 0, 0);
         tv.setIncludeFontPadding(false);
         tv.setSingleLine(true);
         // Texto muy pequeño para bloques de unidad
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, displayText.length() > 2 ? 7f : 8f);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimension(displayText.length() > 2
+                        ? R.dimen.text_size_micro
+                        : R.dimen.text_size_tiny));
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
 
         GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
         lp.width = sizePx;
         lp.height = sizePx;
-        lp.setMargins(dpToPx(1), dpToPx(1), dpToPx(1), dpToPx(1));
+        lp.setMargins(dimenPx(R.dimen.margin_xsmall), dimenPx(R.dimen.margin_xsmall), dimenPx(R.dimen.margin_xsmall), dimenPx(R.dimen.margin_xsmall));
         tv.setLayoutParams(lp);
         grid.addView(tv);
         tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
-            ClipData cd = ClipData.newPlainText("balanza_tile", label + "|" + (isLeft ? "L" : "R"));
+            ClipData cd = ClipData.newPlainText(DRAG_LABEL_BALANZA_TILE,
+                    label + DRAG_PAYLOAD_SEPARATOR + (isLeft ? DRAG_SIDE_LEFT : DRAG_SIDE_RIGHT));
             v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
             return true;
         });
-        return tv;
     }
 
     private void bindClasicoPanel(Exercise exercise) {
         TextView tvEquation = currentPanel.findViewById(R.id.tv_equation_display);
         LinearLayout llSteps = currentPanel.findViewById(R.id.ll_solution_steps);
         if (llSteps == null) {
-            Log.e("ERROR", "No se encontró el contenedor ll_solution_steps");
+            Log.e(getString(R.string.log_tag_error), getString(R.string.log_missing_steps_container));
             return;
         }
         tvEquation.setText(exercise.equation);
@@ -367,7 +384,7 @@ public class ExerciseActivity extends AppCompatActivity {
         if (!stepText.contains("|")) {
             TextView tvInstruction = new TextView(this);
             tvInstruction.setText(stepText);
-            tvInstruction.setPadding(dpToPx(8), dpToPx(8), dpToPx(8), dpToPx(4));
+            tvInstruction.setPadding(dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_tiny));
             tvInstruction.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
             container.addView(tvInstruction);
             // Pasamos automáticamente al siguiente, que debería ser el que tiene el hueco
@@ -394,7 +411,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 playStepSuccessSound();
                 // ÉXITO
                 etInput.setEnabled(false);
-                etInput.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E8F5E9")));
+                etInput.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.success_bg)));
                 btnCheck.setVisibility(View.GONE);
                 tvPre.setTextColor(getColor(R.color.accent_green));
                 // Mostrar el siguiente paso
@@ -403,7 +420,7 @@ public class ExerciseActivity extends AppCompatActivity {
                 playStepErrorHaptic();
                 playStepErrorSound();
                 // ERROR
-                etInput.setError("Incorrecto");
+                etInput.setError(getString(R.string.input_error_incorrect));
                 etInput.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake));
             }
         });
@@ -411,7 +428,7 @@ public class ExerciseActivity extends AppCompatActivity {
         container.addView(stepView);
     }
 
-    private void bindTilesPanel(Exercise exercise) {
+    private void bindTilesPanel() {
         LinearLayout llLeft  = currentPanel.findViewById(R.id.ll_tiles_left);
         LinearLayout llRight = currentPanel.findViewById(R.id.ll_tiles_right);
         TextView     tvSt    = currentPanel.findViewById(R.id.tv_tiles_status);
@@ -425,7 +442,7 @@ public class ExerciseActivity extends AppCompatActivity {
             if (pos == null) {
                 tvSt.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
             } else {
-                tvSt.setTextColor(Boolean.TRUE.equals(pos) ? getColor(R.color.accent_green) : resolveThemeColor(R.attr.colorWarnChipText));
+                tvSt.setTextColor(pos ? getColor(R.color.accent_green) : resolveThemeColor(R.attr.colorWarnChipText));
             }
         });
         vm.lhsExpr.observe(this, lhs -> tvEq.setText(formatEquation(lhs, vm.rhsExpr.getValue())));
@@ -452,8 +469,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private View makeTileView(String label) {
         TextView tv = new TextView(this);
         tv.setText(label);
-        tv.setTextColor(Color.WHITE);
-        tv.setTextSize(18f);
+        tv.setTextColor(ContextCompat.getColor(this, R.color.white));
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_title));
         tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
         tv.setGravity(Gravity.CENTER);
         tv.setSingleLine(true);
@@ -462,7 +479,7 @@ public class ExerciseActivity extends AppCompatActivity {
         if (label.startsWith("-")) {
             tv.setBackgroundResource(R.drawable.bg_tile_negative);
         } else {
-            boolean isX = label.endsWith("x") || label.contains("/");
+            boolean isX = label.endsWith(AlgebraTokens.X) || label.contains("/");
             if (isX) tv.setBackgroundResource(R.drawable.bg_tile_x);
             else tv.setBackgroundResource(R.drawable.bg_tile_positive);
         }
@@ -470,13 +487,13 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setClickable(true);
         tv.setLongClickable(true);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, dpToPx(72));
-        lp.setMargins(dpToPx(6), dpToPx(5), dpToPx(6), dpToPx(5));
+                LinearLayout.LayoutParams.MATCH_PARENT, dimenPx(R.dimen.tile_item_height));
+        lp.setMargins(dimenPx(R.dimen.tile_margin_h), dimenPx(R.dimen.tile_margin_v), dimenPx(R.dimen.tile_margin_h), dimenPx(R.dimen.tile_margin_v));
         tv.setLayoutParams(lp);
         tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
-            ClipData cd = ClipData.newPlainText("tile", label);
+            ClipData cd = ClipData.newPlainText(DRAG_LABEL_TILE, label);
             v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
             return true;
         });
@@ -486,62 +503,62 @@ public class ExerciseActivity extends AppCompatActivity {
     private List<String> compactTilesForDisplay(List<String> source) {
         int xHalfUnits = 0, units = 0;
         for (String tile : source) {
-            if ("x".equals(tile)) xHalfUnits += 2;
-            else if ("-x".equals(tile)) xHalfUnits -= 2;
-            else if ("x/2".equals(tile)) xHalfUnits += 1;
-            else if ("-x/2".equals(tile)) xHalfUnits -= 1;
-            else if ("+1".equals(tile) || "1".equals(tile)) units++;
-            else if ("-1".equals(tile)) units--;
+            if (AlgebraTokens.X.equals(tile)) xHalfUnits += 2;
+            else if (AlgebraTokens.NEG_X.equals(tile)) xHalfUnits -= 2;
+            else if (AlgebraTokens.HALF_X.equals(tile)) xHalfUnits += 1;
+            else if (AlgebraTokens.NEG_HALF_X.equals(tile)) xHalfUnits -= 1;
+            else if (AlgebraTokens.POS_ONE.equals(tile) || AlgebraTokens.ONE.equals(tile)) units++;
+            else if (AlgebraTokens.NEG_ONE.equals(tile)) units--;
         }
         List<String> compact = new ArrayList<>();
         if (xHalfUnits != 0) {
             if (xHalfUnits % 2 == 0) {
                 int coef = xHalfUnits / 2;
-                if (coef == 1) compact.add("x");
-                else if (coef == -1) compact.add("-x");
-                else compact.add(coef + "x");
+                if (coef == 1) compact.add(AlgebraTokens.X);
+                else if (coef == -1) compact.add(AlgebraTokens.NEG_X);
+                else compact.add(coef + AlgebraTokens.X);
             } else {
-                if (xHalfUnits == 1) compact.add("x/2");
-                else if (xHalfUnits == -1) compact.add("-x/2");
-                else compact.add(xHalfUnits + "x/2");
+                if (xHalfUnits == 1) compact.add(AlgebraTokens.HALF_X);
+                else if (xHalfUnits == -1) compact.add(AlgebraTokens.NEG_HALF_X);
+                else compact.add(xHalfUnits + AlgebraTokens.HALF_X);
             }
         }
-        if (units > 0) compact.add("+" + units);
+        if (units > 0) compact.add(AlgebraTokens.PLUS + units);
         else if (units < 0) compact.add(String.valueOf(units));
 
-        if (compact.isEmpty()) compact.add("0");
+        if (compact.isEmpty()) compact.add(AlgebraTokens.ZERO);
         return compact;
     }
 
     private String formatEquation(String lhs, String rhs) {
-        String left = lhs == null || lhs.trim().isEmpty() ? "0" : lhs.trim();
-        String right = rhs == null || rhs.trim().isEmpty() ? "0" : rhs.trim();
-        return left + " = " + right;
+        String left = lhs == null || lhs.trim().isEmpty() ? AlgebraTokens.ZERO : lhs.trim();
+        String right = rhs == null || rhs.trim().isEmpty() ? AlgebraTokens.ZERO : rhs.trim();
+        return left + " " + AlgebraTokens.EQUALS + " " + right;
     }
 
     private TextView makeOpView(String op) {
         TextView tv = new TextView(this);
         tv.setText(op);
-        tv.setTextSize(22f);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_op));
         tv.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
-        tv.setTextColor(Color.WHITE);
+        tv.setTextColor(ContextCompat.getColor(this, R.color.white));
         tv.setGravity(Gravity.CENTER);
-        tv.setPadding(dpToPx(4), dpToPx(8), dpToPx(4), dpToPx(8));
+        tv.setPadding(dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.margin_small));
         tv.setSingleLine(true);
         tv.setIncludeFontPadding(false);
         tv.setClickable(true);
         tv.setLongClickable(true);
-        if (op.startsWith("-") || op.startsWith("−")) tv.setBackgroundResource(R.drawable.bg_tile_negative);
-        else if (op.contains("÷") || op.contains("×") || op.contains("x")) tv.setBackgroundResource(R.drawable.bg_tile_x);
+        if (op.startsWith(AlgebraTokens.MINUS) || op.startsWith(AlgebraTokens.MINUS_SIGN)) tv.setBackgroundResource(R.drawable.bg_tile_negative);
+        else if (op.contains(AlgebraTokens.DIV_SYMBOL) || op.contains(AlgebraTokens.MUL_SYMBOL) || op.contains(AlgebraTokens.X)) tv.setBackgroundResource(R.drawable.bg_tile_x);
         else tv.setBackgroundResource(R.drawable.bg_tile_positive);
         
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dpToPx(72), 1f);
-        lp.setMargins(dpToPx(5), dpToPx(4), dpToPx(5), dpToPx(4));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dimenPx(R.dimen.tile_item_height), 1f);
+        lp.setMargins(dimenPx(R.dimen.tile_margin_v), dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.tile_margin_v), dimenPx(R.dimen.margin_tiny));
         tv.setLayoutParams(lp);
         tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
         tv.setOnLongClickListener(v -> {
-            ClipData cd = ClipData.newPlainText("op", op);
+            ClipData cd = ClipData.newPlainText(DRAG_LABEL_OP, op);
             v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
             return true;
         });
@@ -553,7 +570,7 @@ public class ExerciseActivity extends AppCompatActivity {
         dropZone.setOnDragListener((v, event) -> {
             switch (event.getAction()) {
                 case DragEvent.ACTION_DRAG_STARTED:
-                    if (dropHint != null) dropHint.setText("Suelta aquí ↓");
+                    if (dropHint != null) dropHint.setText(R.string.drop_hint_release);
                     return true;
                 case DragEvent.ACTION_DRAG_ENTERED:
                     dropZone.setScaleX(1.05f); dropZone.setScaleY(1.05f);
@@ -570,7 +587,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     dropZone.setScaleX(1f); dropZone.setScaleY(1f);
-                    if (dropHint != null) dropHint.setText("o toca un botón");
+                    if (dropHint != null) dropHint.setText(R.string.drop_hint_touch);
                     return true;
                 default: return true;
             }
@@ -611,7 +628,7 @@ public class ExerciseActivity extends AppCompatActivity {
             playErrorFeedback();
             showResultDialog(false, false);
         } else if (res == ExerciseViewModel.ExerciseResult.EMPTY_INPUT) {
-            Toast.makeText(this, "Ingresa una respuesta", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_enter_answer), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -629,28 +646,28 @@ public class ExerciseActivity extends AppCompatActivity {
     private void playStepSuccessHaptic() {
         if (!isHapticFeedbackEnabled()) return;
         View anchor = panelContainer != null ? panelContainer : findViewById(android.R.id.content);
-        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         vibratePattern(new long[]{0, 18}, new int[]{0, 110});
     }
 
     private void playStepErrorHaptic() {
         if (!isHapticFeedbackEnabled()) return;
         View anchor = etAnswer != null ? etAnswer : findViewById(android.R.id.content);
-        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.REJECT);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         vibratePattern(new long[]{0, 34, 18, 26}, new int[]{0, 120, 0, 90});
     }
 
     private void playFinalSuccessHaptic() {
         if (!isHapticFeedbackEnabled()) return;
         View anchor = panelContainer != null ? panelContainer : findViewById(android.R.id.content);
-        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.CONFIRM);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         vibratePattern(new long[]{0, 28, 40, 36}, new int[]{0, 170, 0, 220});
     }
 
     private void playFinalErrorHaptic() {
         if (!isHapticFeedbackEnabled()) return;
         View anchor = etAnswer != null ? etAnswer : findViewById(android.R.id.content);
-        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.REJECT);
+        if (anchor != null) anchor.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
         vibratePattern(new long[]{0, 80, 30, 60}, new int[]{0, 180, 0, 120});
     }
 
@@ -709,11 +726,7 @@ public class ExerciseActivity extends AppCompatActivity {
         }
         if (vibrator == null || !vibrator.hasVibrator()) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1));
-        } else {
-            vibrator.vibrate(timings, -1);
-        }
+        vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1));
     }
 
     private void playSuccessCelebration() {
@@ -736,36 +749,23 @@ public class ExerciseActivity extends AppCompatActivity {
         
         MaterialAlertDialogBuilder b = new MaterialAlertDialogBuilder(this);
         if (correct) {
-            String msg = "¡Bien hecho!\n+" + pts + " puntos";
-            if (withHint) msg += "\n\nUsaste pista. ¡Intenta sin pista la próxima para más puntos!";
-            b.setTitle("🎉 ¡Correcto!")
+            String msg = getString(R.string.dialog_correct_points_format, pts);
+            if (withHint) msg += getString(R.string.dialog_correct_hint_extra);
+            b.setTitle(R.string.result_correct)
              .setMessage(msg)
-             .setPositiveButton(isLastStep() ? "Finalizar" : "Siguiente →", (d, w) -> goToNext())
+             .setPositiveButton(isLastStep() ? getString(R.string.btn_finish) : getString(R.string.btn_next_arrow), (d, w) -> goToNext())
              .setCancelable(false);
         } else {
-            b.setTitle("🤔 Intenta de nuevo")
-             .setMessage("Revisa tus pasos para encontrar el error.")
-             .setPositiveButton("Reintentar", (d, w) -> {
+            b.setTitle(R.string.dialog_incorrect_title)
+             .setMessage(R.string.dialog_incorrect_message)
+             .setPositiveButton(R.string.btn_retry, (d, w) -> {
                  etAnswer.setText("");
                  vm.retryCurrentExercise();
              })
-             .setNegativeButton("Salir", (d, w) -> finish())
+             .setNegativeButton(R.string.btn_exit_text_plain, (d, w) -> finish())
              .setCancelable(false);
         }
         b.show();
-    }
-
-    private void showTimeUpDialog() {
-        new MaterialAlertDialogBuilder(this)
-            .setTitle("⏰ ¡Tiempo agotado!")
-            .setMessage("No te rindas, ¡vuelve a intentarlo!")
-            .setPositiveButton("Reintentar", (d, w) -> {
-                etAnswer.setText("");
-                vm.retryCurrentExercise();
-            })
-            .setNegativeButton("Salir", (d, w) -> finish())
-            .setCancelable(false)
-            .show();
     }
 
     private boolean isLastStep() {
@@ -775,30 +775,22 @@ public class ExerciseActivity extends AppCompatActivity {
     private void goToNext() {
         if (isLastStep()) {
             Intent i = new Intent(this, FinEjerciciosActivity.class);
-            i.putExtra("module_id", moduleId);
+            i.putExtra(AppIntentKeys.MODULE_ID, moduleId);
             startActivity(i);
         } else {
             Intent i = new Intent(this, ExerciseActivity.class);
-            i.putExtra("module_id", moduleId);
-            i.putExtra("step_order", stepOrder + 1);
-            i.putExtra("session_continue", true);
+            i.putExtra(AppIntentKeys.MODULE_ID, moduleId);
+            i.putExtra(AppIntentKeys.STEP_ORDER, stepOrder + 1);
+            i.putExtra(AppIntentKeys.SESSION_CONTINUE, true);
             startActivity(i);
         }
         overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
         finish();
     }
 
-    private void goToInfo() {
-        Intent i = new Intent(this, InfoEjemplosActivity.class);
-        i.putExtra("module_id", moduleId);
-        i.putExtra("tab", 0);
-        startActivity(i);
-        finish();
-    }
-
-    private void updateToolbarTitle(Exercise exercise) {
+    private void updateToolbarTitle() {
         TextView tvTitle = findViewById(R.id.tv_toolbar_title);
-        if (tvTitle != null) tvTitle.setText("Módulo " + moduleId + " · Ej. " + stepOrder);
+        if (tvTitle != null) tvTitle.setText(getString(R.string.toolbar_module_exercise_format, moduleId, stepOrder));
     }
 
     private void setupHamburger() {
@@ -820,11 +812,11 @@ public class ExerciseActivity extends AppCompatActivity {
         if (ex == null) return;
         vm.useHint();
         BottomSheetDialog sheet = new BottomSheetDialog(this);
-        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, null);
-        String hintContent = ex.hintText != null ? ex.hintText : "";
+        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, new FrameLayout(this), false);
+        String hintContent = ex.hintText;
         if (Exercise.TYPE_TILES.equals(ex.type)) {
             String nextOp = vm.expectedTileOp();
-            if (!nextOp.isEmpty()) hintContent += "\n\n💡 Sugerencia: Intenta aplicar " + nextOp;
+            if (!nextOp.isEmpty()) hintContent += getString(R.string.hint_tile_suggestion_format, nextOp);
         }
         ((TextView) v.findViewById(R.id.tv_hint_content)).setText(hintContent);
         v.findViewById(R.id.btn_close_hint).setOnClickListener(b -> sheet.dismiss());
@@ -833,7 +825,12 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private int dpToPx(int dp) { return (int)(dp * getResources().getDisplayMetrics().density); }
+    private int dimenPx(int dimenRes) { return getResources().getDimensionPixelSize(dimenRes); }
     private int resolveThemeColor(int attr) { TypedValue tv = new TypedValue(); getTheme().resolveAttribute(attr, tv, true); return tv.data; }
+
+    private String[] parseDragPayload(String raw) {
+        return raw.split(DRAG_PAYLOAD_SEPARATOR_REGEX, 2);
+    }
 
     @Override protected void onDestroy() {
         super.onDestroy();

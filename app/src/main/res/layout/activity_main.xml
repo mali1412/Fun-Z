@@ -45,7 +45,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/welcome_base"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/text_size_h2"
                         android:textStyle="bold"/>
 
@@ -54,9 +54,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/streak_default"
-                        android:textColor="#E0BBFF"
+                        android:textColor="@color/hero_streak_text"
                         android:textSize="@dimen/text_size_small"
-                        android:layout_marginTop="2dp"/>
+                        android:layout_marginTop="@dimen/margin_xsmall"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -66,15 +66,15 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <TextView android:layout_width="36dp" android:layout_height="36dp"
-                    android:text="@string/medal_bronze" android:textSize="20sp" android:gravity="center"
+                <TextView android:layout_width="@dimen/medal_icon_size" android:layout_height="@dimen/medal_icon_size"
+                    android:text="@string/medal_bronze" android:textSize="@dimen/text_size_h2" android:gravity="center"
                     android:background="@drawable/bg_medal_circle" android:layout_marginEnd="@dimen/margin_small"/>
-                <TextView android:layout_width="36dp" android:layout_height="36dp"
-                    android:text="@string/medal_fire" android:textSize="20sp" android:gravity="center"
+                <TextView android:layout_width="@dimen/medal_icon_size" android:layout_height="@dimen/medal_icon_size"
+                    android:text="@string/medal_fire" android:textSize="@dimen/text_size_h2" android:gravity="center"
                     android:background="@drawable/bg_medal_circle" android:layout_marginEnd="@dimen/margin_small"/>
-                <TextView android:layout_width="36dp" android:layout_height="36dp"
-                    android:text="@string/medal_grad" android:textSize="20sp" android:gravity="center"
-                    android:background="@drawable/bg_medal_circle_locked" android:alpha="0.5"/>
+                <TextView android:layout_width="@dimen/medal_icon_size" android:layout_height="@dimen/medal_icon_size"
+                    android:text="@string/medal_grad" android:textSize="@dimen/text_size_h2" android:gravity="center"
+                    android:background="@drawable/bg_medal_circle_locked" android:alpha="@dimen/disabled_alpha"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -98,8 +98,8 @@
                 android:id="@+id/card_resume"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="4dp"
+                app:cardCornerRadius="@dimen/card_corner_radius_large"
+                app:cardElevation="@dimen/card_elevation"
                 app:strokeWidth="0dp"
                 app:cardBackgroundColor="?attr/colorBgTonalCard"
                 android:layout_marginBottom="@dimen/margin_large">
@@ -115,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="4dp">
+                        android:layout_marginBottom="@dimen/margin_tiny">
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/tv_resume_badge"
@@ -126,7 +126,7 @@
                             app:chipBackgroundColor="@color/color_primary_alpha"
                             android:textColor="@color/color_primary_dark"/>
 
-                        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1"/>
+                        <View android:layout_width="0dp" android:layout_height="@dimen/divider_thickness" android:layout_weight="1"/>
 
                         <TextView
                             android:id="@+id/tv_resume_method"
@@ -188,7 +188,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/qa_temas"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/quick_access_card_height"
                     android:layout_columnWeight="1"
                     android:layout_margin="@dimen/margin_small"
                     app:cardCornerRadius="@dimen/card_corner_radius"
@@ -201,8 +201,8 @@
                         android:gravity="center"
                         android:padding="@dimen/margin_small">
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="@dimen/button_height_tiny"
+                            android:layout_height="@dimen/button_height_tiny"
                             android:contentDescription="@string/qa_temas"
                             android:src="@drawable/ic_book" />
                         <TextView
@@ -220,7 +220,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/qa_salas"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/quick_access_card_height"
                     android:layout_columnWeight="1"
                     android:layout_margin="@dimen/margin_small"
                     app:cardCornerRadius="@dimen/card_corner_radius"
@@ -233,8 +233,8 @@
                         android:gravity="center"
                         android:padding="@dimen/margin_small">
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="@dimen/button_height_tiny"
+                            android:layout_height="@dimen/button_height_tiny"
                             android:contentDescription="@string/qa_salas"
                             android:src="@drawable/ic_room" />
                         <TextView
@@ -252,7 +252,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/qa_stats"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/quick_access_card_height"
                     android:layout_columnWeight="1"
                     android:layout_margin="@dimen/margin_small"
                     app:cardCornerRadius="@dimen/card_corner_radius"
@@ -265,8 +265,8 @@
                         android:gravity="center"
                         android:padding="@dimen/margin_small">
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="@dimen/button_height_tiny"
+                            android:layout_height="@dimen/button_height_tiny"
                             android:contentDescription="@string/qa_stats"
                             android:src="@drawable/ic_bar_chart" />
                         <TextView
@@ -284,7 +284,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/qa_config"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="@dimen/quick_access_card_height"
                     android:layout_columnWeight="1"
                     android:layout_margin="@dimen/margin_small"
                     app:cardCornerRadius="@dimen/card_corner_radius"
@@ -297,8 +297,8 @@
                         android:gravity="center"
                         android:padding="@dimen/margin_small">
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="@dimen/button_height_tiny"
+                            android:layout_height="@dimen/button_height_tiny"
                             android:contentDescription="@string/qa_config"
                             android:src="@drawable/ic_settings" />
                         <TextView

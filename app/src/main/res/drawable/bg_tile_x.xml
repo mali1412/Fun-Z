@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    bg_tile_x.xml
-    Drawable con estados para el tile de la variable X.
-    - Presionado → morado oscuro (feedback táctil)
-    - Normal     → morado primario
-    Las esquinas redondeadas (6dp) le dan forma de "azulejo".
--->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
-        <shape>
+        <shape android:shape="rectangle">
             <solid android:color="@color/tile_x_pressed"/>
-            <corners android:radius="6dp"/>
+            <corners android:radius="@dimen/tile_corner_radius"/>
         </shape>
     </item>
     <item>
-        <shape>
+        <shape android:shape="rectangle">
             <solid android:color="@color/tile_x"/>
-            <corners android:radius="6dp"/>
+            <corners android:radius="@dimen/tile_corner_radius"/>
         </shape>
     </item>
 </selector>
-
