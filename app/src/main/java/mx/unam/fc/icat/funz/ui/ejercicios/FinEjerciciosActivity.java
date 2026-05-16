@@ -1,7 +1,5 @@
 package mx.unam.fc.icat.funz.ui.ejercicios;
 
-import static mx.unam.fc.icat.funz.R.*;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -9,20 +7,13 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.chip.Chip;
 
-
 import mx.unam.fc.icat.funz.data.AppState;
 import mx.unam.fc.icat.funz.ui.temas.TemasActivity;
 import mx.unam.fc.icat.funz.R;
+
 /**
- * FinEjerciciosActivity — Pantalla de resumen al completar el Módulo 1.
- *
- * Muestra:
- *   - Ejercicios correctos / incorrectos de la sesión.
- *   - Puntos totales acumulados en la sesión.
- *   - Botón "Ir a Temas" que lleva de vuelta a TemasActivity.
- *
- * AppState.mod1Complete == true cuando se llega aquí.
- * El Módulo 2 ya quedó desbloqueado en markExerciseDone(3, true, ...).
+ * FinEjerciciosActivity — Pantalla de resumen al completar un módulo.
+ * Muestra retroalimentación detallada basada en el desempeño del usuario.
  */
 public class FinEjerciciosActivity extends AppCompatActivity {
 
@@ -37,24 +28,31 @@ public class FinEjerciciosActivity extends AppCompatActivity {
         if (appliedDarkTheme) setTheme(R.style.Theme_FunZ_Dark);
         setContentView(R.layout.activity_fin_ejercicios);
 
-//1. Obtenemos la referencia al TextView
-        TextView tvMsgFinished = findViewById(R.id.msg_module_finished);
+        setupUI();
+    }
 
-// 2. Obtenemos el ID del módulo desde el estado
+    private void setupUI() {
         int activeModuleId = state.getActiveModuleId() - 1;
+        TextView tvMsgFinished = findViewById(R.id.msg_module_finished);
+        tvMsgFinished.setText(getString(R.string.msg_module_completed, activeModuleId));
 
-// 3. Creamos el texto usando el recurso de string y el ID del módulo
-        String message = getString(R.string.msg_module_completed, activeModuleId);
+        // Obtener estadísticas de la sesión
+        int perfect = state.getSessionOk() - state.getSessionHints();
+        int hints = state.getSessionHints();
+        int revealed = state.getSessionReveals();
+        int total = perfect + hints + revealed;
 
-// 4. Lo aplicamos al TextView
-        tvMsgFinished.setText(message);
+        // Poblar vistas de resultados
+        ((TextView) findViewById(R.id.tv_fin_perfect)).setText(String.valueOf(perfect));
+        ((TextView) findViewById(R.id.tv_fin_hints)).setText(String.valueOf(hints));
+        ((TextView) findViewById(R.id.tv_fin_revealed)).setText(String.valueOf(revealed));
+        
+        TextView tvAttempts = findViewById(R.id.tv_fin_attempts_msg);
+        tvAttempts.setText("Intentos fallidos: " + state.getSessionFail());
 
-        ((TextView) findViewById(R.id.tv_fin_ok))
-                .setText(String.valueOf(state.getSessionOk()));
-        ((TextView) findViewById(R.id.tv_fin_fail))
-                .setText(String.valueOf(state.getSessionFail()));
-
-
+        // Mensaje de retroalimentación
+        TextView tvFeedback = findViewById(R.id.tv_feedback_msg);
+        tvFeedback.setText(getFeedbackMessage(perfect, hints, revealed, total));
 
         Chip chipPts = findViewById(R.id.tv_fin_pts);
         chipPts.setText(getString(R.string.pts_earned_format, state.getSessionPts()));
@@ -64,5 +62,21 @@ public class FinEjerciciosActivity extends AppCompatActivity {
             startActivity(new Intent(this, TemasActivity.class));
             finish();
         });
+    }
+
+    private String getFeedbackMessage(int perfect, int hints, int revealed, int total) {
+        if (total == 0) return getString(R.string.feedback_keep_trying);
+        
+        float score = (perfect * 1.0f + hints * 0.5f) / total;
+        
+        if (score >= 0.9f) {
+            return getString(R.string.feedback_excellent);
+        } else if (score >= 0.6f) {
+            return getString(R.string.feedback_good);
+        } else if (revealed > total / 2) {
+            return getString(R.string.feedback_needs_review);
+        } else {
+            return getString(R.string.feedback_keep_trying);
+        }
     }
 }
