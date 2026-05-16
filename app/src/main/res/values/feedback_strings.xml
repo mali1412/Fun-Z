@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stat_perfect">Perfectos</string>
+    <string name="stat_hints">Con pistas</string>
+    <string name="stat_revealed">Revelados</string>
+    <string name="stat_failed_attempts">Intentos fallidos: %1$d</string>
+
+    <string name="feedback_excellent">¡Increíble! Has dominado este módulo.</string>
+    <string name="feedback_good">¡Buen trabajo! Sigue así para perfeccionar tus habilidades.</string>
+    <string name="feedback_keep_trying">¡No te rindas! La práctica hace al maestro.</string>
+    <string name="feedback_needs_review">Te recomendamos revisar la teoría antes de continuar.</string>
+
+    <string name="title_revealed">Respuesta Revelada</string>
+    <string name="msg_revealed">Has revelado la respuesta. No se han sumado puntos en este ejercicio.</string>
+</resources>

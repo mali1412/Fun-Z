@@ -48,10 +48,7 @@ public class AppState {
 
     private AppState() {}
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Usuario
-    // ════════════════════════════════════════════════════════════════════════
-
+    // Usuario
     public String  getUsername()           { return str(KEY_USERNAME, defaultUsername != null ? defaultUsername : ""); }
     public void    setUsername(String v)   { put(KEY_USERNAME, v); }
 
@@ -69,10 +66,7 @@ public class AppState {
     public boolean isAudioFeedbackEnabled()           { return b(KEY_AUDIO_FEEDBACK, true); }
     public void    setAudioFeedbackEnabled(boolean v) { put(KEY_AUDIO_FEEDBACK, v); }
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Progreso genérico por módulo
-    // ════════════════════════════════════════════════════════════════════════
-
+    // Progreso
     public int  getCurrentStep(int moduleId)             { return i(moduleStepKey(moduleId), 1); }
     private void setCurrentStep(int moduleId, int step)  { put(moduleStepKey(moduleId), step); }
 
@@ -98,15 +92,9 @@ public class AppState {
         if (isModuleComplete(moduleId)) return 100;
         int total = getModuleExerciseCount(moduleId);
         if (total <= 0) return 0;
-
         int done = 0;
-        for (int s = 1; s <= total; s++) {
-            if (isStepDone(moduleId, s)) done++;
-        }
-
-        // Progreso proporcional a ejercicios completados (1/3 = 33, 2/3 = 66, etc.)
-        int pct = (done * 100) / total;
-        return Math.min(pct, 99);
+        for (int s = 1; s <= total; s++) if (isStepDone(moduleId, s)) done++;
+        return Math.min((done * 100) / total, 99);
     }
 
     public boolean isModuleUnlocked(int moduleId) {
@@ -114,44 +102,41 @@ public class AppState {
         return !b(moduleLockedKey(moduleId), true);
     }
 
-    // Shorthands para Estadísticas y Main
-    public int     getMod1Progress() { return getModuleProgress(1); }
-    public boolean isEx1Done()       { return isModuleComplete(1); }
-    public boolean isEx2Done()       { return isModuleComplete(2); }
-    public boolean isEx3Done()       { return isModuleComplete(3); }
+    // Sesión de ejercicios
+    private int sessionOk = 0, sessionFail = 0, sessionPts = 0, sessionHints = 0, sessionReveals = 0;
 
-    // ════════════════════════════════════════════════════════════════════════
-    //  Sesión de ejercicios
-    // ════════════════════════════════════════════════════════════════════════
+    public int getSessionOk()      { return sessionOk; }
+    public int getSessionFail()    { return sessionFail; }
+    public int getSessionPts()     { return sessionPts; }
+    public int getSessionHints()   { return sessionHints; }
+    public int getSessionReveals() { return sessionReveals; }
 
-    private int sessionOk = 0, sessionFail = 0, sessionPts = 0;
-
-    public int getSessionOk()   { return sessionOk; }
-    public int getSessionFail() { return sessionFail; }
-    public int getSessionPts()  { return sessionPts; }
-
-    public void resetSession() { sessionOk = 0; sessionFail = 0; sessionPts = 0; }
+    public void resetSession() { sessionOk = 0; sessionFail = 0; sessionPts = 0; sessionHints = 0; sessionReveals = 0; }
 
     public void markExerciseDone(int moduleId, int step, int totalSteps,
-                                 boolean correct, boolean hintUsed, int points) {
-        if (correct) {
+                                 boolean correctOrRevealed, boolean hintUsed, int points) {
+        if (correctOrRevealed) {
             addPoints(points);
-            sessionOk++;
             sessionPts += points;
+            
+            if (points == 0) {
+                sessionReveals++;
+            } else {
+                sessionOk++;
+                if (hintUsed) sessionHints++;
+            }
+            
             setStepDone(moduleId, step);
             if (step < totalSteps) {
                 setCurrentStep(moduleId, step + 1);
             } else {
                 setModuleComplete(moduleId);
                 setCurrentStep(moduleId, 1);
-
                 int maxModules = getTotalModules();
-                // Solo avanzamos y desbloqueamos si NO es el último módulo
                 if (moduleId < maxModules) {
                     put(moduleLockedKey(moduleId + 1), false);
                     setActiveModuleId(moduleId + 1);
                 } else {
-                    // Mantener el módulo actual como activo si ya terminamos todo
                     setActiveModuleId(moduleId);
                 }
             }
@@ -160,26 +145,9 @@ public class AppState {
         }
     }
 
-    public void markExerciseDone(int moduleId, boolean correct, boolean hintUsed) {
-        int step = getCurrentStep(moduleId);
-        int total = getModuleExerciseCount(moduleId);
-        int points = correct ? (hintUsed ? 5 : 10) : 0;
-        markExerciseDone(moduleId, step, total, correct, hintUsed, points);
-    }
-
-    // Pistas (Hints)
-    public void setHintUsedBal(boolean v) { put(KEY_HINT_BAL, v); }
-    public void setHintUsedCla(boolean v) { put(KEY_HINT_CLA, v); }
-    public void setHintUsedTil(boolean v) { put(KEY_HINT_TIL, v); }
-
-    // ════════════════════════════════════════════════════════════════════════
-    //  Helpers
-    // ════════════════════════════════════════════════════════════════════════
-
+    // Helpers
     public int getActiveModuleId() { return i(KEY_ACTIVE_MODULE, 1); }
     public void setActiveModuleId(int id) { put(KEY_ACTIVE_MODULE, id); }
-
-    public boolean isMod2Unlocked()  { return isModuleUnlocked(2); }
 
     private String  str(String k, String def)  { return prefs != null ? prefs.getString(k, def) : def; }
     private int     i(String k, int def)       { return prefs != null ? prefs.getInt(k, def) : def; }
@@ -189,31 +157,11 @@ public class AppState {
     private void put(String k, int v)     { if (prefs != null) prefs.edit().putInt(k, v).apply(); }
     private void put(String k, boolean v) { if (prefs != null) prefs.edit().putBoolean(k, v).apply(); }
 
-    private String moduleStepKey(int moduleId) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_STEP_SUFFIX;
-    }
-
-    private String moduleInfoKey(int moduleId) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_INFO_SUFFIX;
-    }
-
-    private String moduleExamplesKey(int moduleId) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_EXAMPLES_SUFFIX;
-    }
-
-    private String moduleStepDoneKey(int moduleId, int step) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_STEP_MARKER_PREFIX + step;
-    }
-
-    private String moduleDoneKey(int moduleId) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_DONE_SUFFIX;
-    }
-
-    private String moduleCountKey(int moduleId) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_COUNT_SUFFIX;
-    }
-
-    private String moduleLockedKey(int moduleId) {
-        return KEY_MODULE_PREFIX + moduleId + KEY_LOCKED_SUFFIX;
-    }
+    private String moduleStepKey(int moduleId) { return KEY_MODULE_PREFIX + moduleId + KEY_STEP_SUFFIX; }
+    private String moduleInfoKey(int moduleId) { return KEY_MODULE_PREFIX + moduleId + KEY_INFO_SUFFIX; }
+    private String moduleExamplesKey(int moduleId) { return KEY_MODULE_PREFIX + moduleId + KEY_EXAMPLES_SUFFIX; }
+    private String moduleStepDoneKey(int moduleId, int step) { return KEY_MODULE_PREFIX + moduleId + KEY_STEP_MARKER_PREFIX + step; }
+    private String moduleDoneKey(int moduleId) { return KEY_MODULE_PREFIX + moduleId + KEY_DONE_SUFFIX; }
+    private String moduleCountKey(int moduleId) { return KEY_MODULE_PREFIX + moduleId + KEY_COUNT_SUFFIX; }
+    private String moduleLockedKey(int moduleId) { return KEY_MODULE_PREFIX + moduleId + KEY_LOCKED_SUFFIX; }
 }

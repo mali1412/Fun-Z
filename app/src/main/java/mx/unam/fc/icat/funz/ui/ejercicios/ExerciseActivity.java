@@ -24,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -43,8 +42,8 @@ import mx.unam.fc.icat.funz.viewmodel.ExerciseViewModel;
 
 /**
  * ExerciseActivity — IU Refactorizada.
- * Actúa como contenedor de fragmentos (Balanza, Tiles, Clasico).
- * Gestiona el temporizador, el menú, la capa de celebración y la verificación de respuestas.
+ * Gestiona el ciclo de vida del ejercicio, temporizador, navegación y pistas dinámicas.
+ * Delega la lógica visual a BalanzaFragment, TilesFragment y ClasicoFragment.
  */
 public class ExerciseActivity extends AppCompatActivity {
 
@@ -127,12 +126,15 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void handleResult(ExerciseViewModel.ExerciseResult res) {
-        if (res == ExerciseViewModel.ExerciseResult.CORRECT || res == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT) {
-            playSuccessFeedback();
-            showResultDialog(true, res == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT);
+        if (res == ExerciseViewModel.ExerciseResult.CORRECT || 
+            res == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT || 
+            res == ExerciseViewModel.ExerciseResult.REVEALED) {
+            
+            if (res != ExerciseViewModel.ExerciseResult.REVEALED) playSuccessFeedback();
+            showResultDialog(res);
         } else if (res == ExerciseViewModel.ExerciseResult.INCORRECT) {
             playErrorFeedback();
-            showResultDialog(false, false);
+            showResultDialog(res);
         } else if (res == ExerciseViewModel.ExerciseResult.EMPTY_INPUT) {
             Toast.makeText(this, getString(R.string.toast_enter_answer), Toast.LENGTH_SHORT).show();
         }
@@ -217,9 +219,10 @@ public class ExerciseActivity extends AppCompatActivity {
             int height = container.getHeight();
             if (width == 0 || height == 0) return;
             Random random = new Random();
+            float density = getResources().getDisplayMetrics().density;
             for (int i = 0; i < 25; i++) {
                 View p = new View(this);
-                int size = (int) ( (random.nextInt(8) + 4) * getResources().getDisplayMetrics().density );
+                int size = (int) ((random.nextInt(8) + 4) * density);
                 p.setLayoutParams(new FrameLayout.LayoutParams(size, size));
                 p.setBackgroundColor(Color.HSVToColor(new float[]{random.nextInt(360), 0.8f, 1f}));
                 p.setX(width / 2f); p.setY(height / 2f);
@@ -234,23 +237,32 @@ public class ExerciseActivity extends AppCompatActivity {
         });
     }
 
-    private void showResultDialog(boolean correct, boolean withHint) {
-        Exercise ex = vm.exercise.getValue();
-        int pts = ex != null ? (withHint ? ex.pointsHint : ex.pointsCorrect) : (withHint ? 50 : 100);
+    private void showResultDialog(ExerciseViewModel.ExerciseResult result) {
         MaterialAlertDialogBuilder b = new MaterialAlertDialogBuilder(this);
-        if (correct) {
-            String msg = getString(R.string.dialog_correct_points_format, pts);
-            if (withHint) msg += getString(R.string.dialog_correct_hint_extra);
-            b.setTitle(R.string.result_correct).setMessage(msg)
-                    .setPositiveButton(isLastStep() ? getString(R.string.btn_finish) : getString(R.string.btn_next_arrow), (d, w) -> goToNext())
-                    .setCancelable(false);
-        } else {
+        if (result == ExerciseViewModel.ExerciseResult.INCORRECT) {
             b.setTitle(R.string.dialog_incorrect_title).setMessage(R.string.dialog_incorrect_message)
                     .setPositiveButton(R.string.btn_retry, (d, w) -> { etAnswer.setText(""); vm.retryCurrentExercise(); })
                     .setNegativeButton(R.string.btn_exit_text_plain, (d, w) -> finish())
-                    .setCancelable(false);
+                    .setCancelable(false).show();
+            return;
         }
-        b.show();
+
+        int points = 0;
+        if (result == ExerciseViewModel.ExerciseResult.CORRECT) points = 100;
+        else if (result == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT) points = 50;
+
+        String title = (result == ExerciseViewModel.ExerciseResult.REVEALED) ? "Respuesta Revelada" : getString(R.string.result_correct);
+        String msg = (result == ExerciseViewModel.ExerciseResult.REVEALED) ?
+                "Has revelado la respuesta. No se han sumado puntos en este ejercicio." :
+                getString(R.string.dialog_correct_points_format, points);
+
+        if (result == ExerciseViewModel.ExerciseResult.CORRECT_WITH_HINT) {
+            msg += getString(R.string.dialog_correct_hint_extra);
+        }
+
+        b.setTitle(title).setMessage(msg)
+                .setPositiveButton(isLastStep() ? getString(R.string.btn_finish) : getString(R.string.btn_next_arrow), (d, w) -> goToNext())
+                .setCancelable(false).show();
     }
 
     private void showTimeoutDialog() {
@@ -296,20 +308,19 @@ public class ExerciseActivity extends AppCompatActivity {
     }
 
     private void showHint() {
-        Exercise ex = vm.exercise.getValue();
-        if (ex == null) return;
+        vm.generateSmartHint();
+        String msg = vm.hintMessage.getValue();
+        if (msg == null) return;
         vm.useHint();
-        BottomSheetDialog sheet = new BottomSheetDialog(this);
-        View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, new FrameLayout(this), false);
-        String hintContent = ex.hintText;
-        if (Exercise.TYPE_TILES.equals(ex.type)) {
-            String nextOp = vm.expectedTileOp();
-            if (!nextOp.isEmpty()) hintContent += getString(R.string.hint_tile_suggestion_format, nextOp);
-        }
-        ((TextView) v.findViewById(R.id.tv_hint_content)).setText(hintContent);
-        v.findViewById(R.id.btn_close_hint).setOnClickListener(b -> sheet.dismiss());
-        sheet.setContentView(v);
-        sheet.show();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("💡 Guía de ayuda")
+                .setMessage(msg)
+                .setPositiveButton("¡Entendido!", null)
+                .setNeutralButton("Ver respuesta (0 pts)", (dialog, which) -> {
+                    vm.revealAnswer();
+                    playFinalErrorHaptic();
+                })
+                .show();
     }
 
     @Override

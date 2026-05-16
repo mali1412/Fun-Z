@@ -25,6 +25,7 @@ import mx.unam.fc.icat.funz.utils.AlgebraTokens;
 import mx.unam.fc.icat.funz.utils.SingleLiveEvent;
 import mx.unam.fc.icat.funz.model.CalculadoraAlgebraica;
 import mx.unam.fc.icat.funz.model.ParserEcuacion;
+import mx.unam.fc.icat.funz.model.Termino;
 import mx.unam.fc.icat.funz.R;
 
 /**
@@ -41,7 +42,8 @@ public class ExerciseViewModel extends AndroidViewModel {
     private volatile CountDownTimer   timer;
     private       boolean             initialized = false;
     private       boolean             hintUsed    = false;
-    private       int                 totalSteps  = 3; 
+    private       boolean             answerRevealed = false;
+    private       int                 totalSteps  = 3;
 
     private final MutableLiveData<Exercise> _exercise = new MutableLiveData<>();
     public  final LiveData<Exercise>         exercise  = _exercise;
@@ -95,6 +97,9 @@ public class ExerciseViewModel extends AndroidViewModel {
     private final MutableLiveData<String> _autoAnswer = new MutableLiveData<>(null);
     public  final LiveData<String>         autoAnswer  = _autoAnswer;
 
+    private final MutableLiveData<String> _hintMessage = new MutableLiveData<>();
+    public  final LiveData<String>         hintMessage  = _hintMessage;
+
     private final SingleLiveEvent<ExerciseResult> _exerciseResult = new SingleLiveEvent<>();
     public  final LiveData<ExerciseResult>         exerciseResult  = _exerciseResult;
 
@@ -132,6 +137,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         if (initialized) return;
         initialized = true;
         hintUsed = false;
+        answerRevealed = false;
         switch (ex.type) {
             case Exercise.TYPE_BALANZA: initBalanza(ex); break;
             case Exercise.TYPE_TILES:   initTiles(ex);   break;
@@ -183,7 +189,7 @@ public class ExerciseViewModel extends AndroidViewModel {
             double weightX = 25.0;
             double l = CalculadoraAlgebraica.evaluarLado(ec, weightX, true);
             double r = CalculadoraAlgebraica.evaluarLado(ec, weightX, false);
-            double diff = l - r; 
+            double diff = l - r;
             float factor = 3.0f;
             float t = (float) (diff * factor);
             if (t > 30f) t = 30f;
@@ -248,32 +254,18 @@ public class ExerciseViewModel extends AndroidViewModel {
     }
 
     public void applyTileOperation(String op) {
+        Exercise ex = _exercise.getValue();
+        if (ex == null || op == null || op.trim().isEmpty()) return;
+
         String normalized = normalizeOp(op);
-        if (normalized.isEmpty()) return;
-
-        Ecuacion current = _ecuacion.getValue();
-        if (current != null && CalculadoraAlgebraica.xEstaAislada(current)) {
-            _statusMessage.setValue(s(R.string.status_equation_already_solved));
-            _statusPositive.setValue(false);
-            return;
-        }
-
-        String expected = expectedTileOp();
-        if (!expected.isEmpty() && !expected.equals(normalized)) {
-            _statusMessage.setValue(s(R.string.status_op_not_recommended));
-            _statusPositive.setValue(false);
-            return;
-        }
-
         boolean applied = false;
-        switch (normalized) {
-            case AlgebraTokens.NEG_ONE: applied = removeUnitBothSides(AlgebraTokens.POS_ONE); break;
-            case AlgebraTokens.POS_ONE: applied = removeUnitBothSides(AlgebraTokens.NEG_ONE); break;
-            case AlgebraTokens.NEG_X: applied = removeXBothSides(AlgebraTokens.X); break;
-            case AlgebraTokens.POS_X: applied = removeXBothSides(AlgebraTokens.NEG_X); break;
-            case AlgebraTokens.DIV_TWO: applied = divideBothSidesByTwo(); break;
-            case AlgebraTokens.MUL_TWO: applied = multiplyBothSidesByTwo(); break;
-        }
+
+        if (normalized.equals(AlgebraTokens.POS_ONE))      applied = removeUnitBothSides(AlgebraTokens.NEG_ONE);
+        else if (normalized.equals(AlgebraTokens.NEG_ONE)) applied = removeUnitBothSides(AlgebraTokens.POS_ONE);
+        else if (normalized.equals(AlgebraTokens.POS_X))   applied = removeXBothSides(AlgebraTokens.NEG_X);
+        else if (normalized.equals(AlgebraTokens.NEG_X))   applied = removeXBothSides(AlgebraTokens.X);
+        else if (normalized.equals(AlgebraTokens.DIV_TWO)) applied = divideBothSidesByTwo();
+        else if (normalized.equals(AlgebraTokens.MUL_TWO)) applied = multiplyBothSidesByTwo();
 
         if (!applied) {
             _statusMessage.setValue(s(R.string.status_op_cannot_apply_format, normalized));
@@ -309,7 +301,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         SideState right = summarizeSide(rightTiles);
         if (left.halfX > 0 || right.halfX > 0) return false;
         if (left.xCount % 2 != 0 || Math.abs(left.units) % 2 != 0 || Math.abs(right.units) % 2 != 0) return false;
-        
+
         leftTiles.clear(); rightTiles.clear();
         for (int i = 0; i < left.xCount / 2; i++) leftTiles.add(AlgebraTokens.X);
         addUnits(leftTiles, left.units / 2);
@@ -348,6 +340,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         _ecuacion.postValue(ecActual);
         _lhsExpr.postValue(ParserEcuacion.terminosAString(ecActual.getLadoIzquierdo()));
         _rhsExpr.postValue(ParserEcuacion.terminosAString(ecActual.getLadoDerecho()));
+        _statusMessage.postValue(s(R.string.status_isolate_x_balance));
         _ops.postValue(getTileOps());
 
         if (CalculadoraAlgebraica.xEstaAislada(ecActual)) {
@@ -396,13 +389,23 @@ public class ExerciseViewModel extends AndroidViewModel {
             _exerciseResult.setValue(ExerciseResult.EMPTY_INPUT);
             return;
         }
+
         cancelTimer();
+
+        if (answerRevealed) {
+            stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, true, true, 0);
+            if (ex.stepOrder >= totalSteps) repo.unlockModule(ex.moduleId + 1);
+            _exerciseResult.setValue(ExerciseResult.REVEALED);
+            return;
+        }
+
         boolean correct = input.trim().equals(ex.correctAnswer.trim());
         if (!correct) {
             try {
                 correct = Double.parseDouble(input.trim()) == Double.parseDouble(ex.correctAnswer.trim());
             } catch (NumberFormatException ignored) {}
         }
+
         stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, correct, hintUsed, correct ? (hintUsed ? 50 : 100) : 0);
         if (correct) {
             if (ex.stepOrder >= totalSteps) repo.unlockModule(ex.moduleId + 1);
@@ -410,6 +413,57 @@ public class ExerciseViewModel extends AndroidViewModel {
         } else {
             _exerciseResult.setValue(ExerciseResult.INCORRECT);
         }
+    }
+
+    public void revealAnswer() {
+        Exercise ex = _exercise.getValue();
+        if (ex == null) return;
+        answerRevealed = true;
+        _autoAnswer.setValue(ex.correctAnswer);
+    }
+
+    public void generateSmartHint() {
+        Ecuacion actual = _ecuacion.getValue();
+        if (actual == null) {
+            _hintMessage.setValue("Análisis dinámico no disponible para este tipo de ejercicio.");
+            return;
+        }
+
+        List<Termino> lhs = actual.getLadoIzquierdo();
+        List<Termino> rhs = actual.getLadoDerecho();
+
+        // 1. Buscar constantes en el lado izquierdo (donde suele estar X)
+        for (Termino t : lhs) {
+            if (t.esConstante() && t.getValor() != 0) {
+                int val = t.getValor();
+                _hintMessage.setValue("💡 Pista: Intenta aplicar " + (val > 0 ? "-" : "+") + Math.abs(val) + " en ambos lados para mover el número.");
+                return;
+            }
+        }
+
+        // 2. Buscar X en el lado derecho
+        for (Termino t : rhs) {
+            if (t.esVariable()) {
+                _hintMessage.setValue("💡 Pista: Hay una 'x' en el lado derecho. ¿Por qué no aplicas -x para moverla al otro lado?");
+                return;
+            }
+        }
+
+        // 3. Buscar coeficientes o denominadores
+        for (Termino t : lhs) {
+            if (t.esVariable()) {
+                if (t.getDivisor() > 1) {
+                    _hintMessage.setValue("💡 Pista: La x está dividida por " + t.getDivisor() + ". ¡Multiplica ambos lados por ese número!");
+                    return;
+                }
+                if (t.getCoeficiente() != 1) {
+                    _hintMessage.setValue("💡 Pista: Despeja la x dividiendo ambos lados entre " + t.getCoeficiente());
+                    return;
+                }
+            }
+        }
+
+        _hintMessage.setValue("¡Vas por buen camino! Sigue operando para dejar la x sola.");
     }
 
     public void resetBalanza() {
@@ -446,7 +500,7 @@ public class ExerciseViewModel extends AndroidViewModel {
                 }
                 @Override public void onFinish() {
                     _timerDisplay.setValue(s(R.string.timer_finished));
-                    _timerFinished.setValue(null);
+                    _timerFinished.postValue(null);
                 }
             }.start();
         });
@@ -487,5 +541,5 @@ public class ExerciseViewModel extends AndroidViewModel {
         return getApplication().getString(resId, args);
     }
 
-    public enum ExerciseResult { CORRECT, CORRECT_WITH_HINT, INCORRECT, EMPTY_INPUT }
+    public enum ExerciseResult { CORRECT, CORRECT_WITH_HINT, INCORRECT, EMPTY_INPUT, REVEALED }
 }
