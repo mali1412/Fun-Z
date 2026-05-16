@@ -17,6 +17,7 @@ public class AppState {
     private static final String KEY_HAPTIC_FEEDBACK = "haptic_feedback";
     private static final String KEY_AUDIO_FEEDBACK = "audio_feedback";
     private static final String KEY_ACTIVE_MODULE = "active_module";
+    private static final String KEY_TOTAL_MODULES = "total_modules";
     private static final String KEY_HINT_BAL = "hint_bal";
     private static final String KEY_HINT_CLA = "hint_cla";
     private static final String KEY_HINT_TIL = "hint_til";
@@ -90,6 +91,9 @@ public class AppState {
     public int  getModuleExerciseCount(int moduleId)             { return i(moduleCountKey(moduleId), 3); }
     public void setModuleExerciseCount(int moduleId, int count)  { put(moduleCountKey(moduleId), count); }
 
+    public int  getTotalModules()           { return i(KEY_TOTAL_MODULES, 6); }
+    public void setTotalModules(int count)  { put(KEY_TOTAL_MODULES, count); }
+
     public int getModuleProgress(int moduleId) {
         if (isModuleComplete(moduleId)) return 100;
         int total = getModuleExerciseCount(moduleId);
@@ -140,10 +144,16 @@ public class AppState {
             } else {
                 setModuleComplete(moduleId);
                 setCurrentStep(moduleId, 1);
-                // Desbloqueo lógico para el siguiente módulo
-                put(moduleLockedKey(moduleId + 1), false);
-                // Al completar el módulo, el siguiente se vuelve el activo automáticamente
-                setActiveModuleId(moduleId + 1);
+
+                int maxModules = getTotalModules();
+                // Solo avanzamos y desbloqueamos si NO es el último módulo
+                if (moduleId < maxModules) {
+                    put(moduleLockedKey(moduleId + 1), false);
+                    setActiveModuleId(moduleId + 1);
+                } else {
+                    // Mantener el módulo actual como activo si ya terminamos todo
+                    setActiveModuleId(moduleId);
+                }
             }
         } else {
             sessionFail++;
