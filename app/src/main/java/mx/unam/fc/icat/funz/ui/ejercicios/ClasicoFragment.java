@@ -42,7 +42,7 @@ public class ClasicoFragment extends Fragment {
         vm = new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
         llSteps = view.findViewById(R.id.ll_solution_steps);
         tvEquation = view.findViewById(R.id.tv_equation_display);
-
+        vm.setAnswerBoxVisible(false);
         vm.exercise.observe(getViewLifecycleOwner(), exercise -> {
             if (exercise != null && Exercise.TYPE_CLASICO.equals(exercise.type)) {
                 tvEquation.setText(exercise.equation);
@@ -60,6 +60,7 @@ public class ClasicoFragment extends Fragment {
         if (index == steps.size() - 1) {
             // El último paso suele ser el resultado final que se pone en el etAnswer de la Activity
             // Podríamos disparar un evento o simplemente dejar que el usuario lo escriba abajo.
+            vm.setAnswerBoxVisible(true);
             return;
         }
 

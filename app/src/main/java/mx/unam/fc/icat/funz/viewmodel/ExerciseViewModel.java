@@ -109,6 +109,13 @@ public class ExerciseViewModel extends AndroidViewModel {
     private final List<String> leftTiles  = new ArrayList<>();
     private final List<String> rightTiles = new ArrayList<>();
 
+    private final MutableLiveData<Boolean> _showAnswerBox = new MutableLiveData<>(false);
+    public LiveData<Boolean> showAnswerBox = _showAnswerBox;
+
+    public void setAnswerBoxVisible(boolean visible) {
+        _showAnswerBox.setValue(visible);
+    }
+
     public ExerciseViewModel(@NonNull Application app) {
         super(app);
         FunZApp appScope = (FunZApp) app;

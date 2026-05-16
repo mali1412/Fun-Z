@@ -144,11 +144,13 @@
 
         <!-- Fila de respuesta común -->
         <LinearLayout
+            android:id="@+id/container_answer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="@dimen/margin_medium">
+            android:layout_marginTop="@dimen/margin_medium"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"

@@ -110,6 +110,22 @@ public class ExerciseActivity extends AppCompatActivity {
         vm.autoAnswer.observe(this, a -> { if (a != null && !a.isEmpty()) etAnswer.setText(a); });
         vm.exerciseResult.observe(this, this::handleResult);
         vm.timerFinished.observe(this, v -> showTimeoutDialog());
+
+        // Dentro de observeViewModel()
+        vm.showAnswerBox.observe(this, visible -> {
+            View answerContainer = findViewById(R.id.container_answer);
+            if (answerContainer != null) {
+                if (visible) {
+                    answerContainer.setVisibility(View.VISIBLE);
+                    // Opcional: una pequeña animación de entrada
+                    answerContainer.setAlpha(0f);
+                    answerContainer.animate().alpha(1f).setDuration(300);
+                } else {
+                    answerContainer.setVisibility(View.GONE);
+                }
+            }
+        });
+
     }
 
     private void showPanelForType(Exercise exercise) {

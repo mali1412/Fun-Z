@@ -63,7 +63,7 @@ public class BalanzaFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         vm = new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
-
+        vm.setAnswerBoxVisible(true);
         TextView tvEq = view.findViewById(R.id.tv_balanza_equation);
         ImageView ivBase = view.findViewById(R.id.iv_balanza_base);
         RelativeLayout rlArm = view.findViewById(R.id.rl_balanza_arm);

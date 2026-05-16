@@ -40,7 +40,7 @@ public class TilesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         vm = new ViewModelProvider(requireActivity()).get(ExerciseViewModel.class);
-
+        vm.setAnswerBoxVisible(true);
         LinearLayout llLeft = view.findViewById(R.id.ll_tiles_left);
         LinearLayout llRight = view.findViewById(R.id.ll_tiles_right);
         TextView tvSt = view.findViewById(R.id.tv_tiles_status);
