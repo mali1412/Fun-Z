@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Random;
 
 import mx.unam.fc.icat.funz.db.Exercise;
+import mx.unam.fc.icat.funz.model.Ecuacion;
 import mx.unam.fc.icat.funz.ui.config.ConfiguracionActivity;
 import mx.unam.fc.icat.funz.ui.main.MainActivity;
 import mx.unam.fc.icat.funz.ui.sala.SalasActivity;
@@ -66,6 +67,10 @@ public class ExerciseActivity extends AppCompatActivity {
     private static final String DRAG_SIDE_SOURCE = "S";
     private static final String DRAG_SIDE_LEFT = "L";
     private static final String DRAG_SIDE_RIGHT = "R";
+
+    // Límites de capacidad física para la balanza
+    private static final int MAX_TILES_PER_SIDE = 12;
+    private static final int MAX_COEFFICIENT_VALUE = 20;
 
     private ExerciseViewModel vm;
     private Chip         chipTimer;
@@ -132,6 +137,7 @@ public class ExerciseActivity extends AppCompatActivity {
         });
         vm.autoAnswer.observe(this, a -> { if (a != null && !a.isEmpty()) etAnswer.setText(a); });
         vm.exerciseResult.observe(this, this::handleResult);
+        vm.timerFinished.observe(this, v -> showTimeoutDialog());
     }
 
     private void showPanelForType(Exercise exercise) {
@@ -254,6 +260,71 @@ public class ExerciseActivity extends AppCompatActivity {
                         String[] parts = parseDragPayload(raw);
                         String label = parts[0];
 
+                        // --- VALIDACIÓN DE PLATO (DIVISIÓN Y CARGA) ---
+                        if (v.getId() == R.id.container_lhs || v.getId() == R.id.container_rhs) {
+                            Ecuacion currentEc = vm.ecuacion.getValue();
+                            if (currentEc != null) {
+                                boolean isLeft = (v.getId() == R.id.container_lhs);
+                                List<Termino> ladoActual = isLeft ? currentEc.getLadoIzquierdo() : currentEc.getLadoDerecho();
+
+                                // 1. VALIDACIÓN DE DIVISIÓN INFINITA (Límite 27)
+                                if (label.contains("/") || label.contains(AlgebraTokens.DIV_SYMBOL)) {
+                                    String numericPart = label.replaceAll("[^0-9]", "");
+                                    if (!numericPart.isEmpty()) {
+                                        int incomingDivisor = Integer.parseInt(numericPart);
+                                        for (Termino t : ladoActual) {
+                                            if (t.getDivisor() * incomingDivisor > 27) {
+                                                showDenominatorLimitWarning(v);
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // 2. Validación de capacidad física (Semáforo de Carga) con excepciones inteligentes
+                                int totalTiles = 0;
+                                for (Termino t : ladoActual) {
+                                    if (t.getDivisor() > 1) totalTiles += 1;
+                                    else if (t.esVariable()) totalTiles += Math.abs(t.getCoeficiente());
+                                    else if (t.esConstante()) totalTiles += Math.abs(t.getValor());
+                                }
+
+                                String opClean = label.replace(" ", "");
+                                boolean isIncreasingScaling = opClean.contains("*") || opClean.contains("×");
+                                boolean isDecreasingScaling = opClean.contains("/") || opClean.contains("÷");
+
+                                if (totalTiles >= MAX_TILES_PER_SIDE || isIncreasingScaling) {
+                                    boolean simplifies = false;
+                                    if (opClean.equals(AlgebraTokens.X) || opClean.equals(AlgebraTokens.POS_X)) {
+                                        for (Termino t : ladoActual) if (t.esVariable() && t.getCoeficiente() < 0) { simplifies = true; break; }
+                                    } else if (opClean.equals(AlgebraTokens.NEG_X)) {
+                                        for (Termino t : ladoActual) if (t.esVariable() && t.getCoeficiente() > 0) { simplifies = true; break; }
+                                    } else if (opClean.equals(AlgebraTokens.POS_ONE) || opClean.equals("1") || opClean.equals("+1")) {
+                                        for (Termino t : ladoActual) if (t.esConstante() && t.getValor() < 0) { simplifies = true; break; }
+                                    } else if (opClean.equals(AlgebraTokens.NEG_ONE) || opClean.equals("-1")) {
+                                        for (Termino t : ladoActual) if (t.esConstante() && t.getValor() > 0) { simplifies = true; break; }
+                                    }
+
+                                    if (!simplifies) {
+                                        if (isIncreasingScaling) {
+                                            // Predicción para multiplicación
+                                            String numericPart = opClean.replaceAll("[^0-9]", "");
+                                            if (!numericPart.isEmpty()) {
+                                                int factor = Integer.parseInt(numericPart);
+                                                if (totalTiles * factor > MAX_TILES_PER_SIDE + 6) {
+                                                    showFullPlateWarning(v);
+                                                    return true;
+                                                }
+                                            }
+                                        } else if (!isDecreasingScaling && totalTiles >= MAX_TILES_PER_SIDE) {
+                                            showFullPlateWarning(v);
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         if (v.getId() == R.id.iv_trash_bin) {
                             if (raw.contains(DRAG_PAYLOAD_SEPARATOR)) {
                                 String inverseOp;
@@ -272,8 +343,8 @@ public class ExerciseActivity extends AppCompatActivity {
                             String op = label;
                             if (label.equals(AlgebraTokens.X)) {
                                 op = AlgebraTokens.POS_X;
-                            } else if (!label.startsWith("+") && !label.startsWith("-") 
-                                    && !label.contains("/") && !label.contains("*") 
+                            } else if (!label.startsWith("+") && !label.startsWith("-")
+                                    && !label.contains("/") && !label.contains("*")
                                     && !label.contains(AlgebraTokens.DIV_SYMBOL) && !label.contains(AlgebraTokens.MUL_SYMBOL)) {
                                 op = "+" + label;
                             }
@@ -301,6 +372,38 @@ public class ExerciseActivity extends AppCompatActivity {
         if (ivTrash != null) ivTrash.setOnDragListener(balanzaDragListener);
     }
 
+    private void showFullPlateWarning(View plate) {
+        plate.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+
+        plate.animate()
+            .translationX(15f)
+            .setDuration(50)
+            .withEndAction(() -> plate.animate()
+                .translationX(-15f)
+                .setDuration(50)
+                .withEndAction(() -> plate.animate()
+                    .translationX(0f)
+                    .setDuration(50)
+                    .start())
+                .start())
+            .start();
+
+        Toast.makeText(this, "¡El plato está muy pesado! Simplifica antes de añadir más.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void showDenominatorLimitWarning(View plate) {
+        plate.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+
+        // Animación de escala (pulso) indicando que ya no cabe más división
+        plate.animate()
+                .scaleX(0.8f).scaleY(0.8f)
+                .setDuration(100)
+                .withEndAction(() -> plate.animate().scaleX(1.0f).scaleY(1.0f).start())
+                .start();
+
+        Toast.makeText(this, "¡Denominador demasiado grande! Intenta simplificar u operar de otra forma.", Toast.LENGTH_SHORT).show();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private View makeBalanzaSourceTile(String label) {
         TextView tv = new TextView(this);
@@ -313,8 +416,8 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setIncludeFontPadding(false);
         int bg = (label.startsWith(AlgebraTokens.MINUS) || label.startsWith(AlgebraTokens.MINUS_SIGN))
                 ? R.drawable.bg_tile_negative
-                : (label.contains(AlgebraTokens.X_SYMBOL) || label.contains("/") || label.contains("*") 
-                   || label.contains(AlgebraTokens.DIV_SYMBOL) || label.contains(AlgebraTokens.MUL_SYMBOL) 
+                : (label.contains(AlgebraTokens.X_SYMBOL) || label.contains("/") || label.contains("*")
+                   || label.contains(AlgebraTokens.DIV_SYMBOL) || label.contains(AlgebraTokens.MUL_SYMBOL)
                    ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
         tv.setBackgroundResource(bg);
 
@@ -858,6 +961,21 @@ public class ExerciseActivity extends AppCompatActivity {
                     .setCancelable(false);
         }
         b.show();
+    }
+
+    private void showTimeoutDialog() {
+        playFinalErrorHaptic();
+        playFinalErrorSound();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.result_timeout)
+                .setMessage(R.string.dialog_timeup_message)
+                .setPositiveButton(R.string.btn_retry, (d, w) -> {
+                    etAnswer.setText("");
+                    vm.retryCurrentExercise();
+                })
+                .setNegativeButton(R.string.btn_exit_text_plain, (d, w) -> finish())
+                .setCancelable(false)
+                .show();
     }
 
     private boolean isLastStep() {
