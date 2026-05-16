@@ -1,14 +1,19 @@
 package mx.unam.fc.icat.funz.ui.ejercicios;
 
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.util.Log;
-import android.view.animation.AnimationUtils;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Build;
@@ -16,9 +21,11 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.*;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -71,6 +78,8 @@ public class ExerciseActivity extends AppCompatActivity {
     private ToneGenerator toneGenerator;
     private int moduleId;
     private int stepOrder;
+
+    private final Point lastTouchPoint = new Point();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,8 +193,8 @@ public class ExerciseActivity extends AppCompatActivity {
 
         vm.ecuacion.observe(this, ec -> {
             if (ec != null) {
-                renderBalanzaWeights(ec.getLadoIzquierdo(), gridL, true);
-                renderBalanzaWeights(ec.getLadoDerecho(), gridR, false);
+                renderBalanzaWeights(ec.getLadoIzquierdo(), gridL, plateL, true);
+                renderBalanzaWeights(ec.getLadoDerecho(), gridR, plateR, false);
             }
         });
 
@@ -220,51 +229,95 @@ public class ExerciseActivity extends AppCompatActivity {
             }
         });
 
-        View.OnDragListener plateListener = (v, event) -> {
-            if (event.getAction() == DragEvent.ACTION_DROP) {
-                ClipData data = event.getClipData();
-                if (data != null && data.getItemCount() > 0) {
-                    String raw = data.getItemAt(0).getText().toString();
-                    String label = parseDragPayload(raw)[0];
-                    // Ahora aplicamos a ambos lados para mantener la igualdad
-                    String op = label;
-                    if (label.equals(AlgebraTokens.X)) op = AlgebraTokens.POS_X;
-                    else if (!label.startsWith("+") && !label.startsWith("-")) op = "+" + label;
-                    vm.applyOp(op);
-                    playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
-                }
-            }
-            return true;
-        };
-
-        if (plateL != null) plateL.setOnDragListener(plateListener);
-        if (plateR != null) plateR.setOnDragListener(plateListener);
-
-        if (ivTrash != null) {
-            ivTrash.setOnDragListener((v, event) -> {
-                if (event.getAction() == DragEvent.ACTION_DROP) {
+        View.OnDragListener balanzaDragListener = (v, event) -> {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)
+                            && DRAG_LABEL_BALANZA_TILE.equals(event.getClipDescription().getLabel());
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    v.animate().scaleX(1.1f).scaleY(1.1f).setDuration(200).start();
+                    refreshPlateState(v, true);
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start();
+                    refreshPlateState(v, false);
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start();
+                    refreshPlateState(v, false);
+                    
                     ClipData data = event.getClipData();
                     if (data != null && data.getItemCount() > 0) {
                         String raw = data.getItemAt(0).getText().toString();
-                        if (raw.contains(DRAG_PAYLOAD_SEPARATOR)) {
-                            String[] parts = parseDragPayload(raw);
-                            String label = parts[0];
-                            // Al tirar a la basura, restamos lo mismo de ambos lados para mantener la igualdad
-                            String inverseOp;
-                            if (label.equals(AlgebraTokens.X)) inverseOp = AlgebraTokens.NEG_X;
-                            else if (label.startsWith("+")) inverseOp = "-" + label.substring(1);
-                            else if (label.startsWith("-")) inverseOp = "+" + label.substring(1);
-                            else inverseOp = "-" + label;
-                            vm.applyOp(inverseOp);
+                        String[] parts = parseDragPayload(raw);
+                        String label = parts[0];
+                        
+                        if (v.getId() == R.id.iv_trash_bin) {
+                            if (raw.contains(DRAG_PAYLOAD_SEPARATOR)) {
+                                String inverseOp;
+                                if (label.equals(AlgebraTokens.X)) inverseOp = AlgebraTokens.NEG_X;
+                                else if (label.startsWith("+")) inverseOp = "-" + label.substring(1);
+                                else if (label.startsWith("-")) inverseOp = "+" + label.substring(1);
+                                else inverseOp = "-" + label;
+                                vm.applyOp(inverseOp);
+                                playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
+                            }
+                        } else {
+                            String op = label;
+                            if (label.equals(AlgebraTokens.X)) op = AlgebraTokens.POS_X;
+                            else if (!label.startsWith("+") && !label.startsWith("-")) op = "+" + label;
+                            vm.applyOp(op);
                             playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
                         }
                     }
-                }
-                return true;
-            });
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(200).start();
+                    refreshPlateState(v, false);
+                    
+                    View source = (View) event.getLocalState();
+                    if (source != null) {
+                        source.setAlpha(1.0f);
+                        if (source.getBackground() != null) source.getBackground().clearColorFilter();
+                    }
+                    return true;
+            }
+            return false;
+        };
+
+        if (plateL != null) plateL.setOnDragListener(balanzaDragListener);
+        if (plateR != null) plateR.setOnDragListener(balanzaDragListener);
+        if (ivTrash != null) ivTrash.setOnDragListener(balanzaDragListener);
+    }
+
+    private void refreshPlateState(View plate, boolean isHovered) {
+        if (plate == null) return;
+        int id = plate.getId();
+        if (id != R.id.container_lhs && id != R.id.container_rhs) {
+            // Caso para el bote de basura u otros destinos
+            if (id == R.id.iv_trash_bin && plate.getBackground() != null) {
+                if (isHovered) plate.getBackground().setColorFilter(0x60FFFFFF, PorterDuff.Mode.SRC_ATOP);
+                else plate.getBackground().clearColorFilter();
+            }
+            return;
+        }
+
+        GridLayout grid = currentPanel.findViewById(id == R.id.container_lhs ? R.id.grid_lhs : R.id.grid_rhs);
+        boolean hasTiles = grid != null && grid.getChildCount() > 0;
+        
+        if (plate.getBackground() != null) {
+            if (isHovered) {
+                plate.getBackground().setColorFilter(0x60FFFFFF, PorterDuff.Mode.SRC_ATOP);
+            } else if (hasTiles) {
+                // Sombreado persistente cuando tiene piezas
+                plate.getBackground().setColorFilter(0x40000000, PorterDuff.Mode.SRC_ATOP);
+            } else {
+                plate.getBackground().clearColorFilter();
+            }
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private View makeBalanzaSourceTile(String label) {
         TextView tv = new TextView(this);
         tv.setText(label);
@@ -285,15 +338,30 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setLayoutParams(lp);
         tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
+        tv.setClickable(true);
+        tv.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                lastTouchPoint.set((int) event.getX(), (int) event.getY());
+            }
+            return false;
+        });
+
         tv.setOnLongClickListener(v -> {
+            v.setPressed(false);
+            BalanzaDragShadowBuilder shadowBuilder = new BalanzaDragShadowBuilder(v, lastTouchPoint);
+            
+            // Atenuamos el original para indicar selección
+            v.setAlpha(0.4f);
+            if (v.getBackground() != null) v.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+            
             ClipData cd = ClipData.newPlainText(DRAG_LABEL_BALANZA_TILE, label + DRAG_PAYLOAD_SEPARATOR + DRAG_SIDE_SOURCE);
-            v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
+            v.startDragAndDrop(cd, shadowBuilder, v, 0);
             return true;
         });
         return tv;
     }
 
-    private void renderBalanzaWeights(List<Termino> terminos, GridLayout grid, boolean isLeft) {
+    private void renderBalanzaWeights(List<Termino> terminos, GridLayout grid, View plate, boolean isLeft) {
         grid.removeAllViews();
         grid.setColumnCount(5);
 
@@ -311,7 +379,6 @@ public class ExerciseActivity extends AppCompatActivity {
             } else if (t.esConstante()) {
                 int val = t.getValor();
                 if (val == 0) continue;
-
                 int absVal = Math.abs(val);
                 String unitLabel = val > 0 ? AlgebraTokens.POS_ONE : AlgebraTokens.NEG_ONE;
                 int bg = val > 0 ? R.drawable.bg_tile_positive : R.drawable.bg_tile_negative;
@@ -321,8 +388,12 @@ public class ExerciseActivity extends AppCompatActivity {
                 }
             }
         }
+        
+        // Actualizar sombreado del plato basado en si está ocupado
+        refreshPlateState(plate, false);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void addBalanzaWeightIcon(GridLayout grid, int bgRes, int sizePx, String label, boolean isLeft, String displayText) {
         TextView tv = new TextView(this);
         tv.setBackgroundResource(bgRes);
@@ -332,7 +403,6 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setPadding(0, 0, 0, 0);
         tv.setIncludeFontPadding(false);
         tv.setSingleLine(true);
-        // Texto muy pequeño para bloques de unidad
         tv.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimension(displayText.length() > 2
                         ? R.dimen.text_size_micro
@@ -347,10 +417,23 @@ public class ExerciseActivity extends AppCompatActivity {
         grid.addView(tv);
         tv.setHapticFeedbackEnabled(isHapticFeedbackEnabled());
 
+        tv.setClickable(true);
+        tv.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                lastTouchPoint.set((int) event.getX(), (int) event.getY());
+            }
+            return false;
+        });
+
         tv.setOnLongClickListener(v -> {
+            v.setPressed(false);
+            BalanzaDragShadowBuilder shadowBuilder = new BalanzaDragShadowBuilder(v, lastTouchPoint);
+            v.setAlpha(0.5f);
+            if (v.getBackground() != null) v.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+            
             ClipData cd = ClipData.newPlainText(DRAG_LABEL_BALANZA_TILE,
                     label + DRAG_PAYLOAD_SEPARATOR + (isLeft ? DRAG_SIDE_LEFT : DRAG_SIDE_RIGHT));
-            v.startDragAndDrop(cd, new View.DragShadowBuilder(v), v, 0);
+            v.startDragAndDrop(cd, shadowBuilder, v, 0);
             return true;
         });
     }
@@ -358,10 +441,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private void bindClasicoPanel(Exercise exercise) {
         TextView tvEquation = currentPanel.findViewById(R.id.tv_equation_display);
         LinearLayout llSteps = currentPanel.findViewById(R.id.ll_solution_steps);
-        if (llSteps == null) {
-            Log.e(getString(R.string.log_tag_error), getString(R.string.log_missing_steps_container));
-            return;
-        }
+        if (llSteps == null) return;
         tvEquation.setText(exercise.equation);
         List<String> steps = ExerciseViewModel.parseJson(exercise.solutionSteps);
         llSteps.removeAllViews();
@@ -373,27 +453,22 @@ public class ExerciseActivity extends AppCompatActivity {
 
         String stepText = steps.get(index);
         if (index == steps.size() - 1) {
-            // ACTIVAMOS LA BARRA GLOBAL
-            etAnswer.requestFocus(); // Ponemos el foco en el EditText de abajo
-            // Opcionalmente podemos resaltar la barra global con un color para avisar al usuario
+            etAnswer.requestFocus();
             findViewById(R.id.btn_verify).setAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
             return;
         }
 
-        // Usaremos un delimitador como "|" para saber dónde va el cuadro de texto
         if (!stepText.contains("|")) {
             TextView tvInstruction = new TextView(this);
             tvInstruction.setText(stepText);
             tvInstruction.setPadding(dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_small), dimenPx(R.dimen.margin_tiny));
             tvInstruction.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
             container.addView(tvInstruction);
-            // Pasamos automáticamente al siguiente, que debería ser el que tiene el hueco
             mostrarSiguientePaso(container, steps, index + 1);
             return;
         }
 
         String[] parts = stepText.split("\\|");
-
         View stepView = getLayoutInflater().inflate(R.layout.item_step_clasico, container, false);
         TextView tvPre = stepView.findViewById(R.id.tv_step_prefix);
         EditText etInput = stepView.findViewById(R.id.et_step_input);
@@ -402,24 +477,20 @@ public class ExerciseActivity extends AppCompatActivity {
 
         tvPre.setText(parts[0]);
         if (parts.length > 2) tvPost.setText(parts[2]);
-
-        String correctAnswer = parts[1]; // La respuesta esperada está entre los | |
+        String correctAnswer = parts[1];
 
         btnCheck.setOnClickListener(v -> {
             if (etInput.getText().toString().trim().equals(correctAnswer)) {
                 playStepSuccessHaptic();
                 playStepSuccessSound();
-                // ÉXITO
                 etInput.setEnabled(false);
                 etInput.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.success_bg)));
                 btnCheck.setVisibility(View.GONE);
                 tvPre.setTextColor(getColor(R.color.accent_green));
-                // Mostrar el siguiente paso
                 mostrarSiguientePaso(container, steps, index + 1);
             } else {
                 playStepErrorHaptic();
                 playStepErrorSound();
-                // ERROR
                 etInput.setError(getString(R.string.input_error_incorrect));
                 etInput.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this, R.anim.shake));
             }
@@ -439,20 +510,15 @@ public class ExerciseActivity extends AppCompatActivity {
 
         vm.statusMessage.observe(this, tvSt::setText);
         vm.statusPositive.observe(this, pos -> {
-            if (pos == null) {
-                tvSt.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
-            } else {
-                tvSt.setTextColor(pos ? getColor(R.color.accent_green) : resolveThemeColor(R.attr.colorWarnChipText));
-            }
+            if (pos == null) tvSt.setTextColor(resolveThemeColor(com.google.android.material.R.attr.colorOnSurfaceVariant));
+            else tvSt.setTextColor(pos ? getColor(R.color.accent_green) : resolveThemeColor(R.attr.colorWarnChipText));
         });
         vm.lhsExpr.observe(this, lhs -> tvEq.setText(formatEquation(lhs, vm.rhsExpr.getValue())));
         vm.rhsExpr.observe(this, rhs -> tvEq.setText(formatEquation(vm.lhsExpr.getValue(), rhs)));
-
         vm.ops.observe(this, opList -> {
             llOps.removeAllViews();
             for (String op : opList) llOps.addView(makeOpView(op));
         });
-
         setupOperationDropZone(dropZone, tvDrop);
         vm.leftTilesLd.observe(this, tiles -> renderTiles(tiles, llLeft));
         vm.rightTilesLd.observe(this, tiles -> renderTiles(tiles, llRight));
@@ -461,9 +527,7 @@ public class ExerciseActivity extends AppCompatActivity {
     private void renderTiles(List<String> tiles, LinearLayout container) {
         container.removeAllViews();
         List<String> compactTiles = compactTilesForDisplay(tiles);
-        for (String label : compactTiles) {
-            container.addView(makeTileView(label));
-        }
+        for (String label : compactTiles) container.addView(makeTileView(label));
     }
 
     private View makeTileView(String label) {
@@ -475,15 +539,13 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setGravity(Gravity.CENTER);
         tv.setSingleLine(true);
         tv.setIncludeFontPadding(false);
-        
-        if (label.startsWith("-")) {
-            tv.setBackgroundResource(R.drawable.bg_tile_negative);
-        } else {
+
+        if (label.startsWith("-")) tv.setBackgroundResource(R.drawable.bg_tile_negative);
+        else {
             boolean isX = label.endsWith(AlgebraTokens.X) || label.contains("/");
-            if (isX) tv.setBackgroundResource(R.drawable.bg_tile_x);
-            else tv.setBackgroundResource(R.drawable.bg_tile_positive);
+            tv.setBackgroundResource(isX ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
         }
-        
+
         tv.setClickable(true);
         tv.setLongClickable(true);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -525,7 +587,6 @@ public class ExerciseActivity extends AppCompatActivity {
         }
         if (units > 0) compact.add(AlgebraTokens.PLUS + units);
         else if (units < 0) compact.add(String.valueOf(units));
-
         if (compact.isEmpty()) compact.add(AlgebraTokens.ZERO);
         return compact;
     }
@@ -551,7 +612,7 @@ public class ExerciseActivity extends AppCompatActivity {
         if (op.startsWith(AlgebraTokens.MINUS) || op.startsWith(AlgebraTokens.MINUS_SIGN)) tv.setBackgroundResource(R.drawable.bg_tile_negative);
         else if (op.contains(AlgebraTokens.DIV_SYMBOL) || op.contains(AlgebraTokens.MUL_SYMBOL) || op.contains(AlgebraTokens.X)) tv.setBackgroundResource(R.drawable.bg_tile_x);
         else tv.setBackgroundResource(R.drawable.bg_tile_positive);
-        
+
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, dimenPx(R.dimen.tile_item_height), 1f);
         lp.setMargins(dimenPx(R.dimen.tile_margin_v), dimenPx(R.dimen.margin_tiny), dimenPx(R.dimen.tile_margin_v), dimenPx(R.dimen.margin_tiny));
         tv.setLayoutParams(lp);
@@ -606,16 +667,14 @@ public class ExerciseActivity extends AppCompatActivity {
                 int size = dpToPx(random.nextInt(8) + 4);
                 p.setLayoutParams(new FrameLayout.LayoutParams(size, size));
                 p.setBackgroundColor(Color.HSVToColor(new float[]{random.nextInt(360), 0.8f, 1f}));
-                p.setX(width / 2f);
-                p.setY(height / 2f);
+                p.setX(width / 2f); p.setY(height / 2f);
                 container.addView(p);
-                p.animate().translationX(random.nextFloat() * width)
-                    .translationY(random.nextFloat() * height)
-                    .rotation(random.nextInt(360)).alpha(0f).setDuration(1500)
-                    .setInterpolator(new AccelerateInterpolator())
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override public void onAnimationEnd(Animator a) { container.removeView(p); }
-                    }).start();
+                p.animate().translationX(random.nextFloat() * width).translationY(random.nextFloat() * height)
+                        .rotation(random.nextInt(360)).alpha(0f).setDuration(1500)
+                        .setInterpolator(new AccelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override public void onAnimationEnd(Animator a) { container.removeView(p); }
+                        }).start();
             }
         });
     }
@@ -671,39 +730,17 @@ public class ExerciseActivity extends AppCompatActivity {
         vibratePattern(new long[]{0, 80, 30, 60}, new int[]{0, 180, 0, 120});
     }
 
-    private void playStepSuccessSound() {
-        playTone(ToneGenerator.TONE_PROP_BEEP, 30);
-    }
-
-    private void playMoveSound() {
-        // Sonido corto tipo tecla para confirmar movimiento sin ser invasivo.
-        playTone(ToneGenerator.TONE_PROP_BEEP, 22);
-    }
-
-    private void playDropFeedback(boolean success) {
-        if (success) playMoveSound();
-        else playStepErrorSound();
-    }
-
-    private void playStepErrorSound() {
-        playTone(ToneGenerator.TONE_PROP_NACK, 45);
-    }
-
-    private void playFinalSuccessSound() {
-        playTone(ToneGenerator.TONE_PROP_ACK, 85);
-    }
-
-    private void playFinalErrorSound() {
-        playTone(ToneGenerator.TONE_PROP_NACK, 70);
-    }
+    private void playStepSuccessSound() { playTone(ToneGenerator.TONE_PROP_BEEP, 30); }
+    private void playMoveSound() { playTone(ToneGenerator.TONE_PROP_BEEP, 22); }
+    private void playDropFeedback(boolean success) { if (success) playMoveSound(); else playStepErrorSound(); }
+    private void playStepErrorSound() { playTone(ToneGenerator.TONE_PROP_NACK, 45); }
+    private void playFinalSuccessSound() { playTone(ToneGenerator.TONE_PROP_ACK, 85); }
+    private void playFinalErrorSound() { playTone(ToneGenerator.TONE_PROP_NACK, 70); }
 
     private ToneGenerator getToneGenerator() {
         if (toneGenerator != null) return toneGenerator;
-        try {
-            toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 35);
-        } catch (RuntimeException ignored) {
-            toneGenerator = null;
-        }
+        try { toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 35); }
+        catch (RuntimeException ignored) { toneGenerator = null; }
         return toneGenerator;
     }
 
@@ -713,82 +750,48 @@ public class ExerciseActivity extends AppCompatActivity {
         if (tg != null) tg.startTone(toneType, durationMs);
     }
 
-    private boolean isHapticFeedbackEnabled() {
-        return AppState.getInstance().isHapticFeedbackEnabled();
-    }
-
-    private boolean isAudioFeedbackEnabled() {
-        return AppState.getInstance().isAudioFeedbackEnabled();
-    }
+    private boolean isHapticFeedbackEnabled() { return AppState.getInstance().isHapticFeedbackEnabled(); }
+    private boolean isAudioFeedbackEnabled() { return AppState.getInstance().isAudioFeedbackEnabled(); }
 
     private void vibratePattern(long[] timings, int[] amplitudes) {
-        Vibrator vibrator = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            VibratorManager manager = (VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE);
-            if (manager != null) vibrator = manager.getDefaultVibrator();
-        } else {
-            vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        }
-        if (vibrator == null || !vibrator.hasVibrator()) return;
-
-        vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1));
+        Vibrator vibrator = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                ? ((VibratorManager) getSystemService(VIBRATOR_MANAGER_SERVICE)).getDefaultVibrator()
+                : (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) vibrator.vibrate(VibrationEffect.createWaveform(timings, amplitudes, -1));
     }
 
     private void playSuccessCelebration() {
         if (panelContainer != null) {
-            panelContainer.animate()
-                    .scaleX(1.03f)
-                    .scaleY(1.03f)
-                    .setDuration(140)
-                    .withEndAction(() -> panelContainer.animate().scaleX(1f).scaleY(1f).setDuration(180).start())
-                    .start();
+            panelContainer.animate().scaleX(1.03f).scaleY(1.03f).setDuration(140)
+                    .withEndAction(() -> panelContainer.animate().scaleX(1f).scaleY(1f).setDuration(180).start()).start();
         }
-        if (celebrationLayer != null) {
-            triggerConfetti(celebrationLayer);
-        }
+        if (celebrationLayer != null) triggerConfetti(celebrationLayer);
     }
 
     private void showResultDialog(boolean correct, boolean withHint) {
         Exercise ex = vm.exercise.getValue();
         int pts = ex != null ? (withHint ? ex.pointsHint : ex.pointsCorrect) : (withHint ? 50 : 100);
-        
         MaterialAlertDialogBuilder b = new MaterialAlertDialogBuilder(this);
         if (correct) {
-            String msg = getString(R.string.dialog_correct_points_format, pts);
-            if (withHint) msg += getString(R.string.dialog_correct_hint_extra);
-            b.setTitle(R.string.result_correct)
-             .setMessage(msg)
-             .setPositiveButton(isLastStep() ? getString(R.string.btn_finish) : getString(R.string.btn_next_arrow), (d, w) -> goToNext())
-             .setCancelable(false);
+            String msg = getString(R.string.dialog_correct_points_format, pts) + (withHint ? getString(R.string.dialog_correct_hint_extra) : "");
+            b.setTitle(R.string.result_correct).setMessage(msg)
+                    .setPositiveButton(isLastStep() ? R.string.btn_finish : R.string.btn_next_arrow, (d, w) -> goToNext())
+                    .setCancelable(false);
         } else {
-            b.setTitle(R.string.dialog_incorrect_title)
-             .setMessage(R.string.dialog_incorrect_message)
-             .setPositiveButton(R.string.btn_retry, (d, w) -> {
-                 etAnswer.setText("");
-                 vm.retryCurrentExercise();
-             })
-             .setNegativeButton(R.string.btn_exit_text_plain, (d, w) -> finish())
-             .setCancelable(false);
+            b.setTitle(R.string.dialog_incorrect_title).setMessage(R.string.dialog_incorrect_message)
+                    .setPositiveButton(R.string.btn_retry, (d, w) -> { etAnswer.setText(""); vm.retryCurrentExercise(); })
+                    .setNegativeButton(R.string.btn_exit_text_plain, (d, w) -> finish()).setCancelable(false);
         }
         b.show();
     }
 
-    private boolean isLastStep() {
-        return stepOrder >= AppState.getInstance().getModuleExerciseCount(moduleId);
-    }
+    private boolean isLastStep() { return stepOrder >= AppState.getInstance().getModuleExerciseCount(moduleId); }
 
     private void goToNext() {
-        if (isLastStep()) {
-            Intent i = new Intent(this, FinEjerciciosActivity.class);
-            i.putExtra(AppIntentKeys.MODULE_ID, moduleId);
-            startActivity(i);
-        } else {
-            Intent i = new Intent(this, ExerciseActivity.class);
-            i.putExtra(AppIntentKeys.MODULE_ID, moduleId);
-            i.putExtra(AppIntentKeys.STEP_ORDER, stepOrder + 1);
-            i.putExtra(AppIntentKeys.SESSION_CONTINUE, true);
-            startActivity(i);
-        }
+        Intent i = new Intent(this, isLastStep() ? FinEjerciciosActivity.class : ExerciseActivity.class);
+        i.putExtra(AppIntentKeys.MODULE_ID, moduleId);
+        if (!isLastStep()) { i.putExtra(AppIntentKeys.STEP_ORDER, stepOrder + 1); i.putExtra(AppIntentKeys.SESSION_CONTINUE, true); }
+        startActivity(i);
         overridePendingTransition(R.anim.screen_enter_right, R.anim.screen_exit_left);
         finish();
     }
@@ -818,31 +821,69 @@ public class ExerciseActivity extends AppCompatActivity {
         vm.useHint();
         BottomSheetDialog sheet = new BottomSheetDialog(this);
         View v = getLayoutInflater().inflate(R.layout.bottom_sheet_hint, new FrameLayout(this), false);
-        String hintContent = ex.hintText;
-        if (Exercise.TYPE_TILES.equals(ex.type)) {
-            String nextOp = vm.expectedTileOp();
-            if (!nextOp.isEmpty()) hintContent += getString(R.string.hint_tile_suggestion_format, nextOp);
-        }
+        String hintContent = ex.hintText + (Exercise.TYPE_TILES.equals(ex.type) && !vm.expectedTileOp().isEmpty() ? getString(R.string.hint_tile_suggestion_format, vm.expectedTileOp()) : "");
         ((TextView) v.findViewById(R.id.tv_hint_content)).setText(hintContent);
         v.findViewById(R.id.btn_close_hint).setOnClickListener(b -> sheet.dismiss());
         sheet.setContentView(v);
         sheet.show();
     }
 
-    private int dpToPx(int dp) { return (int)(dp * getResources().getDisplayMetrics().density); }
     private int dimenPx(int dimenRes) { return getResources().getDimensionPixelSize(dimenRes); }
+    private int dpToPx(int dp) { return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics()); }
     private int resolveThemeColor(int attr) { TypedValue tv = new TypedValue(); getTheme().resolveAttribute(attr, tv, true); return tv.data; }
-
-    private String[] parseDragPayload(String raw) {
-        return raw.split(DRAG_PAYLOAD_SEPARATOR_REGEX, 2);
-    }
+    private String[] parseDragPayload(String raw) { return raw.split(DRAG_PAYLOAD_SEPARATOR_REGEX, 2); }
 
     @Override protected void onDestroy() {
         super.onDestroy();
-        if (toneGenerator != null) {
-            toneGenerator.release();
-            toneGenerator = null;
-        }
+        if (toneGenerator != null) { toneGenerator.release(); toneGenerator = null; }
         vm.cancelTimer();
+    }
+
+    /**
+     * Shadow Builder optimizado para la Balanza.
+     * Captura una imagen fija (Snapshot) del tile para garantizar que la sombra 
+     * sea sólida y visible durante todo el trayecto de arrastre.
+     */
+    private static class BalanzaDragShadowBuilder extends View.DragShadowBuilder {
+        private final Point touchPoint;
+        private final float scale = 1.4f;
+        private Bitmap shadowBitmap;
+
+        public BalanzaDragShadowBuilder(View v, Point touchPoint) {
+            super(v);
+            this.touchPoint = (touchPoint != null) ? new Point(touchPoint) : new Point(v.getWidth() / 2, v.getHeight() / 2);
+            
+            try {
+                if (v.getWidth() > 0 && v.getHeight() > 0) {
+                    shadowBitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas c = new Canvas(shadowBitmap);
+                    float alpha = v.getAlpha();
+                    v.setAlpha(1.0f); // Snapshot brillante
+                    v.draw(c);
+                    v.setAlpha(alpha); // Restaurar
+                }
+            } catch (Exception e) { shadowBitmap = null; }
+        }
+
+        @Override
+        public void onProvideShadowMetrics(Point size, Point touch) {
+            int width = (int) (getView().getWidth() * scale);
+            int height = (int) (getView().getHeight() * scale);
+            size.set(width, height);
+            touch.set((int) (touchPoint.x * scale), (int) (touchPoint.y * scale));
+        }
+
+        @Override
+        public void onDrawShadow(Canvas canvas) {
+            if (shadowBitmap != null && !shadowBitmap.isRecycled()) {
+                Rect dst = new Rect(0, 0, (int)(shadowBitmap.getWidth() * scale), (int)(shadowBitmap.getHeight() * scale));
+                Paint paint = new Paint();
+                paint.setFilterBitmap(true);
+                canvas.drawBitmap(shadowBitmap, null, dst, paint);
+            } else {
+                canvas.scale(scale, scale);
+                super.onDrawShadow(canvas);
+            }
+        }
     }
 }
