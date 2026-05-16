@@ -320,11 +320,14 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "3x - |x| + 2 = 10",
                                     "Reducimos términos semejantes (3x - x):",
                                     "|2x| + 2 = 10",
-                                    "Pasamos el 2 restando y despejamos:",
+                                    "Pasamos el 2 restando:",
+                                    "2x = 10 - |2|",
                                     "2x = |8|",
+                                    "Dividimos entre el coeficiente:",
+                                    "x = 8 / |2|",
                                     "Ingresa el valor final de x abajo:"
                             },
-                            "Paso 1: 3x - x = 2x.\nPaso 2: 10 - 2 = 8.\nPaso 3: 8 / 2 = 4."),
+                            "Reúne las variables: Resta una 'x' en el miembro izquierdo y luego transpone el +2 restando a la derecha para equilibrar."),
 
                     // Ejercicio 2: Balanza (Eliminación mutua)
                     buildBalanza(5, 2, "4x = 2x + 6", "3", "4x", "2x+6", "-2x", "2x", "6",
@@ -382,15 +385,16 @@ public class DbSeeder extends RoomDatabase.Callback {
                     // Ejercicio 1: Clásico (El proceso completo)
                     buildClasico(6, 1, "2(x + 3) = x + 9", "3",
                             new String[]{
-                                    "Primero, expande el paréntesis multiplicando el 2:",
+                                    "Primero, expande el paréntesis:",
                                     "|2x| + 6 = x + 9",
-                                    "Ahora, agrupa las x en la izquierda (resta x):",
-                                    "x + 6 = |9|",
-                                    "Finalmente, resta el 6 para despejar x:",
+                                    "Ahora, agrupa las x:",
+                                    "2x + 6 - |x| = 9",
+                                    "|x| + 6 = 9",
+                                    "Despeja x:",
                                     "x = 9 - |6|",
                                     "Ingresa el valor final de x abajo:"
                             },
-                            "Paso 1: 2*x + 2*3. Paso 2: 2x - x = x. Paso 3: 9 - 6 = 3."),
+                            "Rompe el candado: El número 2 de afuera debe multiplicar a cada término dentro del paréntesis."),
 
                     // Ejercicio 2: Balanza (Visualización de equilibrio dinámico)
                     buildBalanza(6, 2, "3x + 4 = 2x + 10", "6", "3x+4", "2x+10", "-2x", "x+4", "10",
