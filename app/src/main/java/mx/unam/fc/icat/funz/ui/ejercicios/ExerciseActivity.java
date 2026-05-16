@@ -219,7 +219,7 @@ public class ExerciseActivity extends AppCompatActivity {
                     String clean = op.replace(" ", "")
                             .replace(AlgebraTokens.MINUS_SIGN, AlgebraTokens.MINUS)
                             .replace(AlgebraTokens.EN_DASH, AlgebraTokens.MINUS);
-                    if ((clean.startsWith("+") || clean.startsWith("-")) && !labels.contains(clean)) {
+                    if (!labels.contains(clean)) {
                         labels.add(clean);
                     }
                 }
@@ -260,14 +260,23 @@ public class ExerciseActivity extends AppCompatActivity {
                                 if (label.equals(AlgebraTokens.X)) inverseOp = AlgebraTokens.NEG_X;
                                 else if (label.startsWith("+")) inverseOp = "-" + label.substring(1);
                                 else if (label.startsWith("-")) inverseOp = "+" + label.substring(1);
+                                else if (label.contains("/") || label.contains(AlgebraTokens.DIV_SYMBOL)) {
+                                    // Invertir división -> multiplicación
+                                    inverseOp = "*" + (label.contains("/") ? label.substring(label.indexOf("/") + 1) : label.substring(label.indexOf(AlgebraTokens.DIV_SYMBOL) + 1));
+                                }
                                 else inverseOp = "-" + label;
                                 vm.applyOp(inverseOp);
                                 playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
                             }
                         } else {
                             String op = label;
-                            if (label.equals(AlgebraTokens.X)) op = AlgebraTokens.POS_X;
-                            else if (!label.startsWith("+") && !label.startsWith("-")) op = "+" + label;
+                            if (label.equals(AlgebraTokens.X)) {
+                                op = AlgebraTokens.POS_X;
+                            } else if (!label.startsWith("+") && !label.startsWith("-") 
+                                    && !label.contains("/") && !label.contains("*") 
+                                    && !label.contains(AlgebraTokens.DIV_SYMBOL) && !label.contains(AlgebraTokens.MUL_SYMBOL)) {
+                                op = "+" + label;
+                            }
                             vm.applyOp(op);
                             playDropFeedback(Boolean.TRUE.equals(vm.statusPositive.getValue()));
                         }
@@ -302,9 +311,11 @@ public class ExerciseActivity extends AppCompatActivity {
         tv.setTypeface(null, android.graphics.Typeface.BOLD);
         tv.setSingleLine(true);
         tv.setIncludeFontPadding(false);
-        int bg = label.startsWith(AlgebraTokens.MINUS)
+        int bg = (label.startsWith(AlgebraTokens.MINUS) || label.startsWith(AlgebraTokens.MINUS_SIGN))
                 ? R.drawable.bg_tile_negative
-                : (label.contains(AlgebraTokens.X_SYMBOL) ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
+                : (label.contains(AlgebraTokens.X_SYMBOL) || label.contains("/") || label.contains("*") 
+                   || label.contains(AlgebraTokens.DIV_SYMBOL) || label.contains(AlgebraTokens.MUL_SYMBOL) 
+                   ? R.drawable.bg_tile_x : R.drawable.bg_tile_positive);
         tv.setBackgroundResource(bg);
 
         int height = getResources().getDimensionPixelSize(R.dimen.balanza_tile_size_x);
@@ -344,25 +355,40 @@ public class ExerciseActivity extends AppCompatActivity {
 
         boolean hasTiles = false;
         for (Termino t : terminos) {
+            String simbolo = t.getSimbolo();
+            int div = t.getDivisor();
+
             if (t.esVariable()) {
-                int count = Math.abs(t.getCoeficiente());
-                if (count > 0) hasTiles = true;
+                hasTiles = true;
                 int bg = t.getCoeficiente() > 0 ? R.drawable.bg_tile_x : R.drawable.bg_tile_negative;
-                String label = t.getCoeficiente() > 0 ? AlgebraTokens.X : AlgebraTokens.NEG_X;
-                for (int i = 0; i < count; i++) {
-                    addBalanzaWeightIcon(grid, bg, sizeX, label, isLeft, label);
+
+                if (div > 1) {
+                    // Caso dividido: mostramos el bloque fraccionario (ej: x/2)
+                    addBalanzaWeightIcon(grid, bg, sizeX, simbolo, isLeft, simbolo);
+                } else {
+                    // Caso normal: tiles individuales para el coeficiente
+                    int count = Math.abs(t.getCoeficiente());
+                    String label = t.getCoeficiente() > 0 ? AlgebraTokens.X : AlgebraTokens.NEG_X;
+                    for (int i = 0; i < count; i++) {
+                        addBalanzaWeightIcon(grid, bg, sizeX, label, isLeft, label);
+                    }
                 }
             } else if (t.esConstante()) {
                 int val = t.getValor();
                 if (val == 0) continue;
                 hasTiles = true;
 
-                int absVal = Math.abs(val);
-                String unitLabel = val > 0 ? AlgebraTokens.POS_ONE : AlgebraTokens.NEG_ONE;
                 int bg = val > 0 ? R.drawable.bg_tile_positive : R.drawable.bg_tile_negative;
 
-                for (int i = 0; i < absVal; i++) {
-                    addBalanzaWeightIcon(grid, bg, sizeUnit, unitLabel, isLeft, unitLabel);
+                if (div > 1) {
+                    // Caso dividido para constantes (ej: +1/2)
+                    addBalanzaWeightIcon(grid, bg, sizeUnit, simbolo, isLeft, simbolo);
+                } else {
+                    int absVal = Math.abs(val);
+                    String unitLabel = val > 0 ? AlgebraTokens.POS_ONE : AlgebraTokens.NEG_ONE;
+                    for (int i = 0; i < absVal; i++) {
+                        addBalanzaWeightIcon(grid, bg, sizeUnit, unitLabel, isLeft, unitLabel);
+                    }
                 }
             }
         }
@@ -427,7 +453,7 @@ public class ExerciseActivity extends AppCompatActivity {
         TextView tvEquation = currentPanel.findViewById(R.id.tv_equation_display);
         LinearLayout llSteps = currentPanel.findViewById(R.id.ll_solution_steps);
         if (llSteps == null) {
-            Log.e(getString(R.string.log_tag_error), getString(R.string.log_missing_steps_container));
+            Log.e("FunZ", "Missing steps container in clasico view");
             return;
         }
         tvEquation.setText(exercise.equation);
