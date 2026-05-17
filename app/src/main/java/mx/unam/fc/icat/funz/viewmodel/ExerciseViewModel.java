@@ -112,6 +112,9 @@ public class ExerciseViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> _showAnswerBox = new MutableLiveData<>(false);
     public LiveData<Boolean> showAnswerBox = _showAnswerBox;
 
+    private long startTimeMillis;
+    private static final int MIN_POINTS = 100;
+
     public void setAnswerBoxVisible(boolean visible) {
         _showAnswerBox.setValue(visible);
     }
@@ -145,6 +148,7 @@ public class ExerciseViewModel extends AndroidViewModel {
         initialized = true;
         hintUsed = false;
         answerRevealed = false;
+        startTimeMillis = System.currentTimeMillis();
         switch (ex.type) {
             case Exercise.TYPE_BALANZA: initBalanza(ex); break;
             case Exercise.TYPE_TILES:   initTiles(ex);   break;
@@ -413,11 +417,30 @@ public class ExerciseViewModel extends AndroidViewModel {
             } catch (NumberFormatException ignored) {}
         }
 
-        stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, correct, hintUsed, correct ? (hintUsed ? 50 : 100) : 0);
         if (correct) {
+            int pointsBase = ex.moduleId * 100;
+
+            long timeSpentSec = (System.currentTimeMillis() - startTimeMillis) / 1000;
+
+            int timeBonus = (int) Math.max(0, 300 - (timeSpentSec * 5));
+
+            // Puntuación preliminar sumando Base + Tiempo
+            int finalPoints = pointsBase + timeBonus;
+
+            if (hintUsed) {
+                finalPoints /= 2; // El uso de pistas reduce la recompensa al 50%
+            }
+
+            if (finalPoints < MIN_POINTS) {
+                finalPoints = MIN_POINTS;
+            }
+
+            stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, true, hintUsed, finalPoints);
+
             if (ex.stepOrder >= totalSteps) repo.unlockModule(ex.moduleId + 1);
             _exerciseResult.setValue(hintUsed ? ExerciseResult.CORRECT_WITH_HINT : ExerciseResult.CORRECT);
         } else {
+            stateRepo.markExerciseDone(ex.moduleId, ex.stepOrder, totalSteps, false, hintUsed, 0);
             _exerciseResult.setValue(ExerciseResult.INCORRECT);
         }
     }

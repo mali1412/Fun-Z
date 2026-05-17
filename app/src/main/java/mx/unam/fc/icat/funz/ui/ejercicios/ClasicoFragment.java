@@ -51,6 +51,23 @@ public class ClasicoFragment extends Fragment {
                 mostrarSiguientePaso(steps, 0);
             }
         });
+        vm.showAnswerBox.observe(getViewLifecycleOwner(), visible -> {
+            View etAnswer = requireActivity().findViewById(R.id.et_answer);
+            View btnVerify = requireActivity().findViewById(R.id.btn_verify);
+
+            if (etAnswer != null && btnVerify != null) {
+                etAnswer.setEnabled(visible);
+                btnVerify.setEnabled(visible);
+
+                if (visible) {
+                    if (etAnswer instanceof EditText) {
+                        ((EditText) etAnswer).setHint("Resultado final (Con pista)");
+                    }
+                    etAnswer.requestFocus();
+                    btnVerify.startAnimation(android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.shake));
+                }
+            }
+        });
     }
 
     private void mostrarSiguientePaso(List<String> steps, int index) {

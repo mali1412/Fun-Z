@@ -33,6 +33,8 @@ public class EstadisticasActivity extends AppCompatActivity {
     private boolean               appliedDarkTheme;
     private LinearLayout          llModulesContainer;
 
+    private final java.util.HashSet<String> medallasNotificadas = new java.util.HashSet<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,13 +115,26 @@ public class EstadisticasActivity extends AppCompatActivity {
     }
 
     private void updateMedalsUI(EstadisticasViewModel.StatsUiState s) {
-        View m1 = findViewById(R.id.tv_medal_1);
-        View mStreak = findViewById(R.id.tv_medal_streak);
-        View mMod = findViewById(R.id.tv_medal_mod);
+        // Importamos nuestra clase modelo de medallas
+        for (mx.unam.fc.icat.funz.model.Medalla medalla : mx.unam.fc.icat.funz.model.Medalla.values()) {
+            View viewMedalla = findViewById(medalla.getViewId());
 
-        if (s.exercisesResolved > 0) m1.setBackgroundResource(R.drawable.bg_medal_earned);
-        if (s.streakDays >= 3) mStreak.setBackgroundResource(R.drawable.bg_medal_earned);
-        if (s.totalProgress >= 50) mMod.setBackgroundResource(R.drawable.bg_medal_earned);
+            if (viewMedalla != null) {
+                if (medalla.estaDesbloqueada(s)) {
+                    viewMedalla.setBackgroundResource(R.drawable.bg_medal_earned);
+                    viewMedalla.setAlpha(1.0f); // Totalmente visible
+                    if (!medallasNotificadas.contains(medalla.name())) {
+                        medallasNotificadas.add(medalla.name());
+
+                        android.widget.Toast.makeText(this,
+                                "🏆 ¡Logro Desbloqueado!: " + medalla.getTitulo() + "\n" + medalla.getDescripcion(),
+                                android.widget.Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    viewMedalla.setAlpha(0.25f);
+                }
+            }
+        }
     }
 
 
