@@ -6,42 +6,62 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.Executors;
 
-import mx.unam.fc.icat.funz.model.Ecuacion;
 import mx.unam.fc.icat.funz.model.ParserEcuacion;
 
 /**
- * DbSeeder — callback de Room que inserta los datos iniciales
- * (módulos y ejercicios) solo la primera vez que se crea la base de datos.
+ * Componente de inicialización y Callback transaccional de Room encargado del aprovisionamiento
+ * de los datos semilla del sistema didáctico FunZ.
+ * <p>
+ * Se ejecuta de manera segura durante la primera creación física de la base de datos local SQLite.
+ * Modela e inserta la estructura jerárquica de los 6 módulos de estudio inspirados en el Álgebra
+ * de Baldor, junto con sus respectivos desafíos interactivos (Balanza, Clásico y Algebra Tiles),
+ * garantizando la integridad, coherencia matemática e idempotencia del almacenamiento relacional.
+ * </p>
+ *
+ * @author Alan Kevin Cano Tenorio
+ * @author Malinalli Escobedo Irineo
+ * @author Marco Antonio Chávez Martínez
+ * @version 1.0
  */
 public class DbSeeder extends RoomDatabase.Callback {
 
+    /**
+     * Disparado exclusivamente la primera vez que la base de datos es creada.
+     * Delegado a la función transaccional estática {@link #seed(FunZDatabase)} para poblar las entidades.
+     *
+     * @param db Instancia de la base de datos SQLite de soporte a bajo nivel.
+     */
     @Override
     public void onCreate(@NonNull SupportSQLiteDatabase db) {
         super.onCreate(db);
     }
 
     /**
-     * Semilla completa de datos. Llamado desde FunZDatabase con acceso a los DAOs.
-     * Solo inserta si las tablas están vacías o incompletas (idempotente).
-     */
-    /**
-     * Semilla completa de datos. Llamado desde FunZDatabase con acceso a los DAOs.
-     * Solo inserta si las tablas están vacías o incompletas (idempotente).
+     * Genera e inyecta la semilla completa de datos dentro de una única transacción atómica.
+     * <p>
+     * Este metodo es completamente idempotente: realiza una auditoría cuantitativa previa sobre
+     * las tablas de módulos y ejercicios. Si los registros esperados ya se encuentran presentes,
+     * interrumpe la ejecución de forma temprana para optimizar el rendimiento de arranque.
+     * En caso de detectar inconsistencias o vaciado, limpia las tablas y recrea el entorno desde cero.
+     * </p>
+     *
+     * @param db Instancia central de la base de datos de la aplicación {@link FunZDatabase}.
      */
     public static void seed(FunZDatabase db) {
         db.runInTransaction(() -> {
             ModuleDao moduleDao = db.moduleDao();
             ExerciseDao exerciseDao = db.exerciseDao();
 
-            // Verificamos si la suma total de ejercicios esperada existe (6 módulos * 3 ej = 18)
+            // Verificamos si la suma total de ejercicios esperada existe (6 módulos * 3 ejercicios = 18)
             if (moduleDao.count() == 6 && exerciseDao.count() >= 18) return;
 
             // Si hay inconsistencia, limpiamos y empezamos de cero para garantizar integridad
             db.clearAllTables();
 
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // ── Módulo 1 ──
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             Module mod1 = buildModule(1,
                     "Módulo 1: Introducción",
                     "Conceptos básicos e igualdad",
@@ -59,8 +79,10 @@ public class DbSeeder extends RoomDatabase.Callback {
                     // Bloque 3: La Forma Básica x + a = b
                     "Forma básica: x + a = b",
                     "Es el tipo más sencillo de ecuación. Para resolverla, aplicamos la 'Regla de Transposición': si un número está sumando junto a la x, pasa al otro lado del signo igual realizando la operación opuesta, es decir, restando. \n\nEjemplo: x + 5 = 12 se convierte en x = 12 - 5.",
+
                     // Ejemplo visual de la sección de info
                     "x + 3 = 7\n" + "x + 15 = 30\n" + "8 + x = 12",
+
                     new String[]{
                             "Ejemplo A (Básico): x + 3 = 7",
                             "1. El +3 pasa al otro lado restando: x = 7 - 3",
@@ -77,9 +99,6 @@ public class DbSeeder extends RoomDatabase.Callback {
             );
             moduleDao.insertAll(Collections.singletonList(mod1));
             exerciseDao.insertAll(Arrays.asList(
-                    buildBalanza(1,1,"x + 5 = 10","5","x+5","10","-5","x","5",
-                            new String[]{"-5","+5","×2","÷2"},
-                            "Paso 1: Resta 5 a ambos lados.\n  x+5-5 = 10-5\n\nPaso 2: Simplifica.\n  x = 5 ✓"),
                     buildClasico(1, 2, "3x + 5 = 20", "5",
                             new String[]{
                                     "Transponer +5 al otro lado:",
@@ -90,13 +109,18 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: Transponer +5 → 3x = 15\nPaso 2: Dividir entre 3 → x = 5 ✓"),
+                    buildBalanza(1,1,"x + 5 = 10","5","x+5","10","-5","x","5",
+                            new String[]{"-5","+5","×2","÷2"},
+                            "Paso 1: Resta 5 a ambos lados.\n  x+5-5 = 10-5\n\nPaso 2: Simplifica.\n  x = 5 ✓"),
                     buildTiles(1,3,"x + 2 = 12","10",
                             new String[]{"x","+1","+1"},
                             new String[]{"+1","+1","+1","+1","+1","+1","+1","+1","+1","+1","+1","+1"},
                             "Mueve los +1 del lado izquierdo.\nCuando solo quede x: cuenta los +1 del derecho → x = 10 ✓")
             ));
 
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // ── Módulo 2 ──
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             Module mod2 = buildModule(2,
                     "Módulo 2: Coeficientes",
                     "ax + b = c · El coeficiente",
@@ -117,6 +141,7 @@ public class DbSeeder extends RoomDatabase.Callback {
 
                     // Ejemplos visuales de la sección de info (3 Ejemplos)
                     "2x + 4 = 10\n" + "3x - 6 = 12\n" + "5x = 20",
+
                     new String[]{
                             "Ejemplo A (Dos pasos): 2x + 4 = 10",
                             "1. Pasamos el +4 restando: 2x = 10 - 4 -> 2x = 6",
@@ -135,9 +160,6 @@ public class DbSeeder extends RoomDatabase.Callback {
             );
             moduleDao.insertAll(Collections.singletonList(mod2));
             exerciseDao.insertAll(Arrays.asList(
-                    buildBalanza(2,1,"2x + 3 = 11","4","2x+3","11","-3","2x","8",
-                            new String[]{"-3","+3","÷2","×2"},
-                            "Paso 1: Resta 3 → 2x = 8\nPaso 2: Divide entre 2 → x = 4 ✓"),
                     buildClasico(2, 2, "5x - 10 = 20", "6",
                             new String[]{
                                     "Transponer -10:",
@@ -148,13 +170,18 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: Transponer -10 → 5x = 30\nPaso 2: Dividir entre 5 → x = 6 ✓"),
+                    buildBalanza(2,1,"2x + 3 = 11","4","2x+3","11","-3","2x","8",
+                            new String[]{"-3","+3","÷2","×2"},
+                            "Paso 1: Resta 3 → 2x = 8\nPaso 2: Divide entre 2 → x = 4 ✓"),
                     buildTiles(2,3,"2x + 1 = 7","3",
                             new String[]{"x","x","+1"},
                             new String[]{"+1","+1","+1","+1","+1","+1","+1"},
                             "Mueve el +1 del izquierdo. Quedan 2x = 6. x = 3 ✓")
             ));
 
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // ── Módulo 3 ──
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             Module mod3 = buildModule(3,
                     "Módulo 3: Fracciones",
                     "x/a + b = c · Eliminar denominador",
@@ -175,6 +202,7 @@ public class DbSeeder extends RoomDatabase.Callback {
 
                     // Ejemplos visuales de la sección de info (3 Ejemplos)
                     "x/2 + 3 = 7\n" + "x/3 - 1 = 4\n" + "x/5 = 2",
+
                     new String[]{
                             "Ejemplo A (Suma y Fracción): x/2 + 3 = 7",
                             "1. Pasamos el +3 restando: x/2 = 7 - 3 -> x/2 = 4",
@@ -193,9 +221,6 @@ public class DbSeeder extends RoomDatabase.Callback {
             );
             moduleDao.insertAll(Collections.singletonList(mod3));
             exerciseDao.insertAll(Arrays.asList(
-                    buildBalanza(3,1,"x/2 + 1 = 5","8","x/2+1","5","-1","x/2","4",
-                            new String[]{"-1","+1","×2","÷2"},
-                            "Paso 1: Resta 1 → x/2 = 4\nPaso 2: Multiplica por 2 → x = 8 ✓"),
                     buildClasico(3, 2, "x/3 + 2 = 6", "12",
                             new String[]{
                                     "Transponer +2:",
@@ -206,13 +231,18 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "¡Listo! Ingresa el valor final de x abajo:"
                             },
                             "Paso 1: Transponer +2 → x/3 = 4\nPaso 2: Multiplicar por 3 → x = 12 ✓"),
+                    buildBalanza(3,1,"x/2 + 1 = 5","8","x/2+1","5","-1","x/2","4",
+                            new String[]{"-1","+1","×2","÷2"},
+                            "Paso 1: Resta 1 → x/2 = 4\nPaso 2: Multiplica por 2 → x = 8 ✓"),
                     buildTiles(3,3,"x/2 = 3","6",
                             new String[]{"x/2"},
                             new String[]{"+1","+1","+1"},
                             "El tile x/2 vale la mitad de x. Multiplica por 2. x = 6 ✓")
             ));
 
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // ── Módulo 4: Paréntesis ──
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             Module mod4 = buildModule(4,
                     "Módulo 4: Paréntesis",
                     "a(x + b) = c · Propiedad Distributiva",
@@ -233,6 +263,7 @@ public class DbSeeder extends RoomDatabase.Callback {
 
                     // Ejemplos visuales de la sección de info (3 Ejemplos)
                     "2(x + 3) = 10\n" + "3(x - 2) = 9\n" + "4(x + 1) = 12",
+
                     new String[]{
                             "Ejemplo A (Suma interna): 2(x + 3) = 10",
                             "1. Multiplicamos 2*x y 2*3: 2x + 6 = 10",
@@ -249,7 +280,6 @@ public class DbSeeder extends RoomDatabase.Callback {
                             "2. Transponemos y resolvemos: 4x = 8 -> x = 2 ✓"
                     }
             );
-
             moduleDao.insertAll(Collections.singletonList(mod4));
             exerciseDao.insertAll(Arrays.asList(
                     buildClasico(4, 1, "2(x + 3) = 10", "2",
@@ -273,7 +303,9 @@ public class DbSeeder extends RoomDatabase.Callback {
                             "Tienes dos grupos de (x + 2). En total son 2x y 4 unidades. Quita las 4 unidades y divide lo que quede entre las dos x.")
             ));
 
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             // ── Módulo 5: Variables en ambos lados ──
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             Module mod5 = buildModule(5,
                     "Módulo 5: Variables a ambos lados",
                     "ax + b = cx + d · Agrupación",
@@ -294,6 +326,7 @@ public class DbSeeder extends RoomDatabase.Callback {
 
                     // Ejemplos visuales de la sección de info (3 Ejemplos)
                     "3x + 2 = x + 10\n" + "5x - 4 = 2x + 5\n" + "4x = 2x + 6",
+
                     new String[]{
                             "Ejemplo A (Agrupación simple): 3x + 2 = x + 10",
                             "1. Pasamos la x restando a la izquierda: 3x - x + 2 = 10",
@@ -310,10 +343,8 @@ public class DbSeeder extends RoomDatabase.Callback {
                             "2. Reducimos: 2x = 6 -> x = 3 ✓"
                     }
             );
-
             moduleDao.insertAll(Collections.singletonList(mod5));
             exerciseDao.insertAll(Arrays.asList(
-                    // Ejercicio 1: Clásico (Agrupación paso a paso)
                     buildClasico(5, 1, "3x + 2 = x + 10", "4",
                             new String[]{
                                     "Pasamos la x al lado izquierdo restando:",
@@ -328,20 +359,18 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "Ingresa el valor final de x abajo:"
                             },
                             "Reúne las variables: Resta una 'x' en el miembro izquierdo y luego transpone el +2 restando a la derecha para equilibrar."),
-
-                    // Ejercicio 2: Balanza (Eliminación mutua)
                     buildBalanza(5, 2, "4x = 2x + 6", "3", "4x", "2x+6", "-2x", "2x", "6",
                             new String[]{"-2x", "+2x", "÷2", "×2"},
                             "Sugerencia: Tienes x en ambos lados. Si quitas 2 cajas (2x) de cada plato, la balanza seguirá en equilibrio."),
-
-                    // Ejercicio 3: Tiles (Cancelación de variables)
                     buildTiles(5, 3, "2x + 3 = x + 5", "2",
                             new String[]{"x", "x", "+1", "+1", "+1"}, // 2x + 3
                             new String[]{"x", "+1", "+1", "+1", "+1", "+1"}, // x + 5
                             "Quita una 'x' de cada lado. Luego quita las 3 unidades del lado izquierdo. ¿Cuántas unidades quedan para la x solitaria?")
             ));
 
-
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            // ── Módulo 6: Final ──
+            // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             Module mod6 = buildModule(6,
                     "Módulo 6: Caso General",
                     "a(x + b) = cx + d · El gran cierre",
@@ -379,10 +408,8 @@ public class DbSeeder extends RoomDatabase.Callback {
                             "3. Resultado: x = 4 ✓"
                     }
             );
-
             moduleDao.insertAll(Collections.singletonList(mod6));
             exerciseDao.insertAll(Arrays.asList(
-                    // Ejercicio 1: Clásico (El proceso completo)
                     buildClasico(6, 1, "2(x + 3) = x + 9", "3",
                             new String[]{
                                     "Primero, expande el paréntesis:",
@@ -395,13 +422,9 @@ public class DbSeeder extends RoomDatabase.Callback {
                                     "Ingresa el valor final de x abajo:"
                             },
                             "Rompe el candado: El número 2 de afuera debe multiplicar a cada término dentro del paréntesis."),
-
-                    // Ejercicio 2: Balanza (Visualización de equilibrio dinámico)
                     buildBalanza(6, 2, "3x + 4 = 2x + 10", "6", "3x+4", "2x+10", "-2x", "x+4", "10",
                             new String[]{"-2x", "-4", "+2x", "+4", "÷2"},
                             "Sugerencia: Quita 2 cajas (2x) de cada plato primero para simplificar la balanza."),
-
-                    // Ejercicio 3: Tiles (Manipulación de grupos y negativos)
                     buildTiles(6, 3, "2(x + 1) = x + 5", "3",
                             new String[]{"x", "x", "+1", "+1"}, // Expandido: 2x + 2
                             new String[]{"x", "+1", "+1", "+1", "+1", "+1"}, // x + 5
@@ -410,6 +433,11 @@ public class DbSeeder extends RoomDatabase.Callback {
         });
     }
 
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // Métodos auxiliares
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    // Instancia y mapea una entidad Module con todos sus bloques de texto didáctico y ejemplos serializados.
     private static Module buildModule(int id, String name, String subtitle, String desc, int order, boolean unlocked,
                                       String it1, String ix1, String it2, String ix2, String it3, String ix3,
                                       String eq, String[] steps) {
@@ -421,6 +449,16 @@ public class DbSeeder extends RoomDatabase.Callback {
         return m;
     }
 
+    // Instancia un ejercicio de tipo Clásico (secuencial paso a paso) vinculando su arreglo de strings solución.
+    private static Exercise buildClasico(int moduleId, int step, String eq, String answer, String[] steps, String hint) {
+        Exercise e = new Exercise();
+        e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_CLASICO;
+        e.equation = eq; e.equationObj = ParserEcuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
+        e.solutionSteps = toJson(steps);
+        return e;
+    }
+
+    // Instancia un ejercicio de tipo Balanza calculando de forma analítica su árbol de expresiones internas.
     private static Exercise buildBalanza(int moduleId, int step, String eq, String answer, String lhs, String rhs, String correctOp, String lhsAfter, String rhsAfter, String[] ops, String hint) {
         Exercise e = new Exercise();
         e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_BALANZA;
@@ -430,14 +468,7 @@ public class DbSeeder extends RoomDatabase.Callback {
         return e;
     }
 
-    private static Exercise buildClasico(int moduleId, int step, String eq, String answer, String[] steps, String hint) {
-        Exercise e = new Exercise();
-        e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_CLASICO;
-        e.equation = eq; e.equationObj = ParserEcuacion.parsear(eq); e.correctAnswer = answer; e.hintText = hint;
-        e.solutionSteps = toJson(steps);
-        return e;
-    }
-
+    // Instancia un ejercicio de tipo Tiles (físico/azulejos) mapeando el estado inicial de las piezas de ambos miembros.
     private static Exercise buildTiles(int moduleId, int step, String eq, String answer, String[] left, String[] right, String hint) {
         Exercise e = new Exercise();
         e.moduleId = moduleId; e.stepOrder = step; e.type = Exercise.TYPE_TILES;
@@ -446,6 +477,7 @@ public class DbSeeder extends RoomDatabase.Callback {
         return e;
     }
 
+    // Traduce arreglos de strings nativos de Java a un formato plano JSON tipo String compatible con Room y los convertidores.
     private static String toJson(String[] arr) {
         StringBuilder sb = new StringBuilder("[");
         for (int i = 0; i < arr.length; i++) {
@@ -454,7 +486,4 @@ public class DbSeeder extends RoomDatabase.Callback {
         }
         return sb.append("]").toString();
     }
-
-
-
 }

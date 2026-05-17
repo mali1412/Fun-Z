@@ -9,7 +9,6 @@ import mx.unam.fc.icat.funz.repository.AppStateRepository;
 import mx.unam.fc.icat.funz.repository.ExerciseRepository;
 
 /**
- * <h2>FunZApp</h2>
  * Punto de entrada inicial y clase base de configuración global para la aplicación FunZ.
  * <p>
  * Hereda de {@link Application} y actúa como el contenedor de ciclo de vida más alto del proceso.

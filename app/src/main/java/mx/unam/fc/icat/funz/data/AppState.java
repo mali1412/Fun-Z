@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import mx.unam.fc.icat.funz.R;
 
 /**
- * <h2>AppState</h2>
  * Singleton de alto rendimiento encargado de la gestión, persistencia y auditoría
  * del estado global del usuario y las métricas analíticas de la sesión de juego.
  * <p>
@@ -281,7 +280,7 @@ public class AppState {
     }
 
     /**
-     * Setea la cantidad máxima de ejercicios disponibles para un módulo de la base de datos.
+     * Define la cantidad máxima de ejercicios disponibles para un módulo de la base de datos.
      */
     public void setModuleExerciseCount(int moduleId, int count) {
         put(moduleCountKey(moduleId), count);
@@ -378,12 +377,11 @@ public class AppState {
     }
 
     /**
-     * <h3>markExerciseDone</h3>
      * Transacciona, calcula y asienta el resultado analítico de la resolución de un ejercicio.
      * <p>
-     * Este metodo es el núcleo del flujo de gamificación: actualiza los puntos históricos del perfil,
-     * segrega las métricas de la sesión activa (distinguiendo entre respuestas correctas limpias,
-     * asistidas por pistas o reveladas por rendición) y controla la máquina de estados de navegación.
+     * Actualiza los puntos históricos del perfil, segrega las métricas de la sesión activa
+     * (distinguiendo entre respuestas correctas limpias, asistidas por pistas o reveladas por rendición)
+     * y controla la máquina de estados de navegación.
      * Si el alumno concluye el último desafío de un tema, marca el módulo como completo y actualiza
      * el puntero global hacia el siguiente módulo correspondiente.
      * </p>
