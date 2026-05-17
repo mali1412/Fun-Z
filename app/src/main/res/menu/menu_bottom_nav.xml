@@ -4,21 +4,21 @@
     <item
         android:id="@+id/nav_inicio"
         android:icon="@drawable/ic_home"
-        android:title="Inicio"/>
+        android:title="@string/nav_inicio_short"/>
     <item
         android:id="@+id/nav_temas"
         android:icon="@drawable/ic_book"
-        android:title="Temas"/>
+        android:title="@string/nav_temas_short"/>
     <item
         android:id="@+id/nav_salas"
         android:icon="@drawable/ic_room"
-        android:title="Salas"/>
+        android:title="@string/nav_salas_short"/>
     <item
         android:id="@+id/nav_stats"
         android:icon="@drawable/ic_bar_chart"
-        android:title="Stats"/>
+        android:title="@string/nav_stats_short"/>
     <item
         android:id="@+id/nav_config"
         android:icon="@drawable/ic_settings"
-        android:title="Config"/>
+        android:title="@string/nav_config_short"/>
 </menu>
