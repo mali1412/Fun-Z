@@ -7,35 +7,32 @@ import java.util.Stack;
 import mx.unam.fc.icat.funz.utils.AlgebraTokens;
 
 /**
- * TraductorEcuacion — Algoritmo puente que transforma la disposición visual
- * de los elementos en pantalla hacia la jerarquía lógica del modelo.
+ * Componente algorítmico encargado de traducir secuencias de tokens lineales provenientes de las
+ * interacciones visuales de la UI hacia la estructura semántica y de precedencia del modelo de datos.
+ * <p>
+ * Implementa una variante adaptada del algoritmo de Shunting-yard (Patio de Maniobras) de Dijkstra. Utiliza
+ * una estructura de pila ({@link Stack}) para evaluar en tiempo de ejecución las prioridades operacionales
+ * bajo la jerarquía PEMDAS, gestionando de forma segura signos de agrupación (paréntesis), operadores unarios/binarios
+ * y tokens compuestos que requieran segmentación léxica de contingencia.
+ * </p>
+ *
+ * @author Alan Kevin Cano Tenorio
+ * @author Malinalli Escobedo Irineo
+ * @author Marco Antonio Chávez Martínez
+ * @version 1.0
  */
 public class TraductorEcuacion {
 
     /**
-     * Define los niveles de precedencia matemática (PEMDAS).
-     * Incluimos la barra "/" con la misma prioridad que la división "÷".
-     */
-    private static int obtenerPrecedencia(String op) {
-        switch (op) {
-            case AlgebraTokens.OPEN_PAREN:
-            case AlgebraTokens.CLOSE_PAREN:
-                return 0;
-            case AlgebraTokens.PLUS:
-            case AlgebraTokens.MINUS:
-                return 1;
-            case AlgebraTokens.MUL_SYMBOL:
-            case AlgebraTokens.DIV_SYMBOL:
-            case AlgebraTokens.DIV_ASCII:
-                return 2;
-            case AlgebraTokens.POW:
-                return 3;
-            default: return -1;
-        }
-    }
-
-    /**
-     * Traduce una lista de símbolos a un objeto Ecuacion.
+     * Traduce una colección secuencial lineal de símbolos vectoriales en un objeto estructurado {@link Ecuacion}.
+     * <p>
+     * Procesa cada token discriminando entre operadores relacionales, signos de agrupación y operandos elementales.
+     * Cuenta con una sub-rutina de contingencia de análisis sintáctico que intercepta y desglosa tokens pegados
+     * (ej. "/2" o "÷5") generados por imprecisiones del tokenizer del panel visual.
+     * </p>
+     *
+     * @param tokens Lista indexada de strings que representan la secuencia actual de la interfaz de usuario.
+     * @return Una instancia íntegra de {@link Ecuacion} con sus términos organizados y validados.
      */
     public static Ecuacion traducirSecuencia(List<String> tokens) {
         List<Termino> resultado = new ArrayList<>();
@@ -84,6 +81,10 @@ public class TraductorEcuacion {
         return new Ecuacion(resultado);
     }
 
+    /**
+     * Puga y vacía de forma secuencial los operadores remanentes en la pila hacia la lista consolidada de resultados,
+     * omitiendo delimitadores decorativos abiertos residuales.
+     */
     private static void vaciarPila(Stack<String> pila, List<Termino> res) {
         while (!pila.isEmpty()) {
             String op = pila.pop();
@@ -91,6 +92,9 @@ public class TraductorEcuacion {
         }
     }
 
+    /**
+     * Predicado de control léxico que evalúa si un token califica como operador algebraico core.
+     */
     private static boolean esOperador(String t) {
         return t.equals(AlgebraTokens.PLUS)
                 || t.equals(AlgebraTokens.MINUS)
@@ -100,9 +104,34 @@ public class TraductorEcuacion {
                 || t.equals(AlgebraTokens.POW);
     }
 
+    /**
+     * Delega a la fábrica la construcción del componente unario especializado basándose en el símbolo del operador.
+     */
     private static Termino crearTerminoEspecial(String op) {
         if (op.equals(AlgebraTokens.POW)) return TerminoFactory.crearPotencia();
         return TerminoFactory.crearOperador(op);
+    }
+
+    /**
+     * Define los niveles de precedencia matemática (PEMDAS).
+     * Incluimos la barra "/" con la misma prioridad que la división "÷".
+     */
+    private static int obtenerPrecedencia(String op) {
+        switch (op) {
+            case AlgebraTokens.OPEN_PAREN:
+            case AlgebraTokens.CLOSE_PAREN:
+                return 0;
+            case AlgebraTokens.PLUS:
+            case AlgebraTokens.MINUS:
+                return 1;
+            case AlgebraTokens.MUL_SYMBOL:
+            case AlgebraTokens.DIV_SYMBOL:
+            case AlgebraTokens.DIV_ASCII:
+                return 2;
+            case AlgebraTokens.POW:
+                return 3;
+            default: return -1;
+        }
     }
 
     /**
